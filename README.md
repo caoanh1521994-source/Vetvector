@@ -14,7 +14,8 @@ Trang chạy tại **https://vetvector.vercel.app**. Mỗi lần đẩy lên nh�
 | `src/bank.js`, `src/bank2.js` | Ngân hàng câu hỏi (242 câu, bài 1–8, mức 1–4) |
 | `src/handbook.js` | Sổ tay công thức và gợi ý cho từng câu |
 | `src/omikuji.js` | Dữ liệu Hộp quẻ học tập (lời quẻ, mẹo học, lỗi sai hay gặp) |
-| `src/cave.js` | Bản đồ ẩn Hang Sơn Đoòng: 16 bài tự luận Vận dụng cao, đáp số, lời giải, thang điểm |
+| `src/cave.js` | Bản đồ ẩn Hang Sơn Đoòng: 16 bài tự luận Vận dụng cao, đáp số, lời giải |
+| `src/figs.js`, `src/fig/` | Hình minh họa cho bài thực tế (ảnh từ phiếu bài tập + hình vẽ SVG) |
 | `src/math.js` | Bộ hiển thị công thức toán tự viết |
 | `src/music.js` | Nhạc nền tổng hợp bằng Web Audio |
 | `src/head.html` | Phần `<head>` (tiêu đề, mô tả, biểu tượng tab) |

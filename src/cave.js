@@ -8,7 +8,7 @@ const CAVE = {
   food: { name: "Cháo canh Quảng Bình", icon: "fd-chaocanh", line: "Sợi bánh canh bột gạo dai mềm, nước dùng ngọt từ cá đồng, ăn nóng giữa ngày se lạnh miền Trung.", secret: true },
 };
 const CAVE_NEED = 3;      // số địa danh cần vượt mức 4 để tìm ra lối vào
-const ESSAY_SEEDS = 30;   // thưởng lần đầu đạt từ một nửa số điểm
+const ESSAY_SOL_COST = 10; // số hạt để mở lời giải một ý
 const CHAMBERS = {
   b1: { name: "Cửa hang", x: 70, y: 74 },
   b2: { name: "Sông ngầm", x: 214, y: 118 },

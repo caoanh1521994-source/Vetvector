@@ -735,3 +735,12 @@ button.cslot:hover{transform:translateY(-2px)}
 .map .secret-spot:hover .smap,.map .secret-spot:focus-visible .smap{animation-duration:.9s}
 .map .smap-q{font-family:var(--display);font-weight:800;font-size:17px;fill:#fff;pointer-events:none}
 @keyframes smapbob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-6px) rotate(6deg)}}
+/* ---------- Hình minh họa ---------- */
+.qfig{margin:12px auto 4px;max-width:420px;padding:10px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(170,200,255,.35),0 10px 30px rgba(0,0,0,.35);text-align:center}
+.qfig img,.qfig svg{display:block;width:100%;height:auto;max-height:300px;object-fit:contain;margin:0 auto;border-radius:8px}
+.qfig figcaption{margin-top:6px;font-size:.76rem;color:#55607A;font-weight:600}
+.qfig.sol{max-width:300px}
+.feedback .qfig,.kcard .qfig,.omi-paper .qfig{margin-left:0}
+.ep-lock{display:flex}
+.ep-lock .btn svg{width:18px;height:18px}
+.e-act .btn svg{width:18px;height:18px}

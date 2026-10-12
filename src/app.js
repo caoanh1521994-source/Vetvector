@@ -71,7 +71,7 @@ const SAY = {
 
 /* ================= TRẠNG THÁI ================= */
 const KEY = "vetvecto-v2";
-const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, cave: { found: false, sel: "b1", best: {} }, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
+const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, cave: { found: false, sel: "b1", best: {}, done: {}, seen: {}, hint: {} }, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
 let S = fresh();
 function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && typeof s === "object") return Object.assign(fresh(), s); } } catch (e) {}
@@ -332,6 +332,7 @@ function renderQuestion() {
     el("span", { class: "pill", text: TYPE[q.t] }),
     el("span", { class: "pill lv", style: `background:${LEVELS[q.lv - 1].color}`, text: `Mức ${q.lv}` + (q.ch ? ` · Bài ${STAGES[stageIdx(q.ch)].no}` : "") })]);
   card.append(meta, el("p", { class: "qtext" }, T(q.q)));
+  { const fg = figEl(q.key); if (fg) card.append(fg); }
   const area = el("div", { class: "answer" }); card.append(area);
   const hintSlot = el("div", { id: "hintSlot" }); card.append(hintSlot);
   const actions = el("div", { class: "actions" }); card.append(actions);
@@ -431,6 +432,7 @@ function settle(ok, extra) {
     el("h3", { text: ok ? `Chính xác! +${gain} hạt` : "Chưa đúng rồi" }),
     extra ? el("p", { class: "sol", style: "font-weight:700", text: extra }) : null,
     el("p", { class: "sol" }, [el("b", { text: "Lời giải: " }), T(q.e)]),
+    figEl(q.key, "sol"),
     relLinks(q)]);
   const card = $("#qCard"); card.append(fb);
   const last = RUN.i === RUN.qs.length - 1 || RUN.hearts === 0;
@@ -601,7 +603,7 @@ function keyCard(q, k, lv) {
   const c = el("article", { class: "kcard" }, [
     el("div", { class: "qmeta" }, [el("span", { class: "pill", text: `Câu ${k + 1}` }), el("span", { class: "pill", text: TYPE[q.t] }),
       el("span", { class: "pill lv", style: `background:${LEVELS[lv - 1].color}`, text: `Mức ${lv}` })]),
-    el("p", { class: "kq" }, T(q.q))]);
+    el("p", { class: "kq" }, T(q.q)), figEl(q.key)]);
   if (q.t === "mc") {
     const ord = keyOrder(q), box = el("div", { class: "kopts" });
     ord.forEach((src, j) => box.append(el("div", { class: "kopt" + (src === 0 ? " right" : "") }, [el("span", { class: "k", text: "ABCD"[j] }), el("span", { class: "v" }, T(q.o[src])), src === 0 ? icon("i-check") : null])));
@@ -613,7 +615,7 @@ function keyCard(q, k, lv) {
   } else {
     c.append(el("p", { class: "kans", text: `Đáp số: ${String(q.a).replace(".", ",")}` + (q.tol > 1e-6 ? ` (chấp nhận sai số ±${String(q.tol).replace(".", ",")})` : "") }));
   }
-  c.append(el("p", { class: "ksol" }, [el("b", { text: "Lời giải: " }), T(q.e)]));
+  c.append(el("p", { class: "ksol" }, [el("b", { text: "Lời giải: " }), T(q.e)]), figEl(q.key, "sol") || "");
   return c;
 }
 function openKey(lesson, level) {
@@ -777,7 +779,7 @@ function omiPaper(state) {
       el("p", { class: "omi-k", text: "Công thức của quẻ" }), fcard(BOOK_ITEM[d.f]), el("div", { class: "omi-act" }, omiKeepBtn(d.f)));
   } else if (d.tier === "cat") {
     const q = d.q, st = STAGES[stageIdx(q.lesson)] || STAGES[0];
-    body.append(el("p", { class: "omi-k", text: `Thử thách nhanh · Bài ${st.no} · trả lời đúng +${OMI_WIN} hạt` }), el("p", { class: "omi-q" }, T(q.q)));
+    body.append(el("p", { class: "omi-k", text: `Thử thách nhanh · Bài ${st.no} · trả lời đúng +${OMI_WIN} hạt` }), el("p", { class: "omi-q" }, T(q.q)), figEl(q.key) || "");
     const box = el("div", { class: "omi-opts" });
     q.opts.forEach((o, k) => box.append(el("button", { class: "opt", "data-k": k, disabled: d.done, onclick: () => {
       if (d.done) return; d.done = true; d.ok = k === q.ans; d.pickK = k;
@@ -896,9 +898,9 @@ const caveReady = () => STAGES.slice(0, N_STOPS).filter(s => passed(s.id, 4)).le
 const caveOpen = () => S.teacher || S.cave.found || caveReady();
 const stageById = id => id === "cave" ? CAVE : STAGES[stageIdx(id)];
 const essayList = () => Object.values(ESSAYS).flat();
-const essayBest = key => S.cave.best[key];
-const essayPassed = e => (S.cave.best[e.key] ?? -1) >= e.total / 2;
-const fmtPts = n => (Math.round(n * 100) / 100).toLocaleString("vi-VN", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+/* Tự luận không chấm điểm: học sinh làm ra giấy, dùng hạt để mở lời giải từng ý, tự đánh dấu "đã làm xong". */
+const essayDone = e => !!S.cave.done[e.key];
+const essaySeen = (key, i) => !!(S.cave.seen[key] && S.cave.seen[key][i]);
 const CAVE_ROUTE = "M70 74 C 140 60, 170 130, 214 118 S 330 140, 326 196 S 240 250, 196 262 S 60 290, 74 334 S 150 420, 196 408 S 312 420, 312 470 S 240 540, 196 532";
 function mapCaveNode(nodes) {
   if (caveOpen()) {
@@ -937,7 +939,7 @@ function caveDiscovery() {
     el("div", { class: "cd-icon" }, icon("lm-cave")),
     el("h2", { id: "cdTitle", text: "Bạn đã tìm ra bản đồ ẩn!" }),
     el("p", { text: "Sâu trong dãy núi đá vôi Quảng Bình, Vẹt phát hiện lối vào Hang Sơn Đoòng, hang động tự nhiên lớn nhất thế giới. Bên trong là 8 khoang với 16 bài tự luận Vận dụng cao, mỗi khoang một bài học." }),
-    el("p", { text: "Làm bài ra giấy, nộp đáp số để chấm, rồi tự chấm phần trình bày theo lời giải. Chinh phục cả 16 bài để nhận Phiếu điểm 10 bí ẩn." }),
+    el("p", { text: `Làm bài ra giấy, rồi dùng hạt để mở lời giải từng ý (${ESSAY_SOL_COST} hạt/ý) mà đối chiếu. Làm xong cả 16 bài để nhận Phiếu điểm 10 bí ẩn.` }),
     el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Để sau", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Vào hang", onclick: () => { closeModal(true); goCave(); } })])]));
 }
 function goCave() { if (!caveOpen()) return; RUN = null; show("scrCave"); drawCave(); renderCavePanel(); hud(); }
@@ -952,7 +954,7 @@ function drawCave() {
     for (let k = 0; k < 40; k++) d.append(sv("circle", { cx: (rnd() * 400).toFixed(1), cy: (40 + rnd() * 520).toFixed(1), r: (rnd() * 1.6 + .4).toFixed(2), fill: k % 3 ? "#7EF2DC" : "#E9D8FF", class: "twinkle", style: `animation-delay:${(rnd() * 3).toFixed(2)}s` }));
   }
   Object.entries(CHAMBERS).forEach(([l, c], i) => {
-    const es = ESSAYS[l], nPass = es.filter(essayPassed).length, done = nPass === es.length, sel = S.cave.sel === l;
+    const es = ESSAYS[l], nPass = es.filter(essayDone).length, done = nPass === es.length, sel = S.cave.sel === l;
     const g = sv("g", { class: "cnode" + (sel ? " sel" : ""), tabindex: "0", role: "button", "aria-label": `Khoang ${i + 1}: ${c.name}, ${nPass}/${es.length} bài` });
     g.append(sv("circle", { cx: c.x, cy: c.y, r: 30, fill: done ? "rgba(255,214,107,.25)" : "rgba(126,242,220,.18)", filter: "url(#cglow)" }));
     g.append(sv("path", { d: `M${c.x} ${c.y - 22}l14 10v24l-14 10-14-10v-24z`, fill: done ? "url(#crystalDone)" : "url(#crystal)", stroke: sel ? "#FFD66B" : "#E9FFFB", "stroke-width": sel ? 3.5 : 2, class: "ring" }));
@@ -966,110 +968,92 @@ function drawCave() {
 }
 function renderCavePanel() {
   const p = $("#cavePanel"); p.innerHTML = "";
-  const all = essayList(), nPass = all.filter(essayPassed).length, sum = all.reduce((t, e) => t + (essayBest(e.key) || 0), 0);
+  const all = essayList(), nDone = all.filter(essayDone).length;
   const l = S.cave.sel in CHAMBERS ? S.cave.sel : "b1", c = CHAMBERS[l], st = STAGES[stageIdx(l)], idx = Object.keys(CHAMBERS).indexOf(l);
   const card = el("section", { class: "stagecard cavepanel" });
   card.append(el("div", { class: "stagehead" }, [el("div", { class: "lmk secret" }, icon("lm-cave")), el("div", { style: "min-width:0" }, [
     el("div", { class: "eyebrow", text: "Bản đồ ẩn · Quảng Bình" }), el("h2", { text: "Hang Sơn Đoòng" }),
-    el("p", { text: `Tự luận Vận dụng cao · ${nPass}/${all.length} bài · ${fmtPts(sum)}/${all.length * 3} điểm` })])]));
+    el("p", { text: `Tự luận Vận dụng cao · đã làm ${nDone}/${all.length} bài` })])]));
   const body = el("div", { class: "stagebody" });
   body.append(el("button", { class: "btn small ghost backmap", onclick: () => { play("tap"); goMap(); } }, [document.createTextNode("← Về bản đồ")]));
   const chips = el("div", { class: "sibchips cchips" });
   Object.entries(CHAMBERS).forEach(([k, ch], i) => {
-    const done = ESSAYS[k].every(essayPassed);
+    const done = ESSAYS[k].every(essayDone);
     chips.append(el("button", { class: "sib" + (k === l ? " on" : ""), "aria-pressed": String(k === l), onclick: () => { S.cave.sel = k; save(); play("tap"); drawCave(); renderCavePanel(); } }, [document.createTextNode((done ? "★ " : "") + `Khoang ${i + 1}`)]));
   });
   body.append(el("div", { class: "sibs" }, [el("span", { class: "sibs-l", text: "8 khoang · mỗi khoang một bài học" }), chips]));
   body.append(el("h3", { class: "chamber-h", text: `Khoang ${idx + 1} · ${c.name}` }), el("p", { class: "placenote", text: st.topic }));
   const list = el("div", { class: "essays" });
   ESSAYS[l].forEach((e, k) => {
-    const best = essayBest(e.key), ok = essayPassed(e);
+    const ok = essayDone(e), seen = e.parts.filter((_, i) => essaySeen(e.key, i)).length;
     list.append(el("article", { class: "ecard" + (ok ? " done" : "") }, [
       el("div", { class: "ec-num", text: ok ? "★" : String(k + 1) }),
       el("div", { style: "min-width:0" }, [el("b", { text: `Bài ${k + 1}. ${e.t}` }),
-        el("small", { text: `${e.parts.length} ý · ${fmtPts(e.total)} điểm` + (best !== undefined ? ` · điểm cao nhất ${fmtPts(best)}` : " · chưa làm") })]),
-      el("button", { class: "btn small" + (best !== undefined ? " ghost" : ""), text: S.teacher && best === undefined ? "Xem đề & lời giải" : best !== undefined ? "Làm lại" : "Làm bài", onclick: () => openEssay(e.key) })]));
+        el("small", { text: `${e.parts.length} ý · ` + (S.teacher ? "giáo viên xem lời giải miễn phí" : `đã mở ${seen}/${e.parts.length} lời giải`) + (ok ? " · đã làm xong" : "") })]),
+      el("button", { class: "btn small" + (ok ? " ghost" : ""), text: ok ? "Xem lại" : "Làm bài", onclick: () => openEssay(e.key) })]));
   });
   body.append(list);
   const has = !!S.tickets.cave;
-  const bar = el("div", { class: "bar" }, el("i", { style: `width:${nPass / all.length * 100}%` }));
+  const bar = el("div", { class: "bar" }, el("i", { style: `width:${nDone / all.length * 100}%` }));
   const rw = el("div", { class: "reward secret" + (has ? " got" : "") }, [el("div", { class: "foodbadge secret" }, icon(CAVE.food.icon)), el("div", { style: "flex:1;min-width:0" }, [
     el("small", { class: "rw-k", text: "Phiếu điểm 10 bí ẩn" }), el("b", { text: CAVE.food.name }),
-    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : `Đạt từ một nửa số điểm ở cả 16 bài để nhận (${nPass}/16).` }), bar])]);
+    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : `Làm xong cả 16 bài để nhận (${nDone}/16).` }), bar])]);
   if (has || S.teacher) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket("cave")); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket("cave"); }); }
   body.append(rw);
   card.append(body); p.append(card);
-  const tipc = el("div", { class: "tipcard" }, [icon("parrot-head"), el("p", {}, [el("b", { text: "Mẹo của Vẹt: " }),
-    document.createTextNode(`Làm ra giấy trước, trình bày đủ bước như bài kiểm tra. Ý có ô đáp số được chấm tự động; ý chứng minh bạn tự chấm theo lời giải. Lần đầu đạt từ một nửa số điểm một bài: +${ESSAY_SEEDS} hạt.`)])]);
-  p.append(tipc);
+  p.append(el("div", { class: "tipcard" }, [icon("parrot-head"), el("p", {}, [el("b", { text: "Mẹo của Vẹt: " }),
+    document.createTextNode(`Làm bài ra giấy, trình bày đủ bước như bài kiểm tra rồi mới mở lời giải để đối chiếu. Mỗi ý mở lời giải mất ${ESSAY_SOL_COST} hạt; ý nào đã mở thì xem lại miễn phí.`)])]));
 }
 function openEssay(key) {
   const [l, k] = key.split("."), e = ESSAYS[l][+k], c = CHAMBERS[l], st = STAGES[stageIdx(l)], idx = Object.keys(CHAMBERS).indexOf(l);
-  const E = { sub: false, vals: e.parts.map(() => ""), marks: e.parts.map(() => null), hint: false, saved: false };
   const m = el("div", { class: "modal wide essay", role: "dialog", "aria-modal": "true", "aria-labelledby": "esTitle" });
-  const auto = (p, i) => { const v = parseNum(E.vals[i]); return !Number.isNaN(v) && Math.abs(v - p.a) <= (p.tol ?? 1e-9) + 1e-9; };
-  const score = () => e.parts.reduce((t, p, i) => t + (p.a !== undefined ? (auto(p, i) ? p.pts : 0) : (E.marks[i] ? p.pts : 0)), 0);
+  const seenSet = () => (S.cave.seen[key] = S.cave.seen[key] || {});
+  const open = i => S.teacher || essaySeen(key, i);
+  function pay(n) {
+    if (S.teacher) return true;
+    const cost = n * ESSAY_SOL_COST;
+    if (S.seeds < cost) { toast(`Cần ${cost} hạt để mở lời giải. Bạn đang có ${S.seeds} hạt.`); play("bad"); return false; }
+    S.seeds -= cost; save(); hud(); return true;
+  }
   function draw() {
-    m.innerHTML = ""; const showSol = E.sub || S.teacher;
+    const top = m.scrollTop; m.innerHTML = "";
+    const closed = e.parts.map((_, i) => i).filter(i => !open(i));
     m.append(closeX(),
       el("div", { class: "eyebrow", text: `Khoang ${idx + 1} · ${c.name} · Bài ${st.no}` }),
       el("h2", { id: "esTitle", text: `Bài ${+k + 1}. ${e.t}` }),
-      el("div", { class: "qmeta" }, [el("span", { class: "pill", text: "Tự luận" }), el("span", { class: "pill lv", style: "background:var(--lv4)", text: "Vận dụng cao" }), el("span", { class: "pill", text: `${fmtPts(e.total)} điểm` }),
-        essayBest(key) !== undefined ? el("span", { class: "pill", text: `Cao nhất: ${fmtPts(essayBest(key))}` }) : null]),
+      el("div", { class: "qmeta" }, [el("span", { class: "pill", text: "Tự luận" }), el("span", { class: "pill lv", style: "background:var(--lv4)", text: "Vận dụng cao" }), el("span", { class: "pill", text: `${e.parts.length} ý` }),
+        essayDone(e) ? el("span", { class: "pill", text: "✓ Đã làm xong" }) : null]),
       el("p", { class: "estmt" }, T(e.q)));
+    const fg = figEl("cave:" + key); if (fg) m.append(fg);
+    m.append(el("p", { class: "ep-note", text: "Làm bài ra giấy trước, rồi mở lời giải từng ý để đối chiếu." }));
     const ol = el("ol", { class: "eparts" });
     e.parts.forEach((p, i) => {
-      const li = el("li", { class: "epart" }, [el("div", { class: "ep-head" }, [el("span", { class: "ep-lab", text: "abcdef"[i] + ")" }), el("div", { class: "ep-q" }, T(p.q)), el("span", { class: "ep-pts", text: fmtPts(p.pts) + " đ" })])]);
-      if (p.a !== undefined) {
-        const inp = el("input", { type: "text", inputmode: "decimal", autocomplete: "off", placeholder: "Đáp số", value: E.vals[i], "aria-label": `Đáp số ý ${"abcdef"[i]}`, readonly: E.sub });
-        inp.addEventListener("input", () => E.vals[i] = inp.value);
-        inp.addEventListener("keydown", ev => { if (ev.key === "Enter") ev.preventDefault(); });
-        const row = el("div", { class: "ep-ans" }, [el("span", { class: "ep-k", text: "Đáp số:" }), inp, p.unit ? el("span", { class: "ep-unit", text: p.unit }) : null]);
-        if (E.sub) { const ok = auto(p, i); inp.classList.add(ok ? "right" : "wrong"); row.append(el("span", { class: "ep-res " + (ok ? "ok" : "no"), text: ok ? `✓ +${fmtPts(p.pts)} đ` : `✗ Đáp số: ${String(Math.round(p.a * 1e4) / 1e4).replace(".", ",")}` })); }
-        li.append(row);
-      } else if (!showSol) li.append(el("p", { class: "ep-note", text: "Trình bày lời giải ra giấy, nộp bài rồi tự chấm theo lời giải." }));
-      if (showSol) {
+      const li = el("li", { class: "epart" }, [el("div", { class: "ep-head" }, [el("span", { class: "ep-lab", text: "abcdef"[i] + ")" }), el("div", { class: "ep-q" }, T(p.q))])]);
+      if (open(i)) {
+        if (p.a !== undefined) li.append(el("p", { class: "ep-res ok", text: `Đáp số: ${String(Math.round(p.a * 1e4) / 1e4).replace(".", ",")}${p.unit ? " " + p.unit : ""}` }));
         li.append(el("div", { class: "ep-sol" }, [el("b", { text: "Lời giải: " }), T(p.s)]));
-        if (E.sub && p.a === undefined) {
-          const seg = el("div", { class: "ep-self" }, [el("span", { text: "Tự chấm:" })]);
-          [["Mình làm đúng", true], ["Chưa đúng", false]].forEach(([t, v]) => seg.append(el("button", { class: "btn small ghost" + (E.marks[i] === v ? (v ? " on-ok" : " on-no") : ""), "aria-pressed": String(E.marks[i] === v), disabled: E.saved, text: t, onclick: () => { E.marks[i] = v; play("tap"); draw(); } })));
-          li.append(seg);
-        }
-      }
+      } else li.append(el("div", { class: "ep-lock" }, el("button", { class: "btn small ghost", onclick: () => { if (!pay(1)) return; seenSet()[i] = 1; save(); play("tap"); draw(); if (!$("#scrCave").hidden) renderCavePanel(); } },
+        [icon("i-seed"), document.createTextNode(`Xem lời giải ý ${"abcdef"[i]} (−${ESSAY_SOL_COST} hạt)`)])));
       ol.append(li);
     });
     m.append(ol);
-    if (E.hint) m.append(el("div", { class: "hintbox" }, [el("div", { class: "hh" }, [icon("i-bulb"), document.createTextNode("Gợi ý hướng làm")]), el("p", { style: "margin:0;color:var(--text)" }, T(e.hint))]));
+    if (S.cave.hint && S.cave.hint[key] || S.teacher) m.append(el("div", { class: "hintbox" }, [el("div", { class: "hh" }, [icon("i-bulb"), document.createTextNode("Gợi ý hướng làm")]), el("p", { style: "margin:0;color:var(--text)" }, T(e.hint))]));
     const act = el("div", { class: "btnrow e-act" });
-    if (!E.sub) {
-      if (!E.hint) act.append(el("button", { class: "btn ghost ehint", onclick: () => {
-        if (S.charms > 0) S.charms--; else if (S.seeds >= HINT_COST) S.seeds -= HINT_COST; else { toast(`Cần ${HINT_COST} hạt để xem gợi ý. Bạn đang có ${S.seeds} hạt.`); return; }
-        E.hint = true; save(); hud(); play("tap"); draw(); } }, [icon("i-bulb"), document.createTextNode(S.charms > 0 ? "Gợi ý hướng làm (dùng 1 bùa)" : `Gợi ý hướng làm (−${HINT_COST} hạt)`)]));
-      act.append(el("button", { class: "btn red", text: "Nộp bài & xem lời giải", onclick: () => { E.sub = true; play("tap"); draw(); m.scrollTop = 0; } }));
-    } else {
-      const need = e.parts.some((p, i) => p.a === undefined && E.marks[i] === null);
-      const sc = score();
-      m.append(el("div", { class: "e-score" }, [el("span", { text: "Điểm bài này" }), el("b", { text: `${fmtPts(sc)} / ${fmtPts(e.total)}` }),
-        el("small", { text: need ? "Tự chấm các ý trình bày để tính điểm." : E.saved ? "Đã lưu điểm." : "Bấm Lưu điểm để ghi kết quả." })]));
-      if (!E.saved) act.append(el("button", { class: "btn red", disabled: need, text: "Lưu điểm", onclick: () => saveEssay(sc) }));
-      act.append(el("button", { class: "btn ghost", text: "Làm lại", onclick: () => { E.sub = false; E.saved = false; E.vals = e.parts.map(() => ""); E.marks = e.parts.map(() => null); draw(); m.scrollTop = 0; } }));
-      const nxt = essayList()[essayList().findIndex(x => x.key === key) + 1];
-      if (nxt) act.append(el("button", { class: "btn ghost", text: "Bài tiếp theo", onclick: () => { closeModal(true); S.cave.sel = nxt.lesson; save(); drawCave(); renderCavePanel(); openEssay(nxt.key); } }));
-    }
+    if (!S.teacher && !(S.cave.hint && S.cave.hint[key])) act.append(el("button", { class: "btn ghost ehint", onclick: () => {
+      if (S.charms > 0) S.charms--; else if (S.seeds >= HINT_COST) S.seeds -= HINT_COST; else { toast(`Cần ${HINT_COST} hạt để xem gợi ý. Bạn đang có ${S.seeds} hạt.`); return; }
+      S.cave.hint = S.cave.hint || {}; S.cave.hint[key] = 1; save(); hud(); play("tap"); draw(); } }, [icon("i-bulb"), document.createTextNode(S.charms > 0 ? "Gợi ý hướng làm (dùng 1 bùa)" : `Gợi ý hướng làm (−${HINT_COST} hạt)`)]));
+    if (closed.length > 1 && !S.teacher) act.append(el("button", { class: "btn ghost", onclick: () => { if (!pay(closed.length)) return; closed.forEach(i => seenSet()[i] = 1); save(); play("tap"); draw(); if (!$("#scrCave").hidden) renderCavePanel(); } },
+      [icon("i-seed"), document.createTextNode(`Mở tất cả lời giải (−${closed.length * ESSAY_SOL_COST} hạt)`)]));
+    act.append(el("button", { class: "btn " + (essayDone(e) ? "ghost" : "red"), text: essayDone(e) ? "Bỏ đánh dấu đã làm" : "Mình đã làm xong bài này", onclick: () => {
+      if (essayDone(e)) delete S.cave.done[key]; else { S.cave.done[key] = new Date().toISOString().slice(0, 10); play("good"); }
+      let newTicket = false;
+      if (!S.tickets.cave && essayList().every(essayDone)) { S.tickets.cave = new Date().toISOString().slice(0, 10); newTicket = true; }
+      save(); if (!$("#scrCave").hidden) { drawCave(); renderCavePanel(); } draw();
+      if (newTicket) setTimeout(() => { closeModal(true); openTicket("cave", true); }, 500); } }));
+    const nxt = essayList()[essayList().findIndex(x => x.key === key) + 1];
+    if (nxt) act.append(el("button", { class: "btn ghost", text: "Bài tiếp theo", onclick: () => { closeModal(true); S.cave.sel = nxt.lesson; save(); drawCave(); renderCavePanel(); openEssay(nxt.key); } }));
     m.append(act);
-    typeset(m);
-  }
-  function saveEssay(sc) {
-    const prev = S.cave.best[key], wasPass = (prev ?? -1) >= e.total / 2;
-    if (prev === undefined || sc > prev) S.cave.best[key] = sc;
-    let msg = `Đã lưu ${fmtPts(sc)}/${fmtPts(e.total)} điểm.`;
-    if (!wasPass && sc >= e.total / 2) { S.seeds += ESSAY_SEEDS; msg += ` Chinh phục bài này: +${ESSAY_SEEDS} hạt!`; play("win"); confetti(90); } else play(sc >= e.total / 2 ? "good" : "tap");
-    let newTicket = false;
-    if (!S.tickets.cave && essayList().every(essayPassed)) { S.tickets.cave = new Date().toISOString().slice(0, 10); newTicket = true; }
-    E.saved = true; save(); hud(); toast(msg);
-    if (!$("#scrCave").hidden) { drawCave(); renderCavePanel(); }
-    draw();
-    if (newTicket) setTimeout(() => { closeModal(true); openTicket("cave", true); }, 900);
+    m.scrollTop = top;
   }
   draw(); openModal(m);
 }
@@ -1209,6 +1193,8 @@ function start(data) {
   S.coupons = S.coupons || {}; let bf = 0;
   for (const st of STAGES) for (const l of (st.id === "boss" ? [1] : [1, 2, 3, 4])) if (passed(st.id, l) && !S.coupons[`${st.id}.${l}`]) { S.coupons[`${st.id}.${l}`] = { d: new Date().toISOString().slice(0, 10) }; bf++; }
   if (bf) save();
+  S.cave = Object.assign({ found: false, sel: "b1", best: {}, done: {}, seen: {}, hint: {} }, S.cave || {});
+  for (const k in S.cave.best) if (!S.cave.done[k]) S.cave.done[k] = new Date().toISOString().slice(0, 10); // bản cũ có điểm → coi như đã làm
   try { window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({ S })); } catch (e) {}
   mountParrots(); sky();
   $("#homeBtn").addEventListener("click", () => { if (RUN) confirmQuit(); else goMap(); });

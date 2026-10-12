@@ -9,7 +9,10 @@ body = rd("app.html").replace("{{CSS}}", rd("style.css"))
 body = re.sub(r"^<title>.*?</title>\n?", "", body, count=1)  # tiêu đề nằm trong head.html
 body = (body.replace("{{LAND}}", rd("map", "d.txt")).replace("{{SEA}}", rd("map", "sea.txt"))
             .replace("{{HAINAN}}", rd("map", "hainan.txt")))
+import base64, glob, json
+figimg = {os.path.splitext(os.path.basename(f))[0]: "data:image/webp;base64," + base64.b64encode(open(f, "rb").read()).decode() for f in sorted(glob.glob(os.path.join(SRC, "fig", "*.webp")))}
 data = "\n".join(rd(f) for f in ["bank.js", "bank2.js", "math.js", "handbook.js", "music.js", "omikuji.js", "cave.js"])
+data += "\nconst FIG_IMG = " + json.dumps(figimg) + ";\n" + rd("figs.js")
 body = body.replace("{{BANK}}", data).replace("{{APP}}", rd("app.js"))
 assert "{{" not in body, "còn placeholder chưa thay"
 
