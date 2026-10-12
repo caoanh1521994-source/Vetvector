@@ -106,12 +106,19 @@ const FIGS = {
   "b8.4.5": { svg: () => FigSVG.forces("3 N", "4 N", 60), cap: "Hình minh họa" },
   "b8.4.6": { svg: () => FigSVG.hanging(), cap: "Hình minh họa" },
   "cave:b6.0": { svg: () => FigSVG.balloon(), cap: "Hình minh họa" },
+  "cave:b6-trungtuyen": { sol: "trung-tuyen-giai", cap: FIG_SRC, alt: "Tam giác ABC, trọng tâm, điểm D đối xứng qua trung điểm I của BC" },
+  "cave:b6-duongtb": { img: "duong-tb-60", cap: FIG_SRC, alt: "Tam giác ABC, M, N là trung điểm AB, BC, góc C bằng 60 độ" },
+  "cave:b6-tugiac": { img: "tu-giac-mn", cap: FIG_SRC, alt: "Tứ giác ABCD, M, N là trung điểm hai đường chéo" },
+  "cave:b7-tructam": { img: "truc-tam-bb", cap: FIG_SRC, alt: "Tam giác ABC nội tiếp đường tròn tâm O, trực tâm H, B' đối xứng B qua O" },
+  "cave:b7-chiaba": { img: "hbh-chia-ba", cap: FIG_SRC, alt: "Hình bình hành ABCD, E, F là trung điểm AB, CD, BD cắt AF, CE tại M, N" },
+  "cave:b7-trungdiem": { img: "trung-diem-ef-hbh", cap: FIG_SRC + " (hình cho câu b và câu c)", alt: "Tam giác ABC với AE = EF = FC; hình bình hành ABCD với M, N, P, Q" },
   "cave:b8.1": { svg: () => FigSVG.forces("30 N", "40 N", 70, "θ"), cap: "Hình minh họa (θ là góc giữa hai lực)" },
 };
 function figEl(key, which) {
   const f = FIGS[key]; if (!f) return null;
   const name = which === "sol" ? f.sol : f.img;
   if (which === "sol" && !f.sol) return null;
+  if (which !== "sol" && !f.img && !f.svg) return null;
   const box = el("figure", { class: "qfig" + (which === "sol" ? " sol" : "") });
   if (name) box.append(el("img", { src: FIG_IMG[name], alt: (which === "sol" ? "Hình lời giải: " : "") + (f.alt || "Hình minh họa") }));
   else box.insertAdjacentHTML("afterbegin", f.svg());

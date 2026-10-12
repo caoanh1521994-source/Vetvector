@@ -4,9 +4,9 @@ const TeX = (() => {
   const OP = c => `<span class="op">${c}</span>`;
   const SYM = {
     le: OP("≤"), ge: OP("≥"), ne: OP("≠"), approx: OP("≈"), Rightarrow: OP("⇒"), Leftrightarrow: OP("⇔"),
-    in: OP("∈"), notin: OP("∉"), subset: OP("⊂"), cap: OP("∩"), cup: OP("∪"), setminus: OP("\\"), mid: OP("|"),
+    in: OP("∈"), notin: OP("∉"), subset: OP("⊂"), cap: OP("∩"), cup: OP("∪"), setminus: OP("∖"), mid: OP("|"),
     lt: OP("&lt;"), gt: OP("&gt;"), pm: "±", cdot: OP("·"), infty: "∞", forall: "∀", exists: "∃", varnothing: "∅",
-    dots: "…", circ: "∘", alpha: "<i>α</i>", theta: "<i>θ</i>", pi: "π", Delta: "Δ", quad: "&emsp;",
+    dots: "…", cdots: "⋯", circ: "∘", perp: OP("⊥"), parallel: OP("∥"), equiv: OP("≡"), beta: "<i>β</i>", alpha: "<i>α</i>", theta: "<i>θ</i>", pi: "π", Delta: "Δ", quad: "&emsp;",
   };
   const FN = new Set(["sin", "cos", "tan", "cot", "max", "min"]);
   const BB = { R: "ℝ", N: "ℕ", Z: "ℤ", Q: "ℚ" };

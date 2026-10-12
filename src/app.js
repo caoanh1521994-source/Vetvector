@@ -498,7 +498,7 @@ function ticketEl(id, reveal) {
     el("p", { class: "t-line", text: s.food.line }),
     el("div", { class: "t-sub", style: "margin-top:8px", text: "Trao tặng cho" }),
     el("div", { class: "t-name", text: S.name || "Nhà thám hiểm" }),
-    el("p", { class: "t-for", text: secret ? "Đã tìm ra bản đồ ẩn và chinh phục cả 16 bài tự luận Vận dụng cao trong Hang Sơn Đoòng." : gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
+    el("p", { class: "t-for", text: secret ? `Đã tìm ra bản đồ ẩn và chinh phục cả ${essayList().length} bài tự luận Vận dụng cao trong Hang Sơn Đoòng.` : gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
     el("div", { class: "t-foot" }, [
       el("div", {}, [document.createTextNode("Ngày nhận: " + d), el("br"), document.createTextNode("Mã phiếu: VV" + s.no + "-" + hash((S.name || "") + id + date))]),
       el("div", { class: "sign" }, [icon("parrot-head"), document.createTextNode("Vẹt Vectơ")])])]);
@@ -938,8 +938,8 @@ function caveDiscovery() {
   openModal(el("div", { class: "modal result", role: "dialog", "aria-modal": "true", "aria-labelledby": "cdTitle" }, [
     el("div", { class: "cd-icon" }, icon("lm-cave")),
     el("h2", { id: "cdTitle", text: "Bạn đã tìm ra bản đồ ẩn!" }),
-    el("p", { text: "Sâu trong dãy núi đá vôi Quảng Bình, Vẹt phát hiện lối vào Hang Sơn Đoòng, hang động tự nhiên lớn nhất thế giới. Bên trong là 8 khoang với 16 bài tự luận Vận dụng cao, mỗi khoang một bài học." }),
-    el("p", { text: `Làm bài ra giấy, rồi dùng hạt để mở lời giải từng ý (${ESSAY_SOL_COST} hạt/ý) mà đối chiếu. Làm xong cả 16 bài để nhận Phiếu điểm 10 bí ẩn.` }),
+    el("p", { text: "Sâu trong dãy núi đá vôi Quảng Bình, Vẹt phát hiện lối vào Hang Sơn Đoòng, hang động tự nhiên lớn nhất thế giới. Bên trong là 8 khoang với nhiều bài tự luận Vận dụng cao, mỗi khoang một bài học." }),
+    el("p", { text: `Làm bài ra giấy, rồi dùng hạt để mở lời giải từng ý (${ESSAY_SOL_COST} hạt/ý) mà đối chiếu. Làm xong cả ${essayList().length} bài để nhận Phiếu điểm 10 bí ẩn.` }),
     el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Để sau", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Vào hang", onclick: () => { closeModal(true); goCave(); } })])]));
 }
 function goCave() { if (!caveOpen()) return; RUN = null; show("scrCave"); drawCave(); renderCavePanel(); hud(); }
@@ -959,7 +959,7 @@ function drawCave() {
     g.append(sv("circle", { cx: c.x, cy: c.y, r: 30, fill: done ? "rgba(255,214,107,.25)" : "rgba(126,242,220,.18)", filter: "url(#cglow)" }));
     g.append(sv("path", { d: `M${c.x} ${c.y - 22}l14 10v24l-14 10-14-10v-24z`, fill: done ? "url(#crystalDone)" : "url(#crystal)", stroke: sel ? "#FFD66B" : "#E9FFFB", "stroke-width": sel ? 3.5 : 2, class: "ring" }));
     const t = sv("text", { x: c.x, y: c.y + 6, "text-anchor": "middle", class: "cnum" }); t.textContent = String(i + 1); g.append(t);
-    if (nPass) for (let k = 0; k < es.length; k++) g.append(sv("circle", { cx: c.x - 6 + k * 12, cy: c.y + 30, r: 4, fill: k < nPass ? "#FFD66B" : "rgba(255,255,255,.25)" }));
+    if (nPass) for (let k = 0; k < es.length; k++) g.append(sv("circle", { cx: c.x - (es.length - 1) * 4.5 + k * 9, cy: c.y + 30, r: 3.2, fill: k < nPass ? "#FFD66B" : "rgba(255,255,255,.25)" }));
     const lab = sv("text", { x: c.x, y: c.y - 30, "text-anchor": "middle", class: "clab" }); lab.textContent = c.name; g.append(lab);
     const choose = () => { S.cave.sel = l; save(); play("tap"); drawCave(); renderCavePanel(); if (innerWidth <= 900) $("#cavePanel").scrollIntoView({ behavior: "smooth", block: "start" }); };
     g.addEventListener("click", choose); g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
@@ -997,7 +997,7 @@ function renderCavePanel() {
   const bar = el("div", { class: "bar" }, el("i", { style: `width:${nDone / all.length * 100}%` }));
   const rw = el("div", { class: "reward secret" + (has ? " got" : "") }, [el("div", { class: "foodbadge secret" }, icon(CAVE.food.icon)), el("div", { style: "flex:1;min-width:0" }, [
     el("small", { class: "rw-k", text: "Phiếu điểm 10 bí ẩn" }), el("b", { text: CAVE.food.name }),
-    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : `Làm xong cả 16 bài để nhận (${nDone}/16).` }), bar])]);
+    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : `Làm xong cả ${all.length} bài để nhận (${nDone}/${all.length}).` }), bar])]);
   if (has || S.teacher) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket("cave")); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket("cave"); }); }
   body.append(rw);
   card.append(body); p.append(card);
@@ -1005,7 +1005,8 @@ function renderCavePanel() {
     document.createTextNode(`Làm bài ra giấy, trình bày đủ bước như bài kiểm tra rồi mới mở lời giải để đối chiếu. Mỗi ý mở lời giải mất ${ESSAY_SOL_COST} hạt; ý nào đã mở thì xem lại miễn phí.`)])]));
 }
 function openEssay(key) {
-  const [l, k] = key.split("."), e = ESSAYS[l][+k], c = CHAMBERS[l], st = STAGES[stageIdx(l)], idx = Object.keys(CHAMBERS).indexOf(l);
+  const e = ESSAY_BY[key]; if (!e) return;
+  const l = e.lesson, k = e.idx, c = CHAMBERS[l], st = STAGES[stageIdx(l)], idx = Object.keys(CHAMBERS).indexOf(l);
   const m = el("div", { class: "modal wide essay", role: "dialog", "aria-modal": "true", "aria-labelledby": "esTitle" });
   const seenSet = () => (S.cave.seen[key] = S.cave.seen[key] || {});
   const open = i => S.teacher || essaySeen(key, i);
@@ -1031,12 +1032,14 @@ function openEssay(key) {
       const li = el("li", { class: "epart" }, [el("div", { class: "ep-head" }, [el("span", { class: "ep-lab", text: "abcdef"[i] + ")" }), el("div", { class: "ep-q" }, T(p.q))])]);
       if (open(i)) {
         if (p.a !== undefined) li.append(el("p", { class: "ep-res ok", text: `Đáp số: ${String(Math.round(p.a * 1e4) / 1e4).replace(".", ",")}${p.unit ? " " + p.unit : ""}` }));
+        else if (p.ans) li.append(el("p", { class: "ep-res ok" }, [document.createTextNode("Kết quả: "), T(`\\(${p.ans}\\)`)]));
         li.append(el("div", { class: "ep-sol" }, [el("b", { text: "Lời giải: " }), T(p.s)]));
       } else li.append(el("div", { class: "ep-lock" }, el("button", { class: "btn small ghost", onclick: () => { if (!pay(1)) return; seenSet()[i] = 1; save(); play("tap"); draw(); if (!$("#scrCave").hidden) renderCavePanel(); } },
         [icon("i-seed"), document.createTextNode(`Xem lời giải ý ${"abcdef"[i]} (−${ESSAY_SOL_COST} hạt)`)])));
       ol.append(li);
     });
     m.append(ol);
+    if (e.parts.some((_, i) => open(i))) { const sf = figEl("cave:" + key, "sol"); if (sf) m.append(sf); }
     if (S.cave.hint && S.cave.hint[key] || S.teacher) m.append(el("div", { class: "hintbox" }, [el("div", { class: "hh" }, [icon("i-bulb"), document.createTextNode("Gợi ý hướng làm")]), el("p", { style: "margin:0;color:var(--text)" }, T(e.hint))]));
     const act = el("div", { class: "btnrow e-act" });
     if (!S.teacher && !(S.cave.hint && S.cave.hint[key])) act.append(el("button", { class: "btn ghost ehint", onclick: () => {
