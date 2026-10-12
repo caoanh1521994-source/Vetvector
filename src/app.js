@@ -264,10 +264,10 @@ function renderPanel() {
     el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : boss ? "Vượt qua thử thách để nhận." : `Qua cả 4 mức để nhận (${nPassed}/4).` }), bar])]);
   if (has || S.teacher) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket(s.id)); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket(s.id); }); }
   body.append(rw);
-  const cs = el("div", { class: "cstrip" }, [el("span", { class: "cs-l" }, [icon("i-coupon"), document.createTextNode("Phiếu miễn 2% BTVN")])]);
+  const cs = el("div", { class: "cstrip" }, [el("span", { class: "cs-l" }, [icon("i-coupon"), document.createTextNode("Phiếu miễn BTVN")])]);
   for (const l of (boss ? [1] : [1, 2, 3, 4])) {
     const key = `${s.id}.${l}`, rec = S.coupons[key], view = !!rec || S.teacher;
-    const c = el(view ? "button" : "span", { class: "cchip" + (rec ? (rec.used ? " used" : " has") : ""), title: rec ? (rec.used ? "Đã dùng" : "Đã nhận, bấm để xem") : "Qua mức này lần đầu để nhận", text: boss ? "Thử thách" : `M${l}` });
+    const c = el(view ? "button" : "span", { class: "cchip" + (rec ? (rec.used ? " used" : " has") : ""), title: rec ? (rec.used ? "Đã dùng" : "Đã nhận, bấm để xem") : "Qua mức này lần đầu để nhận", text: boss ? `Thử thách · ${BOSS_PCT}%` : `M${l} · ${COUPON_PCT[l]}%` });
     if (view) c.addEventListener("click", () => openCoupon(key));
     cs.append(c);
   }
@@ -455,7 +455,7 @@ function finish() {
   const nextLv = r.id !== "boss" && r.lv < 4 && levelUnlocked(r.id, r.lv + 1) ? r.lv + 1 : null;
   const btns = el("div", { class: "btnrow" });
   if (newTicket) btns.append(el("button", { class: "btn red", text: "Mở Phiếu điểm 10", onclick: () => { closeModal(); openTicket(r.id, true); } }));
-  if (newCoupon) btns.append(el("button", { class: "btn " + (newTicket ? "ghost" : "red"), text: "Xem phiếu miễn 2%", onclick: () => { closeModal(); openCoupon(ckey, true); } }));
+  if (newCoupon) btns.append(el("button", { class: "btn " + (newTicket ? "ghost" : "red"), text: `Xem phiếu miễn ${couponPct(ckey)}%`, onclick: () => { closeModal(); openCoupon(ckey, true); } }));
   if (nextLv && !newTicket) btns.append(el("button", { class: "btn " + (newCoupon ? "ghost" : "red"), text: `Lên mức ${nextLv}`, onclick: () => { closeModal(); startRound(r.id, nextLv); } }));
   btns.append(el("button", { class: "btn ghost", text: "Chơi lại", onclick: () => { closeModal(); startRound(r.id, r.lv); } }));
   btns.append(el("button", { class: "btn ghost", text: "Về bản đồ", onclick: () => { closeModal(); goMap(); } }));
@@ -469,7 +469,7 @@ function finish() {
     el("h2", { id: "resTitle", text: ok ? (st === 3 ? "Hoàn hảo!" : "Qua trạm!") : "Hết lượt rồi!" }),
     big,
     el("p", { style: "font-weight:600;margin:0 0 6px", text: msg }),
-    newCoupon ? el("p", { class: "res-coupon" }, [icon("i-coupon"), el("span", { html: "<b>+1 Phiếu miễn 2%</b> bài tập về nhà" })]) : null,
+    newCoupon ? el("p", { class: "res-coupon" }, [icon("i-coupon"), el("span", { html: `<b>+1 Phiếu miễn ${couponPct(ckey)}%</b> bài tập về nhà` })]) : null,
     el("div", { class: "stats" }, [
       el("div", {}, [el("b", { text: `${r.right}/${r.qs.length}` }), el("span", { text: "câu đúng" })]),
       el("div", {}, [el("b", { text: `+${r.seeds + bonus}` }), el("span", { text: "hạt hướng dương" })]),
@@ -532,7 +532,7 @@ function openWallet(tab) {
     for (const l of (s.id === "boss" ? [1] : [1, 2, 3, 4])) {
       const key = `${s.id}.${l}`, rec = S.coupons[key], view = !!rec || S.teacher;
       const c = el(view ? "button" : "span", { class: "cslot" + (rec ? (rec.used ? " used" : " has") : ""), "aria-label": `${s.short} ${s.id === "boss" ? "thử thách" : "mức " + l}: ${rec ? (rec.used ? "đã dùng" : "đã nhận") : "chưa nhận"}` }, [
-        el("b", { text: "2%" }), el("small", { text: s.id === "boss" ? "Thử thách" : `Mức ${l}` })]);
+        el("b", { text: couponPct(key) + "%" }), el("small", { text: s.id === "boss" ? "Thử thách" : `Mức ${l}` })]);
       if (view) c.addEventListener("click", () => { closeModal(); openCoupon(key); });
       chips.append(c);
     }
@@ -540,7 +540,7 @@ function openWallet(tab) {
   }
   const panes = {
     ticket: [el("p", { style: "margin:4px 0 0", text: `Bạn có ${ticketCount()}/${tstages.length} phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` + (S.teacher ? " Chế độ giáo viên: bấm vào phiếu bất kì để xem trước." : "") }), grid],
-    coupon: [el("p", { style: "margin:4px 0 0", text: `Mỗi mức vượt qua lần đầu tặng 1 phiếu miễn 2% bài tập về nhà. Bạn có ${all.length}/33 phiếu (tổng ${all.length * 2}%), đã dùng ${used}, còn ${left} phiếu = ${left * 2}%.` + (S.teacher ? " Chế độ giáo viên: bấm phiếu để xem hoặc đánh dấu đã dùng." : "") }), clist],
+    coupon: [el("p", { style: "margin:4px 0 0", text: `Mỗi mức vượt qua lần đầu tặng 1 phiếu miễn bài tập về nhà: Nhận biết 2%, Thông hiểu 5%, Vận dụng 10%, Vận dụng cao 20%, Thử thách Đất Mũi ${BOSS_PCT}%. Bạn có ${all.length}/33 phiếu (tổng ${all.reduce((t, k) => t + couponPct(k), 0)}%), đã dùng ${used}, còn lại ${all.filter(k => !S.coupons[k].used).reduce((t, k) => t + couponPct(k), 0)}%.` + (S.teacher ? " Chế độ giáo viên: bấm phiếu để xem hoặc đánh dấu đã dùng." : "") }), clist],
   };
   const body = el("div");
   const tabs = el("div", { class: "book-tabs wtabs", role: "tablist" });
@@ -550,7 +550,10 @@ function openWallet(tab) {
   openModal(el("div", { class: "modal wide", role: "dialog", "aria-modal": "true", "aria-labelledby": "wTitle" }, [
     closeX(), el("h2", { id: "wTitle", text: "Túi phiếu" }), tabs, body]));
 }
-/* ================= PHIẾU MIỄN 2% BTVN ================= */
+/* ================= PHIẾU MIỄN BTVN ================= */
+// Mức 1 Nhận biết 2% · Mức 2 Thông hiểu 5% · Mức 3 Vận dụng 10% · Mức 4 Vận dụng cao 20% · Thử thách Đất Mũi 20%
+const COUPON_PCT = { 1: 2, 2: 5, 3: 10, 4: 20 }, BOSS_PCT = 20;
+const couponPct = key => { const [id, l] = key.split("."); return id === "boss" ? BOSS_PCT : COUPON_PCT[+l]; };
 function couponEl(key, reveal) {
   const [id, lvS] = key.split("."), lv = +lvS, s = STAGES[stageIdx(id)], boss = id === "boss";
   const rec = S.coupons[key], date = rec ? rec.d : (S.teacher ? new Date().toISOString().slice(0, 10) : ""), d = date.split("-").reverse().join("/");
@@ -558,7 +561,7 @@ function couponEl(key, reveal) {
   return el("div", { class: "coupon" + (reveal ? " reveal" : "") + (rec && rec.used ? " used" : ""), style: `--lvg:${boss ? "var(--red)" : LEVELS[lv - 1].color}` }, [
     el("div", { class: "cp-main" }, [
       el("div", { class: "cp-eyebrow", text: "Phiếu miễn bài tập về nhà" }),
-      el("div", { class: "cp-big" }, [el("b", { text: "2%" }), el("span", { html: "Miễn <strong>2%</strong> bài tập<br>về nhà" })]),
+      el("div", { class: "cp-big" }, [el("b", { text: couponPct(key) + "%" }), el("span", { html: `Miễn <strong>${couponPct(key)}%</strong> bài tập<br>về nhà` })]),
       el("div", { class: "cp-for", text: `${boss ? s.place : `Bài ${s.no} · ${s.place}`}` }),
       el("div", { class: "cp-lvl", text: lvName }),
       el("div", { class: "cp-name", text: S.name || "Nhà thám hiểm" }),
@@ -582,7 +585,7 @@ function openCoupon(key, reveal) {
   const cap = !rec ? "Bản xem trước dành cho giáo viên. Học sinh nhận phiếu này khi vượt qua mức lần đầu."
     : rec.used ? `Phiếu đã được dùng ngày ${rec.used.split("-").reverse().join("/")}.`
     : "Chụp màn hình hoặc mở phiếu này cho thầy cô xem khi muốn dùng. Thầy cô sẽ đánh dấu phiếu đã dùng.";
-  openModal(el("div", { class: "modal cpmodal", role: "dialog", "aria-modal": "true", "aria-label": "Phiếu miễn 2% bài tập về nhà" }, [
+  openModal(el("div", { class: "modal cpmodal", role: "dialog", "aria-modal": "true", "aria-label": `Phiếu miễn ${couponPct(key)}% bài tập về nhà` }, [
     couponEl(key, reveal), el("p", { class: "cp-cap", text: cap }), btns]));
   if (reveal) { play("ticket"); confetti(120); }
 }
