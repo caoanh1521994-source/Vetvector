@@ -1,0 +1,72 @@
+/* ===== HỘP QUẺ HỌC TẬP – dữ liệu ===== */
+const OMI_COST = 15, OMI_WIN = 25, OMI_FIX = 5;
+const OMI_TIER = {
+  dai: { name: "Đại cát", mark: "ĐẠI\nCÁT", cls: "dai", say: [
+    "Học một biết mười, bút sa là trúng.",
+    "Sao Văn Khúc chiếu mệnh, công thức nào cũng nhớ.",
+    "Đề nào cũng quen, câu nào cũng thuộc.",
+    "Gió thuận buồm xuôi, điểm 10 trong tầm tay."] },
+  cat: { name: "Cát", mark: "CÁT", cls: "cat", say: [
+    "Có công mài sắt, có ngày nên kim.",
+    "Bước chắc từng bước, đích đã gần kề.",
+    "Hôm nay đầu óc minh mẫn, giải thêm một câu nữa nào.",
+    "Ôn kĩ phần này, thi sẽ gặp ngay."] },
+  binh: { name: "Tiểu cát", mark: "TIỂU\nCÁT", cls: "binh", say: [
+    "Nước chảy đá mòn, chăm học ắt thành.",
+    "Không vội không chậm, ôn đều là thắng.",
+    "Mỗi ngày một công thức, cuối kì một kho báu.",
+    "Chậm mà chắc, hiểu rồi mới nhớ lâu."] },
+  hung: { name: "Hung", mark: "HUNG", cls: "hung", say: [
+    "Cẩn tắc vô áy náy: chỗ này dễ sai lắm!",
+    "Đường trơn chớ vội, đọc kĩ đề kẻo trượt.",
+    "Một lỗi nhỏ, mất trọn cả câu.",
+    "Mây đen thoáng qua, hóa giải xong là trời lại sáng."] },
+};
+const OMI_TIPS = [
+  "Học công thức theo cặp: viết công thức ra, rồi tự nghĩ một ví dụ số để thử ngay.",
+  "Làm sai câu nào, chép câu đó vào sổ lỗi sai và làm lại sau ba ngày.",
+  "Đọc đề hai lần: lần đầu để hiểu, lần sau gạch chân dữ kiện và điều cần tìm.",
+  "Vẽ hình trước khi tính. Với vectơ và tam giác, hình đúng là xong một nửa bài.",
+  "Học 25 phút, nghỉ 5 phút. Ôn ngắt quãng nhớ lâu hơn ngồi lì ba tiếng.",
+  "Thử lại đáp số: thay ngược vào đề, hoặc ước lượng xem kết quả có hợp lí không.",
+  "Tự giảng lại bài cho bạn hoặc cho chính mình. Giảng được là hiểu thật.",
+  "Trước khi ngủ, nhẩm lại ba công thức đã học trong ngày.",
+  "Gặp bài khó, viết ra cái đã biết và cái cần tìm, rồi tìm công thức nối hai thứ đó.",
+  "Trắc nghiệm: loại đáp án vô lí trước, ví dụ độ dài âm hay sin lớn hơn 1.",
+  "Câu Đúng/Sai: xét từng ý độc lập, đừng để ý trước làm lệch ý sau.",
+  "Câu trả lời ngắn: đọc kĩ yêu cầu làm tròn đến hàng nào trước khi ghi đáp số.",
+  "Dùng màu bút riêng: định nghĩa một màu, công thức một màu, ví dụ một màu.",
+  "Ngủ đủ giấc trước hôm kiểm tra giúp nhớ tốt hơn thức khuya học dồn.",
+];
+/* Lỗi sai hay gặp: m = lỗi, fix = cách hiểu đúng, tf = [mệnh đề hóa giải, đúng/sai] */
+const OMI_MISTAKES = [
+  { l: "b1", m: R`Phủ định của "\(\forall x, P(x)\)" lại viết thành "\(\forall x, \overline{P(x)}\)".`, fix: R`Đổi \(\forall\) thành \(\exists\) rồi phủ định \(P(x)\): được "\(\exists x, \overline{P(x)}\)".`, tf: [R`Phủ định của "\(\forall x\in\mathbb R, x^2\ge 0\)" là "\(\exists x\in\mathbb R, x^2<0\)".`, true] },
+  { l: "b1", m: R`Nghĩ rằng \(P\Rightarrow Q\) sai khi P sai.`, fix: R`\(P\Rightarrow Q\) chỉ sai khi P đúng và Q sai. Nếu P sai thì \(P\Rightarrow Q\) luôn đúng.`, tf: [R`Mệnh đề "Nếu \(2>3\) thì \(1=0\)" là mệnh đề sai.`, false] },
+  { l: "b1", m: "Coi câu hỏi, câu cảm thán là mệnh đề.", fix: "Mệnh đề phải là câu khẳng định, và xác định được là đúng hay sai.", tf: [`"Hôm nay trời đẹp quá!" là một mệnh đề.`, false] },
+  { l: "b1", m: R`Phủ định của \(x>2\) viết thành \(x<2\).`, fix: R`Phủ định của \(x>2\) là \(x\le 2\): đừng quên dấu bằng.`, tf: [R`Phủ định của "\(x>2\)" là "\(x\le 2\)".`, true] },
+  { l: "b2", m: R`Nghĩ khoảng \((a;b]\) có chứa a.`, fix: "Ngoặc tròn là không lấy đầu mút, ngoặc vuông là có lấy.", tf: [R`Số 3 thuộc tập \((3;5]\).`, false] },
+  { l: "b2", m: R`Tính \(n(A\cup B)=n(A)+n(B)\) mà quên trừ phần giao.`, fix: R`\(n(A\cup B)=n(A)+n(B)-n(A\cap B)\).`, tf: [R`Nếu \(n(A)=5\), \(n(B)=4\), \(n(A\cap B)=2\) thì \(n(A\cup B)=7\).`, true] },
+  { l: "b2", m: "Đếm tập con mà quên tập rỗng và chính tập đó.", fix: R`Tập có n phần tử có \(2^n\) tập con, kể cả \(\varnothing\) và chính nó.`, tf: [R`Tập \(\{1;2;3\}\) có 6 tập con.`, false] },
+  { l: "b2", m: R`Nhầm \(A\setminus B\) với \(B\setminus A\).`, fix: R`\(A\setminus B\) gồm các phần tử thuộc A mà không thuộc B.`, tf: [R`Với \(A=\{1;2;3\}\), \(B=\{2;3;4\}\) thì \(A\setminus B=\{1\}\).`, true] },
+  { l: "b3", m: "Với dấu < hoặc >, vẫn tính cả các điểm trên bờ.", fix: "Dấu < hoặc > không lấy bờ (vẽ bờ bằng nét đứt). Chỉ ≤ hoặc ≥ mới lấy bờ.", tf: [R`Điểm \((1;1)\) thuộc miền nghiệm của \(x+y<2\).`, false] },
+  { l: "b3", m: R`Thay \(O(0;0)\) để thử ngay cả khi bờ đi qua O.`, fix: R`Nếu bờ đi qua gốc tọa độ thì chọn điểm khác để thử, chẳng hạn \((1;0)\).`, tf: [R`Có thể dùng điểm \(O(0;0)\) để xác định miền nghiệm của \(x-2y>0\).`, false] },
+  { l: "b3", m: R`Coi \(x^2+y\le 3\) là bất phương trình bậc nhất hai ẩn.`, fix: "Bất phương trình bậc nhất hai ẩn có dạng ax + by + c < 0 (hoặc >, ≤, ≥), các ẩn đều có bậc 1.", tf: [R`\(2x-3y+1\ge 0\) là bất phương trình bậc nhất hai ẩn.`, true] },
+  { l: "b4", m: "Lấy hợp các miền nghiệm thay vì phần giao.", fix: "Miền nghiệm của hệ là phần chung (giao) của các miền nghiệm.", tf: ["Miền nghiệm của hệ là hợp các miền nghiệm của từng bất phương trình.", false] },
+  { l: "b4", m: R`Tìm giá trị lớn nhất của \(F=ax+by\) tại một điểm bất kì trong miền.`, fix: "Trên miền đa giác, giá trị lớn nhất và nhỏ nhất của F đạt tại các đỉnh: tính F tại từng đỉnh rồi so sánh.", tf: [R`Trên tam giác OAB với \(O(0;0)\), \(A(2;0)\), \(B(0;3)\), giá trị lớn nhất của \(F=x+y\) là 3.`, true] },
+  { l: "b4", m: R`Quên điều kiện \(x\ge 0, y\ge 0\) trong bài toán thực tế.`, fix: "Số sản phẩm, số giờ, số tiền… không âm, nên phải thêm điều kiện này vào hệ.", tf: [R`Trong bài toán về số sản phẩm, có thể bỏ qua điều kiện \(x\ge 0, y\ge 0\).`, false] },
+  { l: "b5", m: R`Viết \(\cos(180^\circ-\alpha)=\cos\alpha\).`, fix: R`\(\cos(180^\circ-\alpha)=-\cos\alpha\); chỉ có \(\sin(180^\circ-\alpha)=\sin\alpha\).`, tf: [R`\(\cos 120^\circ=-\cos 60^\circ=-\frac12\).`, true] },
+  { l: "b5", m: "Nghĩ rằng góc tù thì sin âm.", fix: R`Với \(0^\circ\le\alpha\le 180^\circ\), luôn có \(\sin\alpha\ge 0\). Góc tù chỉ làm côsin, tang, côtang âm.`, tf: [R`\(\sin 150^\circ<0\).`, false] },
+  { l: "b5", m: R`Cho rằng \(\tan 90^\circ=0\).`, fix: R`\(\tan 90^\circ\) không xác định vì \(\cos 90^\circ=0\).`, tf: [R`\(\tan 90^\circ\) không xác định.`, true] },
+  { l: "b5", m: R`Từ \(\sin\alpha=\frac35\) suy ra luôn \(\cos\alpha=\frac45\).`, fix: R`\(\cos\alpha=\pm\frac45\): dương nếu α nhọn, âm nếu α tù.`, tf: [R`Nếu \(\sin\alpha=\frac35\) và α là góc tù thì \(\cos\alpha=-\frac45\).`, true] },
+  { l: "b6", m: R`Viết sai dấu: \(a^2=b^2+c^2+2bc\cos A\).`, fix: R`Định lí côsin: \(a^2=b^2+c^2-2bc\cos A\).`, tf: [R`Trong tam giác ABC: \(a^2=b^2+c^2+2bc\cos A\).`, false] },
+  { l: "b6", m: R`Nhớ nhầm \(\frac{a}{\sin A}=R\).`, fix: R`Định lí sin: \(\frac{a}{\sin A}=\frac{b}{\sin B}=\frac{c}{\sin C}=2R\).`, tf: [R`Trong tam giác ABC: \(\frac{a}{\sin A}=R\).`, false] },
+  { l: "b6", m: "Dùng chu vi thay cho nửa chu vi trong công thức Hê-rông.", fix: R`\(S=\sqrt{p(p-a)(p-b)(p-c)}\) với \(p=\frac{a+b+c}{2}\) là nửa chu vi.`, tf: ["Tam giác có ba cạnh 3, 4, 5 có nửa chu vi p = 6 và diện tích bằng 6.", true] },
+  { l: "b6", m: R`Tính \(S=\frac12 ab\sin A\), dùng góc không xen giữa hai cạnh.`, fix: R`Góc phải xen giữa hai cạnh: \(S=\frac12 bc\sin A=\frac12 ca\sin B=\frac12 ab\sin C\).`, tf: [R`Trong tam giác ABC: \(S=\frac12 ab\sin C\).`, true] },
+  { l: "b7", m: "Nghĩ rằng cùng phương là cùng hướng.", fix: "Hai vectơ cùng phương thì có thể cùng hướng hoặc ngược hướng.", tf: ["Hai vectơ cùng phương thì luôn cùng hướng.", false] },
+  { l: "b7", m: R`Viết \(\overrightarrow{AB}=\overrightarrow{BA}\).`, fix: R`Hai vectơ này ngược hướng, chỉ có cùng độ dài: \(\overrightarrow{BA}=-\overrightarrow{AB}\).`, tf: [R`\(\overrightarrow{AB}\) và \(\overrightarrow{BA}\) có cùng độ dài.`, true] },
+  { l: "b7", m: R`ABCD là hình bình hành thì viết \(\overrightarrow{AB}=\overrightarrow{CD}\).`, fix: R`Đúng phải là \(\overrightarrow{AB}=\overrightarrow{DC}\) (cùng hướng, cùng độ dài).`, tf: [R`Nếu ABCD là hình bình hành thì \(\overrightarrow{AB}=\overrightarrow{CD}\).`, false] },
+  { l: "b8", m: R`Viết \(\overrightarrow{AB}+\overrightarrow{BC}=\overrightarrow{CA}\).`, fix: R`Quy tắc ba điểm: \(\overrightarrow{AB}+\overrightarrow{BC}=\overrightarrow{AC}\) (điểm cuối vectơ trước là điểm đầu vectơ sau).`, tf: [R`\(\overrightarrow{MN}+\overrightarrow{NP}=\overrightarrow{PM}\).`, false] },
+  { l: "b8", m: R`Viết \(\overrightarrow{OA}-\overrightarrow{OB}=\overrightarrow{AB}\).`, fix: R`\(\overrightarrow{OA}-\overrightarrow{OB}=\overrightarrow{BA}\): hiệu hai vectơ chung gốc chỉ từ điểm sau sang điểm trước.`, tf: [R`\(\overrightarrow{OA}-\overrightarrow{OB}=\overrightarrow{AB}\).`, false] },
+  { l: "b8", m: R`Cho rằng luôn có \(|\vec a+\vec b|=|\vec a|+|\vec b|\).`, fix: R`Nói chung \(|\vec a+\vec b|\le|\vec a|+|\vec b|\); dấu bằng chỉ khi hai vectơ cùng hướng.`, tf: [R`Với mọi \(\vec a,\vec b\): \(|\vec a+\vec b|\le|\vec a|+|\vec b|\).`, true] },
+  { l: "b8", m: R`I là trung điểm AB thì viết \(\overrightarrow{IA}=\overrightarrow{IB}\).`, fix: R`\(\overrightarrow{IA}\) và \(\overrightarrow{IB}\) ngược hướng: \(\overrightarrow{IA}+\overrightarrow{IB}=\vec 0\).`, tf: [R`I là trung điểm AB thì \(\overrightarrow{IA}+\overrightarrow{IB}=\vec 0\).`, true] },
+];

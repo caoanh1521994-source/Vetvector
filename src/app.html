@@ -1,0 +1,255 @@
+<title>Hành trình Vẹt Vectơ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+{{CSS}}
+</style>
+
+
+
+<!-- ============ reusable SVG symbols ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="omiFront" x1="0" x2="1"><stop offset="0" stop-color="#B81B2C"/><stop offset=".45" stop-color="#EC4A50"/><stop offset="1" stop-color="#A8172A"/></linearGradient>
+    <linearGradient id="omiSide" x1="0" x2="1"><stop offset="0" stop-color="#6E0C1A"/><stop offset="1" stop-color="#9A1628"/></linearGradient>
+    <linearGradient id="omiSide2" x1="0" x2="1"><stop offset="0" stop-color="#8E1426"/><stop offset="1" stop-color="#5E0915"/></linearGradient>
+    <linearGradient id="omiGold" x1="0" x2="1"><stop offset="0" stop-color="#D98E1F"/><stop offset=".5" stop-color="#FFE7A3"/><stop offset="1" stop-color="#C77D14"/></linearGradient>
+    <symbol id="omi-box" viewBox="0 0 160 250">
+      <g stroke="#9A6A2E" stroke-width="1.2">
+        <rect x="70" y="8" width="7" height="52" rx="2" fill="#F3DCA8"/>
+        <rect x="80" y="18" width="7" height="44" rx="2" fill="#E8C682" transform="rotate(9 83 50)"/>
+        <rect x="60" y="20" width="7" height="42" rx="2" fill="#E8C682" transform="rotate(-10 63 50)"/>
+      </g>
+      <path d="M26 50 L46 40 H114 L134 50 L114 60 H46 Z" fill="#4A0812" stroke="url(#omiGold)" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="80" cy="50" rx="13" ry="5" fill="#150106"/>
+      <path d="M26 50 L46 60 V238 L26 226 Z" fill="url(#omiSide)"/>
+      <path d="M46 60 H114 V238 H46 Z" fill="url(#omiFront)"/>
+      <path d="M114 60 L134 50 V226 L114 238 Z" fill="url(#omiSide2)"/>
+      <g fill="url(#omiGold)">
+        <path d="M26 62 L46 72 V80 L26 70 Z M46 72 H114 V80 H46 Z M114 72 L134 62 V70 L114 80 Z"/>
+        <path d="M26 212 L46 222 V230 L26 220 Z M46 222 H114 V230 H46 Z M114 222 L134 212 V220 L114 230 Z"/>
+      </g>
+      <rect x="54" y="92" width="52" height="118" rx="7" fill="#FFF6E2" stroke="url(#omiGold)" stroke-width="2.5"/>
+      <use href="#parrot-head" x="61" y="98" width="38" height="38"/>
+      <text x="80" y="160" text-anchor="middle" font-family="Exo 2, Be Vietnam Pro, sans-serif" font-weight="800" font-size="21" fill="#B3192B">QUẺ</text>
+      <text x="80" y="184" text-anchor="middle" font-family="Exo 2, Be Vietnam Pro, sans-serif" font-weight="800" font-size="15" fill="#B3192B">HỌC</text>
+      <path d="M66 196 H94" stroke="#E0A63A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M46 60 H114" stroke="#FFB0A8" stroke-width="1.2" opacity=".6"/>
+      <path d="M52 66 V232" stroke="#fff" stroke-width="3" opacity=".12"/>
+    </symbol>
+    <symbol id="i-seed" viewBox="0 0 24 24"><path d="M12 2c4 3 6 7 6 11a6 6 0 0 1-12 0c0-4 2-8 6-11z" fill="#F2B23A" stroke="#7A4E12" stroke-width="1.6"/><path d="M12 6c-1.5 3-2 6-1.4 10" fill="none" stroke="#7A4E12" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" fill="#FFC53A" stroke="#B87500" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star-off" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" fill="#232A5E" stroke="#4A5490" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21s-8-5.2-8-11.2A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 8 3.2C20 15.8 12 21 12 21z" fill="#E5463F" stroke="#9E231E" stroke-width="1.5"/><path d="M7.5 9.2a2.2 2.2 0 0 1 2-1.6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 48 48"><path d="M5 12h38v7a5 5 0 0 0 0 10v7H5v-7a5 5 0 0 0 0-10z" fill="#fff" stroke="#E5463F" stroke-width="3" stroke-linejoin="round"/><path d="M31 13v22" stroke="#E5463F" stroke-width="2" stroke-dasharray="3 3"/><text x="18" y="31" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="15" fill="#E5463F">10</text></symbol>
+    <symbol id="i-ticket-gold" viewBox="0 0 48 48"><path d="M5 12h38v7a5 5 0 0 0 0 10v7H5v-7a5 5 0 0 0 0-10z" fill="#FFF3C8" stroke="#E59A00" stroke-width="3" stroke-linejoin="round"/><path d="M31 13v22" stroke="#E59A00" stroke-width="2" stroke-dasharray="3 3"/><text x="18" y="31" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="15" fill="#B36F00">10</text></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="3" fill="#8193A1"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="#8193A1" stroke-width="2.4"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5A2.5 2.5 0 0 1 4 20.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 7.5h7M9 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l11-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.6" fill="currentColor"/><circle cx="17.5" cy="16" r="2.6" fill="currentColor"/></symbol>
+    <symbol id="i-music-off" viewBox="0 0 24 24"><path d="M9 18V6l11-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity=".45"/><circle cx="6.5" cy="18" r="2.6" fill="currentColor" opacity=".45"/><circle cx="17.5" cy="16" r="2.6" fill="currentColor" opacity=".45"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2V16h5v-.2c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+    <!-- landmark glyphs (viewBox 0 0 60 60) -->
+    <symbol id="lm-flag" viewBox="0 0 60 60"><path d="M6 52l12-20 8 10 8-14 20 24z" fill="#5FAF5A" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><rect x="27" y="18" width="6" height="16" fill="#C9C2B0" stroke="#17324A" stroke-width="2"/><path d="M30 18V4" stroke="#17324A" stroke-width="2.5"/><path d="M30 5h20l-4 6 4 6H30z" fill="#E5463F" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/><path d="M40 8.5l1 2.2 2.4.2-1.8 1.5.6 2.3-2.2-1.3-2.1 1.3.6-2.3-1.9-1.5 2.4-.2z" fill="#FFC53A"/></symbol>
+    <symbol id="lm-karst" viewBox="0 0 60 60"><path d="M4 44c6-2 10 2 16 0s10-2 16 0 12 2 20 0v12H4z" fill="#39B7CF" stroke="#17324A" stroke-width="2.5"/><path d="M10 44c0-16 4-26 8-26s6 10 6 26z" fill="#5FAF5A" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M26 44c0-22 5-34 10-34s8 14 8 34z" fill="#3E9A52" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M46 44c0-10 2-15 4-15s4 5 4 15z" fill="#5FAF5A" stroke="#17324A" stroke-width="2.2"/><path d="M14 50h10M34 51h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="lm-citadel" viewBox="0 0 60 60"><rect x="6" y="32" width="48" height="20" fill="#E8A65A" stroke="#17324A" stroke-width="2.5"/><path d="M24 52V42a6 6 0 0 1 12 0v10" fill="#7A4E12" stroke="#17324A" stroke-width="2.5"/><path d="M10 32l4-8h32l4 8z" fill="#E5463F" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><rect x="18" y="16" width="24" height="8" fill="#FFC53A" stroke="#17324A" stroke-width="2.5"/><path d="M14 16l4-6h24l4 6z" fill="#E5463F" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 38h6M42 38h6" stroke="#17324A" stroke-width="2"/></symbol>
+    <symbol id="lm-pine" viewBox="0 0 60 60"><circle cx="46" cy="14" r="7" fill="#FFC53A" stroke="#17324A" stroke-width="2.2"/><path d="M20 6l12 18h-6l10 14h-7l9 12H10l9-12h-7l10-14h-6z" fill="#2F8F4E" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><rect x="18" y="50" width="6" height="6" fill="#7A4E12" stroke="#17324A" stroke-width="2"/><circle cx="44" cy="46" r="4" fill="#F28DB2" stroke="#17324A" stroke-width="2"/><circle cx="52" cy="50" r="3.5" fill="#E5463F" stroke="#17324A" stroke-width="2"/><path d="M44 50v6M52 53v3" stroke="#17324A" stroke-width="2"/></symbol>
+    <symbol id="lm-cape" viewBox="0 0 60 60"><path d="M4 46c8-3 14 2 22 0s14-3 30 0v10H4z" fill="#39B7CF" stroke="#17324A" stroke-width="2.5"/><path d="M8 46c6-8 16-12 30-12l-6 12z" fill="#7FC56A" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 34V12" stroke="#17324A" stroke-width="2.5"/><path d="M22 13h18l-4 5 4 5H22z" fill="#FFC53A" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/><path d="M40 44l8-6 8 6z" fill="#fff" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/><path d="M38 44h20l-3 4H41z" fill="#E5463F" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/></symbol>
+
+
+    <!-- thêm địa danh -->
+    <symbol id="lm-peak" viewBox="0 0 60 60"><path d="M3 54l17-30 8 11 10-19 19 38z" fill="#5FAF5A" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M38 16l-5 10 5-3 4 4z" fill="#fff" stroke="#17324A" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 12L56 4" stroke="#17324A" stroke-width="2"/><rect x="24" y="9" width="10" height="9" rx="2" fill="#E5463F" stroke="#17324A" stroke-width="2"/><path d="M29 8v2" stroke="#17324A" stroke-width="2"/><rect x="26" y="11" width="6" height="3" fill="#fff"/></symbol>
+    <symbol id="lm-lake" viewBox="0 0 60 60"><path d="M3 44c8-3 16 2 27 0s18-3 27 0v12H3z" fill="#39B7CF" stroke="#17324A" stroke-width="2.5"/><ellipse cx="30" cy="45" rx="14" ry="4" fill="#5FAF5A" stroke="#17324A" stroke-width="2"/><rect x="23" y="31" width="14" height="12" fill="#EAD9B0" stroke="#17324A" stroke-width="2.2"/><rect x="25.5" y="22" width="9" height="9" fill="#EAD9B0" stroke="#17324A" stroke-width="2.2"/><path d="M27.5 22l2.5-6 2.5 6z" fill="#B95B3B" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/><path d="M27 43v-5a3 3 0 0 1 6 0v5" fill="#7A4E12"/><path d="M8 50h8M42 51h9" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M48 44V30" stroke="#17324A" stroke-width="2"/><circle cx="48" cy="27" r="6" fill="#3E9A52" stroke="#17324A" stroke-width="2"/></symbol>
+    <symbol id="lm-lantern" viewBox="0 0 60 60"><path d="M2 6c18 8 38 8 56 0" fill="none" stroke="#17324A" stroke-width="2"/><g stroke="#17324A" stroke-width="2.2"><path d="M18 9v5M42 9v5"/><ellipse cx="18" cy="26" rx="11" ry="13" fill="#E5463F"/><ellipse cx="42" cy="28" rx="11" ry="13" fill="#FFC53A"/><rect x="13" y="12" width="10" height="3" fill="#7A4E12"/><rect x="13" y="37" width="10" height="3" fill="#7A4E12"/><rect x="37" y="14" width="10" height="3" fill="#7A4E12"/><rect x="37" y="39" width="10" height="3" fill="#7A4E12"/><path d="M18 40v10M42 42v10" stroke="#E5463F"/></g><path d="M11 26h14M35 28h14" stroke="#fff" stroke-opacity=".7" stroke-width="2"/></symbol>
+    <symbol id="lm-beach" viewBox="0 0 60 60"><circle cx="47" cy="12" r="6" fill="#FFC53A" stroke="#17324A" stroke-width="2"/><path d="M2 42c10-3 18 2 28 0s18-3 28 0v14H2z" fill="#39B7CF" stroke="#17324A" stroke-width="2.5"/><path d="M2 50c12-4 30-4 56 0v6H2z" fill="#F3D9A4" stroke="#17324A" stroke-width="2"/><path d="M18 50c2-12 6-22 12-30" fill="none" stroke="#7A4E12" stroke-width="4" stroke-linecap="round"/><path d="M30 20c-6-6-14-6-20-2M30 20c-2-7-8-11-15-11M30 20c6-6 14-6 18 0M30 20c5-2 11 2 13 8M30 20c-4 0-10 4-11 10" fill="none" stroke="#2F8F4E" stroke-width="4" stroke-linecap="round"/></symbol>
+
+    <!-- đặc sản (viewBox 0 0 60 60) -->
+    <symbol id="bowl" viewBox="0 0 60 60"><path d="M6 30h48c0 13-11 22-24 22S6 43 6 30z" fill="#fff" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M9 37h42" stroke="#2D7FD3" stroke-width="2.5"/><path d="M12 41.5h36" stroke="#2D7FD3" stroke-width="1.4" stroke-dasharray="3 3"/><path d="M22 52h16l-2 4H24z" fill="#fff" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="fd-pho" viewBox="0 0 60 60"><path d="M20 18c-3-4 3-6 0-10M30 16c-3-4 3-6 0-10M40 18c-3-4 3-6 0-10" fill="none" stroke="#9FB4C2" stroke-width="2" stroke-linecap="round"/><use href="#bowl"/><ellipse cx="30" cy="30" rx="23" ry="5" fill="#F3C77B" stroke="#17324A" stroke-width="2"/><path d="M14 30c5-2 9 2 14 0s9-2 14 0" fill="none" stroke="#fff" stroke-width="2.2"/><ellipse cx="22" cy="28" rx="5" ry="2.2" fill="#9C5A3C"/><ellipse cx="35" cy="29" rx="5" ry="2.2" fill="#9C5A3C"/><circle cx="29" cy="27.5" r="1.6" fill="#3E9A52"/><circle cx="42" cy="28" r="1.6" fill="#3E9A52"/><circle cx="16" cy="30" r="1.4" fill="#3E9A52"/></symbol>
+    <symbol id="fd-bunbo" viewBox="0 0 60 60"><path d="M24 18c-3-4 3-6 0-10M36 18c-3-4 3-6 0-10" fill="none" stroke="#9FB4C2" stroke-width="2" stroke-linecap="round"/><use href="#bowl"/><ellipse cx="30" cy="30" rx="23" ry="5" fill="#E8653A" stroke="#17324A" stroke-width="2"/><path d="M14 30c4-2 8 2 12 0M30 31c4-2 8 2 12 0" fill="none" stroke="#fff" stroke-width="3"/><circle cx="20" cy="28" r="2.4" fill="#C9302C" stroke="#fff" stroke-width="1"/><circle cx="39" cy="28.5" r="2.4" fill="#C9302C" stroke="#fff" stroke-width="1"/><ellipse cx="30" cy="28" rx="5" ry="2" fill="#B07A5A"/><circle cx="45" cy="30" r="1.5" fill="#3E9A52"/><circle cx="15" cy="31" r="1.5" fill="#3E9A52"/></symbol>
+    <symbol id="fd-caolau" viewBox="0 0 60 60"><use href="#bowl"/><ellipse cx="30" cy="30" rx="23" ry="5" fill="#F6E3B4" stroke="#17324A" stroke-width="2"/><path d="M13 30c5-2 10 2 15 0s10-2 18 0" fill="none" stroke="#E8B53A" stroke-width="3.2"/><ellipse cx="24" cy="28" rx="5" ry="2.2" fill="#E59A8C" stroke="#9C5A3C" stroke-width="1"/><ellipse cx="35" cy="28.5" rx="5" ry="2.2" fill="#E59A8C" stroke="#9C5A3C" stroke-width="1"/><rect x="38" y="20" width="10" height="8" rx="1.5" fill="#EBC27A" stroke="#17324A" stroke-width="1.8" transform="rotate(14 43 24)"/><circle cx="16" cy="28" r="1.6" fill="#3E9A52"/></symbol>
+    <symbol id="fd-bunchaca" viewBox="0 0 60 60"><path d="M24 18c-3-4 3-6 0-10M36 18c-3-4 3-6 0-10" fill="none" stroke="#9FB4C2" stroke-width="2" stroke-linecap="round"/><use href="#bowl"/><ellipse cx="30" cy="30" rx="23" ry="5" fill="#F7D99A" stroke="#17324A" stroke-width="2"/><path d="M14 31c5-2 9 2 14 0s9-2 14 0" fill="none" stroke="#fff" stroke-width="2.2"/><g stroke="#B5762F" stroke-width="1.6"><ellipse cx="21" cy="28" rx="4.5" ry="2.4" fill="#F3E1BE"/><ellipse cx="31" cy="27.5" rx="4.5" ry="2.4" fill="#F3E1BE"/><ellipse cx="40" cy="28.5" rx="4.5" ry="2.4" fill="#F3E1BE"/></g><circle cx="26" cy="31" r="1.4" fill="#3E9A52"/><circle cx="45" cy="31" r="1.4" fill="#3E9A52"/></symbol>
+    <symbol id="fd-chamuc" viewBox="0 0 60 60"><ellipse cx="30" cy="40" rx="26" ry="11" fill="#fff" stroke="#17324A" stroke-width="2.5"/><ellipse cx="30" cy="40" rx="19" ry="7" fill="none" stroke="#2D7FD3" stroke-width="1.5"/><g stroke="#17324A" stroke-width="2.2"><ellipse cx="20" cy="36" rx="8" ry="5.5" fill="#E9A23B"/><ellipse cx="38" cy="36" rx="8" ry="5.5" fill="#E9A23B"/><ellipse cx="29" cy="30" rx="8" ry="5.5" fill="#F0B44C"/></g><circle cx="27" cy="29" r="1.2" fill="#B5762F"/><circle cx="31" cy="31" r="1" fill="#B5762F"/><circle cx="18" cy="36" r="1.1" fill="#B5762F"/><circle cx="40" cy="35" r="1.1" fill="#B5762F"/><path d="M44 24c3-3 7-3 9 0-3 2-6 2-9 0z" fill="#3E9A52" stroke="#17324A" stroke-width="1.5"/></symbol>
+    <symbol id="fd-cahoi" viewBox="0 0 60 60"><path d="M6 46c10-6 30-10 44-4-10 8-30 10-44 4z" fill="#7FC56A" stroke="#17324A" stroke-width="2"/><path d="M8 30c8-10 24-12 36-6l8-6-1 10 1 10-8-6C36 38 18 40 8 30z" fill="#F58A5C" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M18 25c2 3 2 7 0 10M25 23c2 4 2 9 0 13M32 23c2 4 2 9 0 13" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="28" r="1.8" fill="#17324A"/></symbol>
+    <symbol id="fd-tammach" viewBox="0 0 60 60"><ellipse cx="30" cy="40" rx="24" ry="11" fill="#B9874C" stroke="#17324A" stroke-width="2.5"/><ellipse cx="30" cy="36" rx="24" ry="11" fill="#D8AE6E" stroke="#17324A" stroke-width="2.5"/><path d="M14 34l3 2M24 31l3 2M36 32l3 2M40 39l3 2M22 39l3 2" stroke="#9C6B33" stroke-width="2" stroke-linecap="round"/><g stroke="#17324A" stroke-width="1.4"><circle cx="30" cy="20" r="3.2" fill="#F28DB2"/><circle cx="25" cy="17" r="2.6" fill="#F7B6CE"/><circle cx="35" cy="16" r="2.6" fill="#F7B6CE"/></g><path d="M30 23v8M25 20l3 8M35 19l-3 9" stroke="#3E9A52" stroke-width="1.8"/></symbol>
+    <symbol id="fd-banhtrang" viewBox="0 0 60 60"><circle cx="30" cy="34" r="22" fill="#F3D9A4" stroke="#17324A" stroke-width="2.5"/><path d="M14 30l6 3M38 22l5 4M40 44l-4-3M18 44l4-4M30 18l1 5" stroke="#D9A94F" stroke-width="2" stroke-linecap="round"/><path d="M20 36c0-8 8-12 14-10s10 8 6 13-14 6-20-3z" fill="#FFC53A" stroke="#E59A00" stroke-width="1.6"/><g fill="#3E9A52"><circle cx="26" cy="32" r="1.6"/><circle cx="33" cy="30" r="1.6"/><circle cx="36" cy="37" r="1.6"/><circle cx="28" cy="38" r="1.6"/></g><g fill="#E5463F"><circle cx="31" cy="35" r="1.4"/><circle cx="24" cy="36" r="1.2"/><circle cx="37" cy="32" r="1.2"/></g></symbol>
+    <symbol id="fd-cua" viewBox="0 0 60 60"><g stroke="#17324A" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M14 38l-8 6M14 42l-6 8M46 38l8 6M46 42l6 8M18 44l-4 9M42 44l4 9"/><path d="M18 30L10 20M42 30l8-10"/></g><path d="M5 12c2-6 10-6 11 0l-3 1 3 4c-4 4-12 2-11-5z" fill="#E5463F" stroke="#17324A" stroke-width="2.2" stroke-linejoin="round"/><path d="M55 12c-2-6-10-6-11 0l3 1-3 4c4 4 12 2 11-5z" fill="#E5463F" stroke="#17324A" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="30" cy="37" rx="18" ry="12" fill="#E5463F" stroke="#17324A" stroke-width="2.5"/><path d="M22 36c4 3 12 3 16 0" fill="none" stroke="#B92D28" stroke-width="2" stroke-linecap="round"/><path d="M25 26v-5M35 26v-5" stroke="#17324A" stroke-width="2"/><circle cx="25" cy="20" r="2.6" fill="#fff" stroke="#17324A" stroke-width="1.8"/><circle cx="35" cy="20" r="2.6" fill="#fff" stroke="#17324A" stroke-width="1.8"/><circle cx="25" cy="20" r="1.1" fill="#17324A"/><circle cx="35" cy="20" r="1.1" fill="#17324A"/></symbol>
+    <!-- mini parrot head for tokens & signatures -->
+    <symbol id="parrot-head" viewBox="0 0 60 60"><path d="M30 8l4-7 3 8" fill="#FFC53A" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/><circle cx="28" cy="32" r="20" fill="#E5463F" stroke="#17324A" stroke-width="2.5"/><ellipse cx="35" cy="28" rx="9" ry="8" fill="#fff"/><circle cx="36" cy="28" r="3.4" fill="#17324A"/><circle cx="37.2" cy="26.8" r="1.1" fill="#fff"/><path d="M44 30c8 0 12 6 9 12-3-3-6-4-10-3z" fill="#FFE7B8" stroke="#17324A" stroke-width="2.2" stroke-linejoin="round"/><circle cx="24" cy="38" r="3" fill="#FF9AA5" opacity=".8"/></symbol>
+  </defs>
+</svg>
+
+<!-- parrot template (cloned wherever the big mascot appears) -->
+<template id="tpl-parrot">
+<svg class="parrot" viewBox="0 0 200 230" role="img" aria-label="Vẹt Vectơ">
+  <g class="bob">
+    <!-- perch: a vector arrow -->
+    <path d="M18 206h150" stroke="#17324A" stroke-width="7" stroke-linecap="round"/>
+    <path d="M160 194l20 12-20 12z" fill="#17324A"/>
+    <!-- tail feathers ending in arrowheads -->
+    <g stroke="#17324A" stroke-width="3" stroke-linejoin="round">
+      <path d="M70 168L28 214" stroke="#2D7FD3" stroke-width="12" stroke-linecap="round"/>
+      <path d="M18 226l4-20 16 10z" fill="#2D7FD3"/>
+      <path d="M84 172L62 222" stroke="#FFC53A" stroke-width="12" stroke-linecap="round"/>
+      <path d="M54 230l6-18 12 12z" fill="#FFC53A"/>
+    </g>
+    <!-- body -->
+    <ellipse cx="98" cy="134" rx="52" ry="62" fill="#2E9E5B" stroke="#17324A" stroke-width="4"/>
+    <ellipse cx="108" cy="146" rx="30" ry="40" fill="#9BE07F"/>
+    <path d="M58 116c-14 24-10 52 10 70 6-22 8-44 2-70z" fill="#1F7A45" stroke="#17324A" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M60 168c4 8 6 12 10 18" stroke="#2D7FD3" stroke-width="7" stroke-linecap="round"/>
+    <!-- feet -->
+    <path d="M88 192v12M84 204h10M114 192v12M110 204h10" stroke="#F0892E" stroke-width="5" stroke-linecap="round"/>
+    <!-- head -->
+    <circle cx="106" cy="70" r="44" fill="#E5463F" stroke="#17324A" stroke-width="4"/>
+    <!-- vector crest -->
+    <g class="crest">
+      <path d="M100 30L120 4" stroke="#17324A" stroke-width="11" stroke-linecap="round"/>
+      <path d="M100 30L120 4" stroke="#FFC53A" stroke-width="5" stroke-linecap="round"/>
+      <path d="M112 2l16-4-4 16z" fill="#FFC53A" stroke="#17324A" stroke-width="3" stroke-linejoin="round"/>
+    </g>
+    <ellipse cx="122" cy="62" rx="20" ry="18" fill="#fff"/>
+    <g class="eye-open"><circle cx="125" cy="62" r="8" fill="#17324A"/><circle cx="128" cy="59" r="2.6" fill="#fff"/></g>
+    <path class="eye-happy" d="M115 64q10-12 20 0" fill="none" stroke="#17324A" stroke-width="4.5" stroke-linecap="round"/>
+    <g class="eye-sad"><circle cx="125" cy="66" r="6" fill="#17324A"/><path d="M113 54l22 5" stroke="#17324A" stroke-width="4" stroke-linecap="round"/></g>
+    <!-- beak -->
+    <path d="M144 66c18-2 28 12 22 30-6-6-14-9-24-8z" fill="#FFE7B8" stroke="#17324A" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M142 88c6 0 11 2 14 6-6 4-12 4-16 0z" fill="#17324A"/>
+    <circle cx="100" cy="86" r="7" fill="#FF9AA5" opacity=".75"/>
+  </g>
+</svg>
+</template>
+
+<header class="hud" id="hud" hidden>
+  <button class="brand" id="homeBtn" aria-label="Về bản đồ">
+    <svg aria-hidden="true"><use href="#parrot-head"/></svg>
+    <b>Vẹt <span>Vectơ</span></b>
+  </button>
+  <span class="player" id="hudName"></span>
+  <span class="chip" title="Hạt hướng dương"><svg aria-hidden="true"><use href="#i-seed"/></svg><span id="hudSeeds">0</span><span class="sr"> hạt</span></span>
+  <span class="chip chip-stars" title="Tổng số sao"><svg aria-hidden="true"><use href="#i-star"/></svg><span id="hudStars">0</span><span class="sr"> sao</span></span>
+  <button class="chip" id="walletBtn" title="Túi phiếu điểm 10"><svg aria-hidden="true"><use href="#i-ticket"/></svg><span id="hudTickets">0</span><span class="sr"> phiếu điểm 10</span></button>
+  <button class="iconbtn" id="bookBtn" aria-label="Sổ tay công thức" title="Sổ tay công thức"><svg><use href="#i-book"/></svg></button>
+  <button class="iconbtn" id="musicBtn" aria-label="Bật/tắt nhạc nền" title="Nhạc nền"><svg><use href="#i-music"/></svg></button>
+  <button class="iconbtn" id="soundBtn" aria-label="Bật/tắt hiệu ứng âm thanh" title="Hiệu ứng âm thanh"><svg><use href="#i-sound"/></svg></button>
+  <button class="iconbtn" id="menuBtn" aria-label="Cài đặt"><svg><use href="#i-menu"/></svg></button>
+</header>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<main>
+  <!-- WELCOME -->
+  <section class="screen welcome" id="scrWelcome">
+    <div class="stage">
+      <div class="big-parrot" data-parrot></div>
+      <div class="bubble">Chào bạn! Mình là <b>Vẹt Vectơ</b>. Bay cùng mình dọc dải đất hình chữ S nhé!</div>
+    </div>
+    <div>
+      <p class="eyebrow">Ôn tập Toán 10 · Giữa học kì I</p>
+      <h1>Hành trình <em>Vẹt Vectơ</em></h1>
+      <p class="lead">Đi từ cột cờ Lũng Cú đến Đất Mũi Cà Mau. Mỗi chặng là một chương, mỗi địa danh là một bài học với 4 mức từ dễ đến khó. Qua đủ 4 mức để nhận <b>Phiếu điểm 10</b> mang tên món đặc sản của địa danh đó.</p>
+      <ul class="facts">
+        <li><b>5</b> chặng · <b>9</b> địa danh</li>
+        <li><b>8</b> bài học × <b>4</b> mức</li>
+        <li><b>242</b> câu hỏi kèm lời giải</li>
+        <li><b>9</b> phiếu đặc sản: phở, bún bò, cao lầu…</li>
+        <li><b>60</b> mục Sổ tay công thức + gợi ý từng câu</li>
+        <li>Nhạc nền EDM không lời</li>
+      </ul>
+      <form class="namebox" id="nameForm">
+        <label for="nameInput">Tên của bạn (ghi lên phiếu điểm 10)</label>
+        <input id="nameInput" type="text" maxlength="40" placeholder="Ví dụ: Nguyễn Minh Anh" autocomplete="name">
+        <button class="btn red" type="submit">Bắt đầu bay</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="screen" id="scrMap" hidden>
+    <div class="board">
+      <div class="mapcard">
+        <svg class="map" id="map" viewBox="0 -64 820 1044" role="group" aria-label="Bản đồ hành trình Việt Nam">
+          <defs>
+            <pattern id="waves" width="60" height="26" patternUnits="userSpaceOnUse">
+              <path d="M2 14q7-7 14 0t14 0" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2.4" stroke-linecap="round"/>
+            </pattern>
+            <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.2" fill="#2B2A66"/></pattern>
+            <linearGradient id="landGrad" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#5BF2B5"/><stop offset=".5" stop-color="#25C48E"/><stop offset="1" stop-color="#1C9E9A"/></linearGradient>
+            <linearGradient id="seaGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123274"/><stop offset=".6" stop-color="#0C1E57"/><stop offset="1" stop-color="#1B1460"/></linearGradient>
+            <radialGradient id="orbOpen" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#DDF6FF"/><stop offset="1" stop-color="#8FD8FF"/></radialGradient>
+            <radialGradient id="orbDone" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FFF9DA"/><stop offset=".55" stop-color="#FFD66B"/><stop offset="1" stop-color="#F28A2E"/></radialGradient>
+            <radialGradient id="orbLock" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#3A4180"/><stop offset="1" stop-color="#1A1E4A"/></radialGradient>
+            <radialGradient id="halo"><stop offset="0" stop-color="#3EF0D0" stop-opacity=".9"/><stop offset="1" stop-color="#3EF0D0" stop-opacity="0"/></radialGradient>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="softglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
+          </defs>
+          <rect y="-64" width="820" height="1044" fill="var(--neighbor)"/>
+          <rect y="-64" width="820" height="1044" fill="url(#dots)"/>
+          <path d="{{SEA}}" fill="url(#seaGrad)"/>
+          <path d="{{SEA}}" fill="url(#waves)" opacity=".5"/>
+          <g fill="#fff" id="seastars"></g>
+          <path d="{{HAINAN}}" fill="var(--neighbor)" stroke="var(--neighbor-ink)" stroke-width="2"/>
+          <g font-family="Be Vietnam Pro, sans-serif" font-weight="600" fill="var(--neighbor-ink)" font-size="18" letter-spacing="3">
+            <text x="560" y="58">TRUNG QUỐC</text>
+            <text x="70" y="360">LÀO</text>
+            <text x="200" y="690">CAMPUCHIA</text>
+            <text x="18" y="560">THÁI LAN</text>
+          </g>
+          <text x="545" y="640" font-family="Exo 2, sans-serif" font-weight="800" font-size="34" fill="#BFF7FF" fill-opacity=".75" letter-spacing="8" font-style="italic" filter="url(#glow)">BIỂN ĐÔNG</text>
+          <!-- Vietnam -->
+          <path d="{{LAND}}" fill="none" stroke="#3EF0D0" stroke-width="16" opacity=".45" filter="url(#softglow)"/>
+          <path d="{{LAND}}" fill="url(#landGrad)" stroke="#C9FFF0" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- islands -->
+          <g fill="#5BF2B5" stroke="#C9FFF0" stroke-width="1.5" filter="url(#glow)">
+            <ellipse cx="146" cy="836" rx="12" ry="20"/>
+            <circle cx="606" cy="438" r="6"/><circle cx="624" cy="450" r="7"/><circle cx="640" cy="432" r="5"/><circle cx="614" cy="462" r="4.5"/><circle cx="650" cy="456" r="4"/>
+            <circle cx="736" cy="822" r="5"/><circle cx="754" cy="842" r="6"/><circle cx="772" cy="826" r="4.5"/><circle cx="762" cy="866" r="5"/><circle cx="744" cy="884" r="4"/><circle cx="784" cy="858" r="4"/>
+          </g>
+          <g font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="15" fill="var(--sea-ink)" text-anchor="middle">
+            <text x="628" y="492">QĐ. Hoàng Sa</text><text x="628" y="510" font-weight="500" font-size="13">(Việt Nam)</text>
+            <text x="760" y="912">QĐ. Trường Sa</text><text x="760" y="930" font-weight="500" font-size="13">(Việt Nam)</text>
+            <text x="112" y="870" font-size="13">Phú Quốc</text>
+          </g>
+          <g font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="14" fill="#0B3B3A">
+            <circle cx="304" cy="801" r="4" fill="#0B3B3A" stroke="#fff" stroke-width="2"/><text x="250" y="784">TP. HCM</text>
+          </g>
+          <g id="routes"></g>
+          <g id="nodes"></g>
+        </svg>
+      </div>
+      <div class="panel" id="panel"></div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen" id="scrQuiz" hidden>
+    <div class="quiztop">
+      <button class="iconbtn" id="quitBtn" aria-label="Rời trạm"><svg><use href="#i-close"/></svg></button>
+      <div class="where" id="qWhere"></div>
+      <div class="pips" id="qPips" aria-label="Tiến độ"></div>
+      <div class="hearts" id="qHearts" aria-label="Lượt sai còn lại"></div>
+    </div>
+    <div class="quizgrid">
+      <div class="coach">
+        <div data-parrot id="coachParrot"></div>
+        <div class="bubble" id="coachSay" aria-live="polite"></div>
+      </div>
+      <article class="qcard" id="qCard"></article>
+    </div>
+  </section>
+</main>
+
+<div id="overlayRoot"></div>
+<canvas class="confetti" id="confetti" hidden></canvas>
+
+<script>
+{{BANK}}
+</script>
+<script>
+{{APP}}
+</script>

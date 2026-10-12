@@ -1,0 +1,935 @@
+/* ================= DỮ LIỆU CHẶNG ================= */
+const CHAPS = [
+  { no: 1, roman: "I", region: "Vùng núi phía Bắc", title: "Chương I. Mệnh đề và tập hợp" },
+  { no: 2, roman: "II", region: "Hà Nội – Quảng Ninh", title: "Chương II. Bất phương trình và hệ bất phương trình bậc nhất hai ẩn" },
+  { no: 3, roman: "III", region: "Miền Trung", title: "Chương III. Hệ thức lượng trong tam giác" },
+  { no: 4, roman: "IV", region: "Tây Nguyên – Nam Trung Bộ", title: "Chương IV. Vectơ" },
+  { no: 5, roman: "", region: "Đất Mũi", title: "Thử thách tổng hợp giữa kì I" },
+];
+const STAGES = [
+  { id: "b1", no: 1, ch: 1, short: "Lũng Cú", place: "Cột cờ Lũng Cú", topic: "Bài 1. Mệnh đề", icon: "lm-flag", x: 223, y: 46, side: "r",
+    note: "Cột cờ ở điểm cực Bắc Tổ quốc. Lá cờ trên đỉnh rộng 54 m², tượng trưng cho 54 dân tộc Việt Nam.",
+    say: "Cực Bắc đây rồi! Mệnh đề nào đúng, mệnh đề nào sai, cùng phân xử nào!",
+    tip: R`Phủ định của "\(\forall x, P(x)\)" là "\(\exists x, \overline{P(x)}\)". Mệnh đề \(P\Rightarrow Q\) chỉ sai khi P đúng mà Q sai.`,
+    food: { name: "Bánh tam giác mạch", icon: "fd-tammach", line: "Bánh làm từ bột hạt tam giác mạch, nướng thơm trên bếp than giữa cao nguyên đá." } },
+  { id: "b2", no: 2, ch: 1, short: "Sa Pa", place: "Sa Pa – Fansipan", topic: "Bài 2. Tập hợp và các phép toán trên tập hợp", icon: "lm-peak", x: 134, y: 86, side: "l",
+    note: "Thị trấn trong sương dưới chân dãy Hoàng Liên Sơn, gần đỉnh Fansipan cao hơn 3.100 m, được gọi là nóc nhà Đông Dương.",
+    say: "Lên Sa Pa rồi! Gom các tập hợp lại như gom mây trên đỉnh núi nào.",
+    tip: R`\(n(A\cup B)=n(A)+n(B)-n(A\cap B)\). Với khoảng, dấu ngoặc tròn là không lấy đầu mút.`,
+    food: { name: "Cá hồi Sa Pa", icon: "fd-cahoi", line: "Cá hồi nuôi trong dòng suối lạnh vùng núi, làm gỏi, nướng hay nấu lẩu đều ngon." } },
+  { id: "b3", no: 3, ch: 2, short: "Hồ Gươm", place: "Hồ Gươm – Hà Nội", topic: "Bài 3. Bất phương trình bậc nhất hai ẩn", icon: "lm-lake", x: 255, y: 166, side: "l",
+    note: "Hồ Hoàn Kiếm giữa lòng Thủ đô, Tháp Rùa đứng trên gò nhỏ giữa hồ. Mặt hồ chia đôi bởi một đường thẳng tưởng tượng, giống bờ của miền nghiệm.",
+    say: "Hà Nội đây! Một đường thẳng chia mặt phẳng làm đôi, mình chọn nửa nào nhỉ?",
+    tip: R`Muốn biết nửa mặt phẳng nào là miền nghiệm, thay thử một điểm không nằm trên bờ (thường là \(O(0;0)\)). Dấu < hoặc > thì không lấy bờ.`,
+    food: { name: "Phở Hà Nội", icon: "fd-pho", line: "Bánh phở mềm, nước dùng ninh xương trong và ngọt, thêm hành lá, rau thơm." } },
+  { id: "b4", no: 4, ch: 2, short: "Hạ Long", place: "Vịnh Hạ Long", topic: "Bài 4. Hệ bất phương trình bậc nhất hai ẩn", icon: "lm-karst", x: 332, y: 170, side: "r",
+    note: "Gần 2.000 hòn đảo đá vôi nhô lên giữa vịnh, Di sản thiên nhiên thế giới. Mỗi hòn đảo như một miền nghiệm nằm trên mặt phẳng.",
+    say: "Vịnh đẹp quá! Mỗi hòn đảo là một miền nghiệm, mình đi tìm đỉnh nhé!",
+    tip: R`Miền nghiệm của hệ là phần giao. Giá trị lớn nhất, nhỏ nhất của \(F=ax+by\) đạt tại một đỉnh của miền nghiệm.`,
+    food: { name: "Chả mực Hạ Long", icon: "fd-chamuc", line: "Mực tươi giã tay rồi rán vàng, giòn dai và thơm, đặc sản vùng biển Quảng Ninh." } },
+  { id: "b5", no: 5, ch: 3, short: "Huế", place: "Kinh thành Huế", topic: "Bài 5. Giá trị lượng giác của một góc từ 0° đến 180°", icon: "lm-citadel", x: 358, y: 449, side: "l",
+    note: "Kinh đô của triều Nguyễn bên bờ sông Hương. Cổng thành, mái điện nghiêng đủ mọi góc, đúng chỗ để đo sin, côsin.",
+    say: "Kinh thành nhiều góc lắm! Mình lấy nửa đường tròn đơn vị ra đo thử nào.",
+    tip: R`\(\sin(180^\circ-\alpha)=\sin\alpha\), \(\cos(180^\circ-\alpha)=-\cos\alpha\), \(\sin^2\alpha+\cos^2\alpha=1\). Góc tù thì côsin âm.`,
+    food: { name: "Bún bò Huế", icon: "fd-bunbo", line: "Sợi bún to, nước dùng thơm mùi sả, màu đỏ cam của sa tế, ăn kèm rau sống." } },
+  { id: "b6", no: 6, ch: 3, short: "Hội An", place: "Phố cổ Hội An", topic: "Bài 6. Hệ thức lượng trong tam giác", icon: "lm-lantern", x: 406, y: 488, side: "r",
+    note: "Phố cổ bên sông Hoài với đèn lồng và Chùa Cầu. Muốn biết hai con phố cách nhau bao xa, hãy dùng định lí côsin.",
+    say: "Đèn lồng sáng rồi! Tính cạnh, tính góc tam giác thôi.",
+    tip: R`\(a^2=b^2+c^2-2bc\cos A\); \(\frac{a}{\sin A}=2R\); \(S=\frac12 bc\sin A=pr=\frac{abc}{4R}\).`,
+    food: { name: "Cao lầu Hội An", icon: "fd-caolau", line: "Sợi mì vàng dai đặc trưng, ăn cùng thịt xíu, rau sống và bánh đa giòn." } },
+  { id: "b7", no: 7, ch: 4, short: "Đà Lạt", place: "Đà Lạt", topic: "Bài 7. Các khái niệm mở đầu về vectơ", icon: "lm-pine", x: 400, y: 738, side: "l",
+    note: "Thành phố ngàn hoa trên cao nguyên Lâm Viên. Gió thổi qua đồi thông có hướng và có độ lớn, đúng chất một vectơ.",
+    say: "Đây là quê mình! Mũi tên nào cũng có hướng và độ dài nhé.",
+    tip: R`Hai vectơ bằng nhau khi cùng hướng và cùng độ dài. Cùng phương là giá song song hoặc trùng nhau.`,
+    food: { name: "Bánh tráng nướng Đà Lạt", icon: "fd-banhtrang", line: "Bánh tráng nướng giòn trên than hồng, phết trứng, hành lá, ăn nóng giữa trời se lạnh." } },
+  { id: "b8", no: 8, ch: 4, short: "Nha Trang", place: "Biển Nha Trang", topic: "Bài 8. Tổng và hiệu của hai vectơ", icon: "lm-beach", x: 456, y: 708, side: "r",
+    note: "Thành phố biển với vịnh Nha Trang và Tháp Bà Ponagar của người Chăm. Thuyền đi trên biển chịu cả lực gió lẫn dòng nước: hợp lực là tổng hai vectơ.",
+    say: "Ra biển nào! Gió đẩy một hướng, sóng đẩy một hướng, cộng lại xem thuyền đi đâu.",
+    tip: R`Quy tắc ba điểm: \(\overrightarrow{AB}+\overrightarrow{BC}=\overrightarrow{AC}\). Hình bình hành ABCD: \(\overrightarrow{AB}+\overrightarrow{AD}=\overrightarrow{AC}\). Hiệu: \(\overrightarrow{OB}-\overrightarrow{OA}=\overrightarrow{AB}\).`,
+    food: { name: "Bún chả cá Nha Trang", icon: "fd-bunchaca", line: "Nước dùng ngọt từ cá biển, chả cá chiên vàng thái miếng, thêm chút rau thơm." } },
+  { id: "boss", no: 9, ch: 5, short: "Cà Mau", place: "Mũi Cà Mau", topic: "Thử thách tổng hợp giữa kì I", icon: "lm-cape", x: 200, y: 925, side: "r",
+    note: "Đất Mũi là điểm cực Nam trên đất liền. 10 câu trộn từ cả 8 bài, mức Thông hiểu đến Vận dụng cao.",
+    say: "Chặng cuối rồi! Trộn đủ cả 8 bài, giữ chắc trái tim nhé!",
+    tip: R`Mở khóa khi đã qua mức 3 (Vận dụng) ở cả 8 địa danh. Vượt qua để nhận Phiếu điểm 10 vàng.`,
+    food: { name: "Cua Cà Mau", icon: "fd-cua", line: "Cua biển Cà Mau chắc thịt, nhiều gạch, nổi tiếng khắp cả nước.", gold: true } },
+];
+const N_STOPS = 8;
+const LEVELS = [
+  { n: 1, name: "Nhận biết", sub: "Nhớ định nghĩa, kí hiệu, công thức", color: "var(--lv1)" },
+  { n: 2, name: "Thông hiểu", sub: "Áp dụng trực tiếp một bước", color: "var(--lv2)" },
+  { n: 3, name: "Vận dụng", sub: "Nhiều bước, bài toán thực tế", color: "var(--lv3)" },
+  { n: 4, name: "Vận dụng cao", sub: "Tham số, tổng hợp, nâng cao", color: "var(--lv4)" },
+];
+const PER_ROUND = 5, BOSS_ROUND = 10, HEARTS = 3, FIFTY_COST = 20, HINT_COST = 10, START_SEEDS = 30;
+
+const SAY = {
+  good: ["Chuẩn không cần chỉnh!", "Mũi tên trúng đích!", "Vẹt phục bạn luôn!", "Quá đỉnh, thưởng hạt nào!", "Đúng rồi, bay tiếp thôi!", "Chính xác tuyệt đối!"],
+  bad: ["Ối, lệch hướng mất rồi. Đọc lời giải nhé!", "Không sao, vectơ nào cũng có lúc đổi hướng.", "Gần đúng rồi! Xem lại lời giải bên dưới.", "Sai một li… Mình cùng xem cách làm nhé."],
+  streak: n => `Combo ${n} câu liền! Thêm hạt thưởng cho bạn!`,
+  last: "Chỉ còn một trái tim. Bình tĩnh đọc kĩ đề nha!",
+};
+
+/* ================= TRẠNG THÁI ================= */
+const KEY = "vetvecto-v2";
+const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
+let S = fresh();
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && typeof s === "object") return Object.assign(fresh(), s); } } catch (e) {}
+  return fresh();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs = {}, kids = []) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else if (k === "html") n.innerHTML = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else if (v !== false && v != null) n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of [].concat(kids)) if (c != null) n.append(c);
+  return n;
+};
+const icon = (id, cls = "") => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); if (cls) s.setAttribute("class", cls); s.setAttribute("aria-hidden", "true"); const u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", "#" + id); s.append(u); return s; };
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const stageIdx = id => STAGES.findIndex(s => s.id === id);
+const stars = (id, l) => (S.prog[id] && S.prog[id][l] && S.prog[id][l].stars) || 0;
+const passed = (id, l) => stars(id, l) > 0;
+function stageUnlocked(i) {
+  if (S.teacher || i === 0) return true;
+  if (i < N_STOPS) return passed(STAGES[i - 1].id, 3);
+  return STAGES.slice(0, N_STOPS).every(s => passed(s.id, 3));
+}
+function levelUnlocked(id, l) {
+  const i = stageIdx(id);
+  if (!stageUnlocked(i)) return false;
+  if (id === "boss") return true;
+  return S.teacher || l === 1 || passed(id, l - 1);
+}
+const stageDone = id => id === "boss" ? passed("boss", 1) : [1, 2, 3, 4].every(l => passed(id, l));
+const totalStars = () => Object.values(S.prog).reduce((t, lv) => t + Object.values(lv).reduce((u, x) => u + (x.stars || 0), 0), 0);
+const ticketCount = () => Object.keys(S.tickets).length;
+
+/* ================= CÔNG THỨC ================= */
+function typeset() { return Promise.resolve(); }
+function clearMath() {}
+
+/* ================= ÂM THANH ================= */
+let AC = null;
+function play(kind) {
+  if (!S.sound) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    if (kind === "rattle") {
+      for (let k = 0; k < 9; k++) { const t = AC.currentTime + k * .1 + Math.random() * .03, o = AC.createOscillator(), g = AC.createGain();
+        o.type = "square"; o.frequency.value = 700 + Math.random() * 900; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t + .004); g.gain.exponentialRampToValueAtTime(.0001, t + .05);
+        o.connect(g).connect(AC.destination); o.start(t); o.stop(t + .06); }
+      return;
+    }
+    const seq = { chime: [[1047, .12], [1319, .12], [1568, .35]], wind: [[392, .3], [330, .5]], good: [[660, .09], [990, .14]], bad: [[220, .14], [165, .2]], win: [[523, .1], [659, .1], [784, .1], [1047, .25]], tap: [[520, .05]], ticket: [[784, .1], [988, .1], [1175, .1], [1568, .3]] }[kind] || [];
+    let t = AC.currentTime + .01;
+    for (const [f, d] of seq) {
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.type = kind === "bad" ? "triangle" : "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.18, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d + .02); t += d * .9;
+    }
+  } catch (e) {}
+}
+
+/* ================= VẸT ================= */
+const tplParrot = $("#tpl-parrot");
+function mountParrots(root = document) { root.querySelectorAll("[data-parrot]").forEach(h => { if (!h.firstElementChild) h.append(tplParrot.content.firstElementChild.cloneNode(true)); }); }
+function mood(host, m, anim) {
+  const p = host && host.querySelector(".parrot"); if (!p) return;
+  p.classList.remove("happy", "sad", "jump", "shake");
+  if (m) p.classList.add(m);
+  if (anim) { void p.getBoundingClientRect(); p.classList.add(anim); setTimeout(() => p.classList.remove(anim), 700); }
+}
+
+/* ================= MÀN HÌNH ================= */
+function show(id) {
+  for (const s of document.querySelectorAll(".screen")) s.hidden = s.id !== id;
+  $("#hud").hidden = id === "scrWelcome";
+  try { Music.duck(id === "scrQuiz" ? .5 : 1); } catch (e) {}
+  window.scrollTo({ top: 0 });
+}
+function hud() {
+  $("#hudName").textContent = S.name;
+  $("#hudSeeds").textContent = S.seeds;
+  $("#hudStars").textContent = totalStars();
+  $("#hudTickets").textContent = ticketCount();
+  $("#soundBtn use").setAttribute("href", S.sound ? "#i-sound" : "#i-mute");
+  $("#soundBtn").setAttribute("aria-pressed", String(S.sound));
+  $("#musicBtn use").setAttribute("href", S.music ? "#i-music" : "#i-music-off");
+  $("#musicBtn").classList.toggle("on", !!S.music && Music.playing);
+  $("#musicBtn").setAttribute("aria-pressed", String(!!S.music));
+}
+let toastTimer;
+function toast(msg) {
+  let t = $(".toast"); if (!t) { t = el("div", { class: "toast", role: "status" }); document.body.append(t); }
+  t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 2600);
+}
+
+/* ================= BẢN ĐỒ ================= */
+const SVGNS = "http://www.w3.org/2000/svg";
+const sv = (tag, attrs = {}) => { const n = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v); return n; };
+function drawMap() {
+  const routes = $("#routes"), nodes = $("#nodes");
+  routes.innerHTML = ""; nodes.innerHTML = "";
+  for (let i = 0; i < STAGES.length - 1; i++) {
+    const a = STAGES[i], b = STAGES[i + 1];
+    const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), k = (i % 2 ? -1 : 1) * Math.min(.22 * L, 70);
+    const mx = (a.x + b.x) / 2 - dy / L * k, my = (a.y + b.y) / 2 + dx / L * k;
+    const d = `M${a.x},${a.y} Q${mx.toFixed(1)},${my.toFixed(1)} ${b.x},${b.y}`;
+    routes.append(sv("path", { d, class: "route" }));
+    const segDone = i < N_STOPS - 1 ? passed(a.id, 3) : STAGES.slice(0, N_STOPS).every(s => passed(s.id, 3));
+    if (segDone) routes.append(sv("path", { d, class: "route done" }));
+  }
+  let current = 0;
+  STAGES.forEach((s, i) => { if (stageUnlocked(i)) current = i; });
+  const R0 = 24;
+  STAGES.forEach((s, i) => {
+    const open = stageUnlocked(i), done = stageDone(s.id);
+    const g = sv("g", { class: "node" + (open ? "" : " locked") + (S.sel === s.id ? " sel" : ""), tabindex: "0", role: "button",
+      "aria-label": `${s.place}, ${s.topic}${open ? "" : " (đang khóa)"}${done ? ", đã nhận phiếu" : ""}` });
+    if (open) g.append(sv("circle", { cx: s.x, cy: s.y, r: R0 + 16, fill: "url(#halo)", opacity: done ? ".45" : ".7" }));
+    if (open && !done && i === current) g.append(sv("circle", { cx: s.x, cy: s.y, r: R0, fill: "none", stroke: "#3EF0D0", "stroke-width": 3, class: "pulse" }));
+    g.append(sv("circle", { class: "ring", cx: s.x, cy: s.y, r: R0, fill: done ? "url(#orbDone)" : open ? "url(#orbOpen)" : "url(#orbLock)", stroke: done ? "#FFF3B0" : open ? "#fff" : "#4A5490", "stroke-width": 2.5 }));
+    const u = sv("use", { href: "#" + s.icon, x: s.x - 17, y: s.y - 17, width: 34, height: 34 });
+    if (!open) u.setAttribute("opacity", ".35");
+    g.append(u);
+    if (!open) g.append(sv("use", { href: "#i-lock", x: s.x + 8, y: s.y + 6, width: 20, height: 20 }));
+    if (done) { g.append(sv("circle", { cx: s.x + 19, cy: s.y - 18, r: 10, fill: "var(--leaf)", stroke: "#fff", "stroke-width": 2.5 })); g.append(sv("use", { href: "#i-check", x: s.x + 12, y: s.y - 25, width: 14, height: 14 })); }
+    const tag = sv("g", { class: "tag" });
+    const left = s.side === "l";
+    const tx = left ? s.x - 32 : s.x + 32, ty = s.y + 7;
+    const rect = sv("rect", { y: s.y - 16, rx: 11, height: 32, width: 100, x: left ? tx - 108 : tx - 8 });
+    const text = sv("text", { x: tx, y: ty, "font-size": 19, "text-anchor": left ? "end" : "start" });
+    text.textContent = s.id === "boss" ? "★ Cà Mau" : `${s.no} · ${s.short}`;
+    tag.append(rect, text); g.append(tag);
+    const choose = () => { S.sel = s.id; save(); play("tap"); drawMap(); renderPanel(); if (innerWidth <= 900) $("#panel").scrollIntoView({ behavior: "smooth", block: "start" }); };
+    g.addEventListener("click", choose);
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
+    nodes.append(g);
+    requestAnimationFrame(() => { try { const w = text.getComputedTextLength() + 18; rect.setAttribute("width", w); rect.setAttribute("x", left ? tx - w + 9 : tx - 9); } catch (e) {} });
+  });
+  const c = STAGES[current];
+  const tok = sv("g", { class: "token" });
+  tok.append(sv("use", { href: "#parrot-head", x: c.x - 28, y: c.y - 78, width: 50, height: 50 }));
+  nodes.append(tok);
+}
+
+function starRow(n) { const w = el("span", { class: "stars", "aria-label": `${n}/3 sao` }); for (let i = 0; i < 3; i++) w.append(icon(i < n ? "i-star" : "i-star-off")); return w; }
+
+function renderPanel() {
+  const p = $("#panel"); clearMath(p); p.innerHTML = "";
+  const s = STAGES.find(x => x.id === S.sel) || STAGES[0];
+  const i = stageIdx(s.id), open = stageUnlocked(i), chap = CHAPS[s.ch - 1], boss = s.id === "boss";
+  const card = el("section", { class: "stagecard" });
+  card.append(el("div", { class: "stagehead" }, [el("div", { class: "lmk" }, icon(s.icon)), el("div", { style: "min-width:0" }, [
+    el("div", { class: "eyebrow", text: boss ? "Chặng 5 · Đất Mũi" : `Chặng ${s.ch} · ${chap.region}` }),
+    el("h2", { text: s.place }), el("p", { text: s.topic })])]));
+  const body = el("div", { class: "stagebody" });
+  if (!boss) {
+    const sibs = STAGES.filter(x => x.ch === s.ch);
+    const row = el("div", { class: "sibs" }, [el("span", { class: "sibs-l", text: chap.title })]);
+    const chips = el("div", { class: "sibchips" });
+    sibs.forEach(x => {
+      const xi = stageIdx(x.id), xo = stageUnlocked(xi), xd = stageDone(x.id);
+      const b = el("button", { class: "sib" + (x.id === s.id ? " on" : "") + (xo ? "" : " off"), "aria-pressed": String(x.id === s.id),
+        onclick: () => { S.sel = x.id; save(); play("tap"); drawMap(); renderPanel(); } }, [icon(xd ? "i-star" : xo ? x.icon : "i-lock"), document.createTextNode(`Bài ${x.no} · ${x.short}`)]);
+      chips.append(b);
+    });
+    row.append(chips); body.append(row);
+  }
+  body.append(el("p", { class: "placenote", text: s.note }));
+  if (!open) body.append(el("p", { class: "note err", text: boss ? "Đang khóa: qua mức 3 (Vận dụng) ở cả 8 địa danh để mở." : `Đang khóa: qua mức 3 (Vận dụng) ở ${STAGES[i - 1].place} để mở.` }));
+  const list = el("ul", { class: "levels" });
+  const rows = boss ? [{ n: 1, name: "Thử thách Đất Mũi", sub: `${BOSS_ROUND} câu trộn cả 8 bài`, color: "var(--red)" }] : LEVELS;
+  for (const L of rows) {
+    const ok = levelUnlocked(s.id, L.n), st = stars(s.id, L.n);
+    const count = boss ? "" : ` · ${BANK[s.id][L.n].length} câu`;
+    const btn = ok ? el("button", { class: "btn small" + (st ? " ghost" : ""), text: st ? "Chơi lại" : "Chơi", onclick: () => startRound(s.id, L.n) })
+                   : el("span", { class: "lockic", "aria-label": "Đang khóa" }, icon("i-lock"));
+    if (!ok) btn.firstChild.style.cssText = "width:26px;height:26px";
+    list.append(el("li", { class: "level" + (ok ? "" : " locked") }, [
+      el("div", { class: "lvbadge", style: `background:${L.color}`, text: boss ? "!" : String(L.n) }),
+      el("div", {}, [el("div", { class: "lvname", text: boss ? L.name : `Mức ${L.n} · ${L.name}` }),
+        el("div", { class: "lvsub" }, [document.createTextNode(L.sub + count + " "), ok ? starRow(st) : null])]),
+      btn]));
+  }
+  body.append(list);
+  const nPassed = boss ? (passed("boss", 1) ? 1 : 0) : [1, 2, 3, 4].filter(l => passed(s.id, l)).length;
+  const need = boss ? 1 : 4, has = !!S.tickets[s.id];
+  const bar = el("div", { class: "bar" }, el("i", { style: `width:${(nPassed / need) * 100}%` }));
+  const rw = el("div", { class: "reward" + (has ? " got" : "") }, [el("div", { class: "foodbadge" + (s.food.gold ? " gold" : "") }, icon(s.food.icon)), el("div", { style: "flex:1;min-width:0" }, [
+    el("small", { class: "rw-k", text: s.food.gold ? "Phiếu điểm 10 vàng" : "Phiếu điểm 10" }),
+    el("b", { text: s.food.name }),
+    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : boss ? "Vượt qua thử thách để nhận." : `Qua cả 4 mức để nhận (${nPassed}/4).` }), bar])]);
+  if (has) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket(s.id)); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket(s.id); }); }
+  body.append(rw);
+  card.append(body);
+  p.append(card);
+  const tipc = el("div", { class: "tipcard" }, [icon("parrot-head"), el("div", { style: "min-width:0" }, [el("p", {}, [el("b", { text: "Mẹo của Vẹt: " }), T(s.tip)]),
+    el("button", { class: "btn small ghost", style: "margin-top:8px", onclick: () => openBook(boss ? "nen" : s.id) }, [icon("i-book"), document.createTextNode(boss ? "Mở Sổ tay công thức" : `Sổ tay ${s.topic.split(".")[0]}`)])])]);
+  tipc.querySelector(".btn svg").style.cssText = "width:18px;height:18px";
+  p.append(tipc);
+  const oc = el("div", { class: "omicard" }, [el("button", { class: "omi-mini", "aria-label": "Mở Hộp quẻ học tập", onclick: openOmikuji }, icon("omi-box")),
+    el("div", { style: "min-width:0;flex:1" }, [el("b", { text: "Hộp quẻ học tập" }),
+      el("p", { text: `Lắc ${OMI_COST} hạt một lần: nhận bí kíp, công thức, thử thách nhanh hoặc một lỗi sai cần tránh.` }),
+      el("button", { class: "btn small", style: "margin-top:8px", onclick: openOmikuji }, [icon("i-seed"), document.createTextNode(`Lắc quẻ · ${OMI_COST} hạt`)])])]);
+  oc.querySelector(".btn svg").style.cssText = "width:18px;height:18px";
+  p.append(oc);
+}
+
+/* ================= LƯỢT CHƠI ================= */
+let RUN = null;
+function prepare(q, meta) {
+  const c = Object.assign({}, q, meta || {});
+  if (q.t === "mc") { const order = shuffle([0, 1, 2, 3]); c.opts = order.map(k => q.o[k]); c.ans = order.indexOf(0); }
+  return c;
+}
+function buildPool(id, lv) {
+  if (id !== "boss") return shuffle(BANK[id][lv]).slice(0, PER_ROUND).map(q => prepare(q, { lv }));
+  const qs = [];
+  const ids = STAGES.slice(0, N_STOPS).map(s => s.id);
+  for (const b of ids) { const l = pick([2, 3]); qs.push(prepare(pick(BANK[b][l]), { lv: l, ch: b })); }
+  for (const b of shuffle(ids).slice(0, 2)) qs.push(prepare(pick(BANK[b][4]), { lv: 4, ch: b }));
+  return shuffle(qs);
+}
+function startRound(id, lv) {
+  play("tap");
+  RUN = { id, lv, qs: buildPool(id, lv), i: 0, hearts: HEARTS, wrong: 0, right: 0, streak: 0, seeds: 0, marks: [] };
+  show("scrQuiz");
+  const s = STAGES[stageIdx(id)];
+  say(s.say); mood($("#coachParrot"), "", "jump");
+  renderQuestion();
+}
+function say(t) { const b = $("#coachSay"); clearMath(b); b.textContent = t; typeset(b); }
+function renderTop() {
+  const s = STAGES[stageIdx(RUN.id)];
+  const w = $("#qWhere"); w.innerHTML = "";
+  w.append(document.createTextNode(RUN.id === "boss" ? `${s.place} · Thử thách` : `${s.short} · Mức ${RUN.lv} – ${LEVELS[RUN.lv - 1].name}`));
+  w.append(el("small", { text: s.topic }));
+  const pips = $("#qPips"); pips.innerHTML = "";
+  RUN.qs.forEach((_, k) => pips.append(el("i", { class: RUN.marks[k] === true ? "ok" : RUN.marks[k] === false ? "no" : k === RUN.i ? "now" : "" })));
+  const h = $("#qHearts"); h.innerHTML = "";
+  for (let k = 0; k < HEARTS; k++) h.append(icon("i-heart", k < RUN.hearts ? "" : "lost"));
+  h.setAttribute("aria-label", `Còn ${RUN.hearts} trái tim`);
+}
+const TYPE = { mc: "Chọn 1 đáp án", tf: "Đúng hay Sai", num: "Trả lời ngắn" };
+function renderQuestion() {
+  renderTop();
+  const q = RUN.qs[RUN.i], card = $("#qCard");
+  clearMath(card); card.innerHTML = "";
+  RUN.answered = false; RUN.used5050 = false; RUN.hinted = RUN.hinted || []; RUN.paid = RUN.paid || [];
+  const meta = el("div", { class: "qmeta" }, [
+    el("span", { class: "pill", text: `Câu ${RUN.i + 1}/${RUN.qs.length}` }),
+    el("span", { class: "pill", text: TYPE[q.t] }),
+    el("span", { class: "pill lv", style: `background:${LEVELS[q.lv - 1].color}`, text: `Mức ${q.lv}` + (q.ch ? ` · Bài ${STAGES[stageIdx(q.ch)].no}` : "") })]);
+  card.append(meta, el("p", { class: "qtext" }, T(q.q)));
+  const area = el("div", { class: "answer" }); card.append(area);
+  const hintSlot = el("div", { id: "hintSlot" }); card.append(hintSlot);
+  const actions = el("div", { class: "actions" }); card.append(actions);
+  const hb = el("button", { class: "btn small hint", id: "hintBtn", onclick: () => showHint(q) }, [icon("i-bulb"), document.createTextNode("Gợi ý công thức " + helpPrice())]);
+  hb.firstChild.style.cssText = "width:20px;height:20px";
+  const tools = el("div", { class: "row", style: "margin-top:0" }, hb);
+  actions.append(tools);
+  if (q.t === "mc") {
+    const long = q.opts.some(o => o.length > 34 || /begin|frac/.test(o) && o.length > 24);
+    const box = el("div", { class: "opts" + (long ? " long" : "") });
+    q.opts.forEach((o, k) => box.append(el("button", { class: "opt", "data-k": k, onclick: () => answerMC(k) }, [el("span", { class: "k", text: "ABCD"[k] }), el("span", { class: "v" }, T(o))])));
+    area.append(box);
+    const ff = el("button", { class: "btn small ghost", id: "fiftyBtn", onclick: fifty }, [icon("i-seed"), document.createTextNode(`50/50 (−${FIFTY_COST} hạt)`)]);
+    ff.firstChild.style.cssText = "width:20px;height:20px";
+    tools.append(ff);
+  } else if (q.t === "tf") {
+    RUN.tfPick = [null, null, null, null];
+    const check = el("button", { class: "btn green", text: "Kiểm tra", disabled: true, onclick: answerTF });
+    q.s.forEach(([txt], k) => {
+      const seg = el("div", { class: "seg", role: "group", "aria-label": `Ý ${"abcd"[k]}` });
+      for (const [lab, val] of [["Đúng", true], ["Sai", false]]) {
+        seg.append(el("button", { "aria-pressed": "false", text: lab, onclick: e => {
+          if (RUN.answered) return; RUN.tfPick[k] = val; play("tap");
+          seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === e.currentTarget)));
+          check.disabled = RUN.tfPick.some(v => v === null);
+        } }));
+      }
+      area.append(el("div", { class: "tfrow", "data-k": k }, [el("div", { class: "s" }, [el("b", { text: "abcd"[k] + ")" }), T(txt)]), seg]));
+    });
+    actions.append(check);
+  } else {
+    const inp = el("input", { id: "numInput", type: "text", inputmode: "decimal", autocomplete: "off", placeholder: "Nhập đáp số", "aria-label": "Đáp số" });
+    const check = el("button", { class: "btn green", text: "Kiểm tra", onclick: () => answerNum(inp) });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); answerNum(inp); } });
+    area.append(el("div", { class: "numrow" }, [inp, check]), el("p", { class: "hint", text: "Số thập phân dùng dấu phẩy hoặc dấu chấm, ví dụ 8,5. Có thể nhập phân số như 43/30." }));
+    setTimeout(() => inp.focus({ preventScroll: true }), 50);
+  }
+  typeset(card);
+}
+function fifty() {
+  const q = RUN.qs[RUN.i]; if (RUN.answered || RUN.used5050) return;
+  if (S.seeds < FIFTY_COST) { toast(`Cần ${FIFTY_COST} hạt để dùng 50/50. Bạn đang có ${S.seeds} hạt.`); return; }
+  RUN.used5050 = true; S.seeds -= FIFTY_COST; save(); hud();
+  const wrongs = shuffle([0, 1, 2, 3].filter(k => k !== q.ans)).slice(0, 2);
+  wrongs.forEach(k => { const b = $(`.opt[data-k="${k}"]`); b.classList.add("gone"); b.disabled = true; });
+  $("#fiftyBtn").disabled = true; say("Mình đã cất bớt 2 đáp án sai. Chọn tiếp nhé!"); play("tap");
+}
+function answerMC(k) {
+  if (RUN.answered) return;
+  const q = RUN.qs[RUN.i], ok = k === q.ans;
+  document.querySelectorAll(".opt").forEach(b => { b.disabled = true; const j = +b.dataset.k; if (j === q.ans) b.classList.add("right"); else if (j === k) b.classList.add("wrong"); });
+  const ff = $("#fiftyBtn"); if (ff) ff.remove();
+  settle(ok, ok ? null : `Đáp án đúng: ${"ABCD"[q.ans]}.`);
+}
+function answerTF() {
+  if (RUN.answered) return;
+  const q = RUN.qs[RUN.i]; let all = true;
+  q.s.forEach(([, truth], k) => {
+    const row = $(`.tfrow[data-k="${k}"]`), good = RUN.tfPick[k] === truth; if (!good) all = false;
+    row.classList.add(good ? "right" : "wrong");
+    row.querySelectorAll(".seg button").forEach(b => b.disabled = true);
+    row.querySelector(".s").append(el("span", { class: "ans", text: `  → ${truth ? "Đúng" : "Sai"}` }));
+  });
+  const nRight = q.s.filter(([, t], k) => RUN.tfPick[k] === t).length;
+  document.querySelector(".actions .btn.green").remove();
+  settle(all, all ? null : `Bạn đúng ${nRight}/4 ý. Cần đúng cả 4 ý mới qua câu này.`);
+}
+function parseNum(str) {
+  let s = String(str).trim().replace(/\s+/g, "").replace(/[−–]/g, "-");
+  if (!s) return NaN;
+  const fr = s.match(/^(-?[\d.,]+)\/(-?[\d.,]+)$/);
+  const toN = t => { t = t.replace(/,/g, "."); return /^-?\d*\.?\d+$/.test(t) ? parseFloat(t) : NaN; };
+  if (fr) { const a = toN(fr[1]), b = toN(fr[2]); return b ? a / b : NaN; }
+  return toN(s);
+}
+function answerNum(inp) {
+  if (RUN.answered) return;
+  const q = RUN.qs[RUN.i], v = parseNum(inp.value);
+  if (Number.isNaN(v)) { toast("Hãy nhập một số, ví dụ 8,5 hoặc −2."); inp.focus(); return; }
+  const ok = Math.abs(v - q.a) <= q.tol + 1e-9;
+  inp.classList.add(ok ? "right" : "wrong"); inp.readOnly = true;
+  const btn = inp.parentElement.querySelector("button"); if (btn) btn.remove();
+  settle(ok, ok ? null : `Đáp số đúng: ${String(q.a).replace(".", ",")}.`);
+}
+function settle(ok, extra) {
+  RUN.answered = true;
+  const q = RUN.qs[RUN.i];
+  RUN.marks[RUN.i] = ok;
+  let gain = 0;
+  if (ok) { RUN.right++; RUN.streak++; gain = 10 + (RUN.streak >= 3 ? 5 : 0); }
+  else { RUN.wrong++; RUN.streak = 0; RUN.hearts--; }
+  RUN.seeds += gain; S.seeds += gain; save(); hud(); renderTop();
+  const host = $("#coachParrot");
+  if (ok) { play("good"); mood(host, "happy", "jump"); say(RUN.streak >= 3 ? SAY.streak(RUN.streak) : pick(SAY.good)); }
+  else { play("bad"); mood(host, "sad", "shake"); say(RUN.hearts === 1 ? SAY.last : RUN.hearts === 0 ? "Hết tim mất rồi… Nghỉ một chút rồi thử lại nhé!" : pick(SAY.bad)); }
+  const fb = el("div", { class: "feedback " + (ok ? "good" : "bad"), role: "status" }, [
+    el("h3", { text: ok ? `Chính xác! +${gain} hạt` : "Chưa đúng rồi" }),
+    extra ? el("p", { class: "sol", style: "font-weight:700", text: extra }) : null,
+    el("p", { class: "sol" }, [el("b", { text: "Lời giải: " }), T(q.e)]),
+    relLinks(q)]);
+  const card = $("#qCard"); card.append(fb);
+  const last = RUN.i === RUN.qs.length - 1 || RUN.hearts === 0;
+  const actions = card.querySelector(".actions");
+  const nextBtn = el("button", { class: "btn red", text: last ? "Xem kết quả" : "Câu tiếp theo", onclick: () => { if (last) finish(); else { RUN.i++; mood(host, ""); renderQuestion(); window.scrollTo({ top: 0, behavior: "smooth" }); } } });
+  actions.innerHTML = ""; actions.append(el("span"), nextBtn);
+  typeset(fb).then(() => { nextBtn.focus({ preventScroll: true }); fb.scrollIntoView({ behavior: "smooth", block: "nearest" }); });
+}
+function finish() {
+  const r = RUN, ok = r.hearts > 0, st = ok ? Math.max(1, HEARTS - r.wrong) : 0;
+  const prev = stars(r.id, r.lv);
+  S.prog[r.id] = S.prog[r.id] || {};
+  if (st > prev) S.prog[r.id][r.lv] = { stars: st };
+  let bonus = 0; if (ok) { bonus = st * 5; S.seeds += bonus; }
+  let newTicket = false;
+  if (ok && stageDone(r.id) && !S.tickets[r.id]) { S.tickets[r.id] = new Date().toISOString().slice(0, 10); newTicket = true; }
+  save(); hud();
+  if (ok) { play(newTicket ? "ticket" : "win"); confetti(newTicket ? 220 : 120); }
+  const s = STAGES[stageIdx(r.id)];
+  const big = el("div", { class: "bigstars" }); for (let k = 0; k < 3; k++) big.append(icon(k < st ? "i-star" : "i-star-off", k < st ? "on" : ""));
+  const nextLv = r.id !== "boss" && r.lv < 4 && levelUnlocked(r.id, r.lv + 1) ? r.lv + 1 : null;
+  const btns = el("div", { class: "btnrow" });
+  if (newTicket) btns.append(el("button", { class: "btn red", text: "Mở Phiếu điểm 10", onclick: () => { closeModal(); openTicket(r.id, true); } }));
+  if (nextLv && !newTicket) btns.append(el("button", { class: "btn red", text: `Lên mức ${nextLv}`, onclick: () => { closeModal(); startRound(r.id, nextLv); } }));
+  btns.append(el("button", { class: "btn ghost", text: "Chơi lại", onclick: () => { closeModal(); startRound(r.id, r.lv); } }));
+  btns.append(el("button", { class: "btn ghost", text: "Về bản đồ", onclick: () => { closeModal(); goMap(); } }));
+  let msg;
+  if (!ok) msg = "Hết tim ở lượt này. Đọc lại lời giải rồi thử lại, câu hỏi sẽ được xáo mới.";
+  else if (newTicket) msg = r.id === "boss" ? "Bạn đã chinh phục Đất Mũi! Phiếu điểm 10 vàng · Cua Cà Mau là của bạn." : `Hoàn thành cả 4 mức ở ${s.place}! Bạn nhận Phiếu điểm 10 · ${s.food.name}.`;
+  else if (r.id !== "boss" && r.lv === 3 && stageIdx(r.id) < N_STOPS - 1 && prev === 0) msg = `Đã mở khóa địa danh tiếp theo: ${STAGES[stageIdx(r.id) + 1].place}!`;
+  else if (nextLv && prev === 0) msg = `Đã mở mức ${nextLv} – ${LEVELS[nextLv - 1].name}.`;
+  else msg = st === 3 ? "Không sai câu nào. Tuyệt vời!" : "Qua trạm rồi! Chơi lại để gom đủ 3 sao nhé.";
+  const m = el("div", { class: "modal result", role: "dialog", "aria-modal": "true", "aria-labelledby": "resTitle" }, [
+    el("div", { "data-parrot": "", style: "width:120px;margin:0 auto" }),
+    el("h2", { id: "resTitle", text: ok ? (st === 3 ? "Hoàn hảo!" : "Qua trạm!") : "Hết lượt rồi!" }),
+    big,
+    el("p", { style: "font-weight:600;margin:0 0 6px", text: msg }),
+    el("div", { class: "stats" }, [
+      el("div", {}, [el("b", { text: `${r.right}/${r.qs.length}` }), el("span", { text: "câu đúng" })]),
+      el("div", {}, [el("b", { text: `+${r.seeds + bonus}` }), el("span", { text: "hạt hướng dương" })]),
+      el("div", {}, [el("b", { text: `${Math.max(st, prev)}/3` }), el("span", { text: "sao tốt nhất" })])]),
+    btns]);
+  openModal(m, { dismiss: false });
+  mood(m, ok ? "happy" : "sad", ok ? "jump" : "shake");
+}
+function goMap() { RUN = null; show("scrMap"); drawMap(); renderPanel(); hud(); }
+
+/* ================= PHIẾU ĐIỂM 10 ================= */
+function hash(str) { let h = 2166136261; for (const ch of str) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6); }
+function ticketEl(id, reveal) {
+  const s = STAGES[stageIdx(id)], gold = !!s.food.gold, date = S.tickets[id] || "";
+  const d = date ? date.split("-").reverse().join("/") : "";
+  return el("div", { class: "ticket" + (gold ? " gold" : "") + (reveal ? " reveal" : "") }, [
+    el("span", { class: "rar", text: gold ? "HUYỀN THOẠI" : "SIÊU HIẾM" }),
+    el("div", { class: "t-head", text: gold ? "PHIẾU ĐIỂM 10 VÀNG" : "PHIẾU ĐIỂM 10" }),
+    el("div", { class: "t-sub", text: "Hành trình Vẹt Vectơ · Toán 10 · Giữa học kì I" }),
+    el("div", { class: "t-prize" }, [
+      el("div", { class: "t-food" }, icon(s.food.icon)),
+      el("div", { class: "ten", html: `<span class="ten-cap">ĐIỂM</span><b>10</b><span class="ten-stars">★★★</span>` })]),
+    el("div", { class: "t-ribbon", text: s.food.name }),
+    el("p", { class: "t-line", text: s.food.line }),
+    el("div", { class: "t-sub", style: "margin-top:8px", text: "Trao tặng cho" }),
+    el("div", { class: "t-name", text: S.name || "Nhà thám hiểm" }),
+    el("p", { class: "t-for", text: gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
+    el("div", { class: "t-foot" }, [
+      el("div", {}, [document.createTextNode("Ngày nhận: " + d), el("br"), document.createTextNode("Mã phiếu: VV" + s.no + "-" + hash((S.name || "") + id + date))]),
+      el("div", { class: "sign" }, [icon("parrot-head"), document.createTextNode("Vẹt Vectơ")])])]);
+}
+function openTicket(id, reveal) {
+  const m = el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Phiếu điểm 10" }, [
+    ticketEl(id, reveal),
+    el("p", { style: "font-size:.88rem;color:var(--ink-soft);text-align:center;margin:12px 0", text: "Chụp màn hình phiếu để khoe với thầy cô và bố mẹ nhé! Thầy cô có thể đối chiếu mã phiếu với tên học sinh." }),
+    el("div", { class: "btnrow" }, [
+      el("button", { class: "btn ghost", text: "Mở túi phiếu", onclick: () => { closeModal(); openWallet(); } }),
+      el("button", { class: "btn red", text: "Về bản đồ", onclick: () => { closeModal(); goMap(); } })])]);
+  openModal(m);
+  if (reveal) { play("ticket"); confetti(180); }
+}
+function openWallet() {
+  const grid = el("div", { class: "wallet" });
+  for (const s of STAGES) {
+    const has = !!S.tickets[s.id], gold = !!s.food.gold;
+    const slot = el(has ? "button" : "div", { class: "slot" + (has ? " has" : "") + (gold ? " gold" : "") }, [
+      el("div", { class: "foodbadge" + (gold ? " gold" : "") }, icon(s.food.icon)),
+      el("b", { text: s.food.name }),
+      el("small", { text: has ? `${s.short} · bấm để xem` : `${s.short} · chưa nhận` })]);
+    if (has) slot.addEventListener("click", () => { closeModal(); openTicket(s.id); });
+    grid.append(slot);
+  }
+  openModal(el("div", { class: "modal wide", role: "dialog", "aria-modal": "true", "aria-labelledby": "wTitle" }, [
+    closeX(), el("h2", { id: "wTitle", text: "Túi phiếu điểm 10" }),
+    el("p", { style: "margin:4px 0 0;color:var(--ink-soft)", text: `Bạn có ${ticketCount()}/9 phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` }), grid]));
+}
+
+
+/* ================= SỔ TAY CÔNG THỨC & GỢI Ý ================= */
+function fcard(it, hl) {
+  const c = el("article", { class: "fcard" + (hl ? " hl" : ""), id: "f-" + it.id }, [
+    el("h4", {}, [document.createTextNode(it.t), it.tag ? el("span", { class: "tg", text: it.tag }) : null])]);
+  for (const line of it.f) c.append(el("p", {}, T(line)));
+  if (it.table) {
+    const tb = el("table");
+    tb.append(el("tr", {}, it.table.head.map(h => el("th", {}, T(h)))));
+    for (const r of it.table.rows) tb.append(el("tr", {}, r.map(x => el("td", {}, T(x)))));
+    c.append(el("div", { class: "tbl" }, tb));
+  }
+  return c;
+}
+function openBook(secId, focus) {
+  let cur = BOOK.find(s => s.id === secId) ? secId : "nen";
+  const search = el("input", { class: "book-search", id: "bookSearch", type: "search", placeholder: "Tìm công thức: côsin, trung tuyến, phủ định, hình bình hành…", "aria-label": "Tìm trong sổ tay" });
+  const tabs = el("div", { class: "book-tabs", role: "tablist" });
+  const body = el("div", { class: "book-body" });
+  const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d");
+  function render() {
+    body.innerHTML = "";
+    const q = norm(search.value.trim());
+    tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(!q && b.dataset.id === cur)));
+    if (q) {
+      let n = 0;
+      for (const sec of BOOK) {
+        const hits = sec.items.filter(it => norm(it.t + " " + it.f.join(" ")).includes(q));
+        if (!hits.length) continue;
+        body.append(el("h3", { class: "sec", text: sec.title }));
+        hits.forEach(it => { body.append(fcard(it)); n++; });
+      }
+      if (!n) body.append(el("p", { class: "book-empty", text: "Chưa tìm thấy công thức phù hợp. Thử từ khóa ngắn hơn, ví dụ \"sin\" hoặc \"tập con\"." }));
+    } else {
+      const sec = BOOK.find(s => s.id === cur);
+      body.append(el("h3", { class: "sec", text: sec.title }));
+      sec.items.forEach(it => body.append(fcard(it, focus && focus.includes(it.id))));
+    }
+    body.scrollTop = 0;
+  }
+  BOOK.forEach(sec => tabs.append(el("button", { "data-id": sec.id, role: "tab", text: sec.short, onclick: () => { cur = sec.id; search.value = ""; focus = null; render(); play("tap"); } })));
+  search.addEventListener("input", render);
+  const m = el("div", { class: "modal book", role: "dialog", "aria-modal": "true", "aria-labelledby": "bkTitle" }, [
+    el("div", { class: "book-head" }, [closeX(), el("h2", { id: "bkTitle" }, [icon("i-book"), document.createTextNode("Sổ tay công thức")]), search, tabs]), body]);
+  render();
+  openModal(m);
+  if (focus && focus.length) { const f = body.querySelector("#f-" + focus[0]); if (f) setTimeout(() => f.scrollIntoView({ block: "center" }), 60); }
+}
+function showHint(q) {
+  if (RUN.answered || RUN.hinted[RUN.i]) return;
+  if (!payHelp()) return;
+  RUN.hinted[RUN.i] = true; play("tap");
+  const ids = hintFor(q);
+  const box = el("div", { class: "hintbox", role: "note" }, [
+    el("div", { class: "hh" }, [icon("i-bulb"), document.createTextNode("Gợi ý từ Sổ tay công thức")]),
+    ...ids.map(id => fcard(BOOK_ITEM[id])),
+    el("p", { class: "note", text: RUN.paid[RUN.i] === "charm" ? "Đã dùng 1 Bùa gợi ý cho câu này." : `Đã trả ${HINT_COST} hạt cho trợ giúp ở câu này. Sổ tay cũng mở miễn phí cho tới khi trả lời xong.` })]);
+  const slot = $("#hintSlot"); slot.innerHTML = ""; slot.append(box);
+  const b = $("#hintBtn"); if (b) b.disabled = true;
+  say(pick(["Mở sổ tay ra nào! Công thức cần dùng ở ngay đây.", "Gợi ý đây! Nhìn kĩ công thức rồi thay số nhé.", "Bí kíp của Vẹt đây, áp dụng thôi!"]));
+  box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+/* Mỗi trợ giúp đều mất hạt: gợi ý công thức, mở sổ tay khi đang làm câu hỏi (−HINT_COST, chung một lần trả mỗi câu), 50/50 (−FIFTY_COST).
+   Bùa gợi ý (từ Hộp quẻ) dùng thay cho hạt. */
+function helpPrice() { return RUN && RUN.paid && RUN.paid[RUN.i] ? "(đã trả)" : S.charms > 0 ? "(dùng 1 bùa)" : `(−${HINT_COST} hạt)`; }
+function payHelp() {
+  if (RUN.paid[RUN.i]) return true;
+  let how;
+  if (S.charms > 0) { S.charms--; how = "charm"; }
+  else if (S.seeds >= HINT_COST) { S.seeds -= HINT_COST; how = "seeds"; }
+  else { toast(`Cần ${HINT_COST} hạt để dùng trợ giúp. Bạn đang có ${S.seeds} hạt.`); return false; }
+  RUN.paid[RUN.i] = how; save(); hud();
+  const hb = $("#hintBtn"); if (hb && !RUN.hinted[RUN.i]) hb.lastChild.textContent = "Gợi ý công thức (đã trả)";
+  return true;
+}
+const inQuestion = () => RUN && !$("#scrQuiz").hidden && !RUN.answered;
+function bookFromHud() {
+  if (!RUN) return openBook(S.sel === "boss" ? "nen" : S.sel);
+  const q = RUN.qs[RUN.i], sec = q.lesson || "nen";
+  if (!inQuestion() || RUN.paid[RUN.i]) return openBook(sec);
+  openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "pbTitle" }, [
+    closeX(), el("h2", { id: "pbTitle", text: "Mở sổ tay lúc đang làm bài?" }),
+    el("p", { text: S.charms > 0 ? "Mở sổ tay khi chưa trả lời là một lần trợ giúp. Bạn sẽ dùng 1 Bùa gợi ý, và nút Gợi ý công thức của câu này cũng được miễn phí." : `Mở sổ tay khi chưa trả lời là một lần trợ giúp: −${HINT_COST} hạt (bạn đang có ${S.seeds} hạt). Nút Gợi ý công thức của câu này cũng được miễn phí. Trả lời xong thì xem sổ tay không mất hạt.` }),
+    el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Thôi", onclick: () => closeModal() }),
+      el("button", { class: "btn red", text: S.charms > 0 ? "Dùng 1 bùa" : `Mở (−${HINT_COST} hạt)`, onclick: () => { closeModal(true); if (payHelp()) openBook(sec); } })])]));
+}
+function relLinks(q) {
+  const ids = hintFor(q); if (!ids.length) return null;
+  return el("div", { class: "rel" }, [document.createTextNode("Ôn lại trong sổ tay:"),
+    ...ids.map(id => el("button", { text: BOOK_ITEM[id].t, onclick: () => openBook(BOOK_ITEM[id].sec, [id]) }))]);
+}
+/* ================= HỘP QUẺ HỌC TẬP ================= */
+const OMI = { cur: null, busy: false, peek: null };
+function omiPool() { const ids = STAGES.slice(0, N_STOPS).filter((s, i) => stageUnlocked(i)).map(s => s.id); return ids.length ? ids : ["b1"]; }
+function omiFormula(pool) { const sec = BOOK.find(b => b.id === pick(pool)) || BOOK[0]; return pick(sec.items).id; }
+function omiDraw() {
+  const r = Math.random(), pool = omiPool();
+  const tier = r < .08 ? "dai" : r < .30 ? "cat" : r < .65 ? "binh" : "hung";
+  const d = { tier, no: 1 + Math.floor(Math.random() * 100), say: pick(OMI_TIER[tier].say) };
+  if (tier === "dai") { d.f = omiFormula(pool); S.charms = (S.charms || 0) + 1; }
+  if (tier === "binh") { d.f = omiFormula(pool); d.tip = pick(OMI_TIPS); }
+  if (tier === "cat") {
+    const l = pick(pool), lv = pick([1, 2]);
+    const cand = BANK[l][lv].filter(q => q.t === "mc");
+    d.q = prepare(pick(cand.length ? cand : BANK[l][1].filter(q => q.t === "mc")), { lv });
+    d.f = hintFor(d.q)[0] || omiFormula([l]);
+  }
+  if (tier === "hung") { const list = OMI_MISTAKES.filter(m => pool.includes(m.l)); d.m = pick(list.length ? list : OMI_MISTAKES); }
+  return d;
+}
+function omiSeal(text) { return el("div", { class: "omi-seal", "aria-hidden": "true" }, text.split("\n").map(t => el("span", { text: t }))); }
+function omiKeepBtn(fid) {
+  const kept = S.omi.keep.includes(fid);
+  const b = el("button", { class: "btn small omi-keep", disabled: kept, text: kept ? "Đã có trong túi quẻ" : "Giữ quẻ vào túi", onclick: () => {
+    if (!S.omi.keep.includes(fid)) { S.omi.keep.unshift(fid); S.omi.keep = S.omi.keep.slice(0, 40); save(); }
+    b.disabled = true; b.textContent = "Đã giữ trong túi quẻ"; play("good"); omiBag(fid); } });
+  return b;
+}
+function omiPaper(state) {
+  const pap = $("#omiPaper"); if (!pap) return;
+  const d = OMI.cur; pap.innerHTML = ""; pap.classList.remove("fly");
+  const head = (seal, small, title, say) => el("div", { class: "omi-top" }, [seal, el("div", { class: "omi-h" }, [small ? el("small", { text: small }) : null, el("h3", { text: title }), say ? el("p", { class: "omi-say", text: say }) : null])]);
+  if (state === "poor") { pap.className = "omi-paper t-poor"; pap.append(head(omiSeal("!"), null, "Chưa đủ hạt", `Mỗi lần lắc cần ${OMI_COST} hạt, bạn đang có ${S.seeds} hạt. Làm bài ở các địa danh để kiếm thêm hạt nhé.`)); return; }
+  if (state === "gone") { pap.className = "omi-paper t-gone"; pap.append(head(omiSeal("~"), null, "Gió đã mang quẻ xấu đi", "Nhớ lấy cách hiểu đúng nhé. Lắc tiếp nào!")); return; }
+  if (!d) { pap.className = "omi-paper"; pap.append(head(omiSeal("?"), null, "Chưa rút quẻ", `Chạm vào hộp để lắc. Mỗi lần lắc tốn ${OMI_COST} hạt.`)); return; }
+  const T0 = OMI_TIER[d.tier];
+  pap.className = "omi-paper t-" + T0.cls;
+  pap.append(head(omiSeal(T0.mark), `Quẻ số ${d.no}`, T0.name, `“${d.say}”`));
+  const body = el("div", { class: "omi-body" }); pap.append(body);
+  if (d.tier === "dai") {
+    body.append(el("p", { class: "omi-gift" }, [icon("i-bulb"), el("span", { html: `<b>+1 Bùa gợi ý.</b> Dùng thay cho ${HINT_COST} hạt khi cần gợi ý công thức hoặc mở sổ tay lúc đang làm bài.` })]),
+      el("p", { class: "omi-k", text: "Công thức may mắn" }), fcard(BOOK_ITEM[d.f]), el("div", { class: "omi-act" }, omiKeepBtn(d.f)));
+  } else if (d.tier === "binh") {
+    body.append(el("p", { class: "omi-k", text: "Bí kíp ôn tập" }), el("p", { class: "omi-tip", text: d.tip }),
+      el("p", { class: "omi-k", text: "Công thức của quẻ" }), fcard(BOOK_ITEM[d.f]), el("div", { class: "omi-act" }, omiKeepBtn(d.f)));
+  } else if (d.tier === "cat") {
+    const q = d.q, st = STAGES[stageIdx(q.lesson)] || STAGES[0];
+    body.append(el("p", { class: "omi-k", text: `Thử thách nhanh · Bài ${st.no} · trả lời đúng +${OMI_WIN} hạt` }), el("p", { class: "omi-q" }, T(q.q)));
+    const box = el("div", { class: "omi-opts" });
+    q.opts.forEach((o, k) => box.append(el("button", { class: "opt", "data-k": k, disabled: d.done, onclick: () => {
+      if (d.done) return; d.done = true; d.ok = k === q.ans; d.pickK = k;
+      if (d.ok) { S.seeds += OMI_WIN; play("good"); } else play("bad");
+      save(); hud(); omiStats(); omiPaper();
+    } }, [el("span", { class: "k", text: "ABCD"[k] }), el("span", { class: "v" }, T(o))])));
+    body.append(box);
+    if (d.done) {
+      box.querySelectorAll(".opt").forEach(b => { const j = +b.dataset.k; if (j === q.ans) b.classList.add("right"); else if (j === d.pickK) b.classList.add("wrong"); });
+      body.append(el("p", { class: "omi-res " + (d.ok ? "ok" : "no"), text: d.ok ? `Chính xác! +${OMI_WIN} hạt.` : `Chưa đúng. Đáp án đúng: ${"ABCD"[q.ans]}.` }),
+        el("p", { class: "omi-sol" }, [el("b", { text: "Lời giải: " }), T(q.e)]),
+        el("p", { class: "omi-k", text: "Công thức của quẻ" }), fcard(BOOK_ITEM[d.f]), el("div", { class: "omi-act" }, omiKeepBtn(d.f)));
+    }
+  } else {
+    const m = d.m, st = STAGES[stageIdx(m.l)];
+    body.append(el("p", { class: "omi-k", text: `Lỗi sai hay gặp · Bài ${st.no}` }), el("p", { class: "omi-err" }, T(m.m)),
+      el("p", { class: "omi-k", text: "Hóa giải: mệnh đề sau đúng hay sai?" }), el("p", { class: "omi-q" }, T(m.tf[0])));
+    const seg = el("div", { class: "omi-tf" });
+    for (const [lab, val] of [["Đúng", true], ["Sai", false]]) seg.append(el("button", { class: "btn small ghost" + (d.done && d.pickV === val ? (val === m.tf[1] ? " right" : " wrong") : ""), disabled: d.done, text: lab, onclick: () => {
+      if (d.done) return; d.done = true; d.pickV = val; d.ok = val === m.tf[1];
+      if (d.ok) { S.seeds += OMI_FIX; S.omi.fixed = (S.omi.fixed || 0) + 1; play("good"); } else play("bad");
+      save(); hud(); omiStats(); omiPaper();
+    } }));
+    body.append(seg);
+    if (d.done) {
+      body.append(el("p", { class: "omi-res " + (d.ok ? "ok" : "no"), text: d.ok ? `Hóa giải thành công! Mệnh đề trên ${m.tf[1] ? "đúng" : "sai"}. +${OMI_FIX} hạt.` : `Chưa hóa giải được: mệnh đề trên ${m.tf[1] ? "đúng" : "sai"}.` }),
+        el("p", { class: "omi-fix" }, [el("b", { text: "Hiểu đúng: " }), T(m.fix)]),
+        el("div", { class: "omi-act" }, el("button", { class: "btn small red", id: "omiTie", text: "Buộc lên cành cây", onclick: omiTie })));
+    } else body.append(el("p", { class: "omi-note", text: "Trả lời xong thì buộc quẻ lên cành cây để gió mang đi." }));
+  }
+}
+function omiTie() {
+  const d = OMI.cur; if (!d || d.tier !== "hung" || d.tied) return;
+  d.tied = true; S.omi.tied = (S.omi.tied || 0) + 1; save(); play("wind");
+  const pap = $("#omiPaper"); pap.classList.add("fly");
+  setTimeout(() => { OMI.cur = null; omiTree(true); omiPaper("gone"); omiStats(); }, 560);
+}
+const OMI_BR = [[[42, 40], [120, 22], [230, 30], [344, 18], 7], [[40, 82], [120, 66], [220, 78], [334, 64], 7], [[36, 120], [110, 108], [200, 118], [304, 106], 6]];
+function omiTree(fresh) {
+  const host = $("#omiTree"); if (!host) return;
+  const n = S.omi.tied || 0;
+  const bz = (P, t) => [0, 1].map(k => (1 - t) ** 3 * P[0][k] + 3 * (1 - t) ** 2 * t * P[1][k] + 3 * (1 - t) * t * t * P[2][k] + t ** 3 * P[3][k]);
+  let svg = `<svg viewBox="0 0 360 160" role="img" aria-label="Cành cây đã buộc ${n} quẻ xấu"><path d="M30 160 C 40 120, 30 80, 46 20" stroke="#5B3A25" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+  for (const P of OMI_BR) svg += `<path d="M${P[0]} C ${P[1]}, ${P[2]}, ${P[3]}" stroke="#6B4630" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  const slots = []; OMI_BR.forEach(P => { for (let k = 0; k < P[4]; k++) slots.push(bz(P, .2 + k * (.76 / (P[4] - 1)))); });
+  OMI_BR.forEach((P, b) => [.12, .5, .9].forEach((t, k) => { const [x, y] = bz(P, t); svg += `<g transform="translate(${x.toFixed(1)} ${(y - 6).toFixed(1)})"><circle r="5" fill="#FF9EC8"/><circle r="1.8" fill="#FFE7A3"/></g><ellipse cx="${(x + 9).toFixed(1)}" cy="${(y - 3).toFixed(1)}" rx="6" ry="2.6" fill="#38C98A" transform="rotate(-25 ${(x + 9).toFixed(1)} ${(y - 3).toFixed(1)})"/>`; }));
+  slots.slice(0, n).forEach(([x, y], k) => {
+    const isNew = fresh && k === Math.min(n, slots.length) - 1;
+    svg += `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><g class="knot${isNew ? " new" : ""}" style="animation-delay:${(k * .37 % 2).toFixed(2)}s"><path d="M0 0 V7" stroke="#E9D7B0" stroke-width="1.4"/><rect x="-5" y="7" width="10" height="20" rx="1.5" fill="#FFF8E8" stroke="#D8C49C"/><rect x="-6.5" y="13" width="13" height="4.5" rx="1" fill="#E5463F"/></g></g>`;
+  });
+  if (n > slots.length) svg += `<text x="350" y="150" text-anchor="end" font-family="Exo 2, sans-serif" font-weight="800" font-size="16" fill="#FFD66B">+${n - slots.length}</text>`;
+  host.innerHTML = svg + "</svg>";
+}
+function omiBag(show) {
+  const host = $("#omiBag"); if (!host) return;
+  host.innerHTML = "";
+  const keep = S.omi.keep.filter(id => BOOK_ITEM[id]);
+  if (!keep.length) { host.append(el("p", { class: "omi-empty", text: "Chưa giữ quẻ nào. Quẻ tốt có công thức, bấm Giữ quẻ vào túi để ôn lại sau." })); return; }
+  const list = el("div", { class: "omi-chips" });
+  keep.forEach(id => list.append(el("button", { class: "omi-chip" + (OMI.peek === id ? " on" : ""), text: BOOK_ITEM[id].t, "aria-pressed": String(OMI.peek === id), onclick: () => { OMI.peek = OMI.peek === id ? null : id; omiBag(); play("tap"); } })));
+  host.append(list);
+  if (OMI.peek && BOOK_ITEM[OMI.peek]) host.append(fcard(BOOK_ITEM[OMI.peek]));
+}
+function omiStats() {
+  const h = $("#omiStats"); if (!h) return;
+  h.innerHTML = "";
+  h.append(el("span", { class: "chip" }, [icon("i-seed"), document.createTextNode(`${S.seeds} hạt`)]),
+    el("span", { class: "chip" }, [icon("i-bulb"), document.createTextNode(`${S.charms || 0} bùa gợi ý`)]),
+    el("span", { class: "chip plain", text: `Đã lắc ${S.omi.n || 0} lần` }));
+  const b = $("#omiShakeBtn"); if (b) b.classList.toggle("poor", S.seeds < OMI_COST);
+  const t = $("#omiTreeNote"); if (t) t.textContent = `Đã buộc ${S.omi.tied || 0} quẻ xấu · hóa giải đúng ${S.omi.fixed || 0} lần`;
+}
+function omiShake() {
+  if (OMI.busy) return;
+  const d = OMI.cur, box = $("#omiBox");
+  if (d && d.tier === "hung" && !d.tied) {
+    toast(d.done ? "Buộc quẻ xấu lên cành cây trước đã." : "Hóa giải và buộc quẻ xấu lên cành cây trước đã.");
+    const t = $("#omiTie") || $("#omiPaper"); t.classList.remove("nudge"); void t.offsetWidth; t.classList.add("nudge"); return;
+  }
+  if (S.seeds < OMI_COST) { OMI.cur = null; omiPaper("poor"); play("bad"); return; }
+  S.seeds -= OMI_COST; S.omi.n = (S.omi.n || 0) + 1; save(); hud(); omiStats();
+  OMI.busy = true; box.classList.remove("drawn"); void box.offsetWidth; box.classList.add("shaking"); play("rattle");
+  const pap = $("#omiPaper"); pap.classList.add("dim");
+  setTimeout(() => {
+    box.classList.remove("shaking"); OMI.cur = omiDraw(); save();
+    $("#omiNo").textContent = OMI.cur.no; box.classList.add("drawn");
+    play(OMI.cur.tier === "hung" ? "wind" : "chime"); omiStats();
+    setTimeout(() => { pap.classList.remove("dim"); omiPaper(); OMI.busy = false; if (OMI.cur.tier === "dai") confetti(90); pap.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 480);
+  }, 1150);
+}
+function openOmikuji() {
+  play("tap");
+  const box = el("button", { class: "omi-box", id: "omiBox", "aria-label": `Lắc hộp quẻ (−${OMI_COST} hạt)`, onclick: omiShake }, [
+    el("span", { class: "omi-pick", "aria-hidden": "true" }, [el("small", { text: "SỐ" }), el("b", { id: "omiNo", text: "" })]), icon("omi-box")]);
+  const m = el("div", { class: "modal wide omi", role: "dialog", "aria-modal": "true", "aria-labelledby": "omiTitle" }, [
+    closeX(),
+    el("h2", { id: "omiTitle", text: "Hộp quẻ học tập" }),
+    el("p", { class: "omi-intro", text: "Lắc hộp quẻ như khi xin xăm đầu năm. Quẻ tốt mang theo bí kíp, công thức hoặc thử thách nhanh: giữ lại để ôn. Quẻ xấu là một lỗi sai hay gặp: hóa giải rồi buộc lên cành cây để gió mang đi." }),
+    el("div", { class: "omi-stats", id: "omiStats" }),
+    el("div", { class: "omi-stage" }, [
+      el("div", { class: "omi-left" }, [box,
+        el("button", { class: "btn red omi-shake", id: "omiShakeBtn", onclick: omiShake }, [icon("i-seed"), document.createTextNode(`Lắc quẻ · −${OMI_COST} hạt`)])]),
+      el("div", { class: "omi-paper", id: "omiPaper", "aria-live": "polite" })]),
+    el("div", { class: "omi-bottom" }, [
+      el("section", { class: "omi-card" }, [el("h3", { text: "Cành cây gió" }), el("div", { id: "omiTree", class: "omi-tree" }),
+        el("p", { class: "omi-note", id: "omiTreeNote", text: `Đã buộc ${S.omi.tied || 0} quẻ xấu · hóa giải đúng ${S.omi.fixed || 0} lần` })]),
+      el("section", { class: "omi-card" }, [el("h3", { text: "Túi quẻ đã giữ" }), el("div", { id: "omiBag" })])]),
+    el("p", { class: "omi-odds", text: `Tỉ lệ quẻ: Đại cát 8% · Cát 22% · Tiểu cát 35% · Hung 35%. Thử thách nhanh đúng +${OMI_WIN} hạt, hóa giải đúng +${OMI_FIX} hạt.` })]);
+  openModal(m);
+  m.querySelector(".btn.red svg").style.cssText = "width:20px;height:20px";
+  if (OMI.cur) { $("#omiNo").textContent = OMI.cur.no; box.classList.add("drawn"); }
+  omiStats(); omiPaper(); omiTree(); omiBag();
+}
+/* ================= MODAL ================= */
+let lastFocus = null;
+function closeX() { return el("button", { class: "iconbtn x", "aria-label": "Đóng", onclick: closeModal }, icon("i-close")); }
+function openModal(m, opt = {}) {
+  closeModal(true); lastFocus = document.activeElement;
+  const ov = el("div", { class: "overlay" }, m);
+  if (opt.dismiss !== false) ov.addEventListener("click", e => { if (e.target === ov) closeModal(); });
+  $("#overlayRoot").append(ov); mountParrots(ov); typeset(ov);
+  const f = m.querySelector("button, input, textarea, [tabindex]"); if (f) f.focus({ preventScroll: true });
+  ov._dismiss = opt.dismiss !== false;
+}
+function closeModal(silent) { const r = $("#overlayRoot"); if (!r.firstChild) return; clearMath(r); r.innerHTML = ""; if (!silent && lastFocus && lastFocus.isConnected) lastFocus.focus({ preventScroll: true }); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") { const ov = $("#overlayRoot .overlay"); if (ov && ov._dismiss) closeModal(); } });
+
+/* ================= CÀI ĐẶT ================= */
+function encodeSave() { return btoa(unescape(encodeURIComponent(JSON.stringify({ v: 1, ...S })))); }
+function openMenu() {
+  const nameIn = el("input", { type: "text", id: "renameInput", maxlength: "40", value: S.name, "aria-label": "Tên hiển thị" });
+  const code = el("textarea", { id: "backupCode", readonly: true, "aria-label": "Mã sao lưu" }); code.value = encodeSave();
+  const restore = el("textarea", { id: "restoreCode", placeholder: "Dán mã sao lưu vào đây", "aria-label": "Dán mã khôi phục" });
+  const note = el("p", { class: "note", "aria-live": "polite" });
+  const tpw = el("input", { type: "password", id: "teacherPw", inputmode: "numeric", autocomplete: "off", placeholder: "Mật khẩu giáo viên", "aria-label": "Mật khẩu giáo viên", style: "max-width:220px" });
+  const tnote = el("p", { class: "note", "aria-live": "polite", style: "margin:6px 0 0" });
+  const tbox = el("div");
+  function drawTeacher() {
+    tbox.innerHTML = ""; tnote.textContent = ""; tnote.className = "note";
+    if (S.teacher) {
+      tbox.append(el("p", { class: "note ok", text: "Đang bật: mọi địa danh và mức đều đã mở." }),
+        el("div", { class: "row" }, el("button", { class: "btn small ghost", text: "Tắt chế độ giáo viên", onclick: () => { S.teacher = false; S.teacherLock = 0; save(); drawMap(); renderPanel(); toast("Đã tắt chế độ giáo viên."); drawTeacher(); } })));
+    } else {
+      const go = async () => {
+        const ok = await checkTeacher(tpw.value.trim());
+        if (ok) { S.teacher = true; S.teacherLock = 1; save(); drawMap(); renderPanel(); toast("Đã mở khóa toàn bộ bản đồ."); tpw.value = ""; drawTeacher(); }
+        else { tnote.className = "note err"; tnote.textContent = "Sai mật khẩu. Chế độ này chỉ dành cho thầy cô."; tpw.select(); }
+      };
+      tpw.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); go(); } };
+      tbox.append(el("p", { text: "Nhập mật khẩu để mở khóa mọi địa danh và mức, xem trước câu hỏi." }),
+        el("div", { class: "row" }, [tpw, el("button", { class: "btn small", text: "Mở khóa", onclick: go })]), tnote);
+    }
+  }
+  drawTeacher();
+  const musicVol = el("input", { type: "range", id: "musicVol", min: "0", max: "100", value: String(Math.round((S.musicVol ?? .6) * 100)) });
+  musicVol.addEventListener("input", () => { S.musicVol = musicVol.value / 100; Music.setVolume(S.musicVol); save(); if (S.musicVol > 0 && !Music.playing) { S.music = true; Music.start(); hud(); } });
+  const confirmBox = el("div", { class: "row", hidden: true }, [
+    el("span", { class: "note err", text: "Xóa hết sao, hạt và phiếu?" }),
+    el("button", { class: "btn small red", text: "Xóa hết", onclick: () => { const keepName = S.name; S = fresh(); S.name = keepName; save(); closeModal(); goMap(); toast("Đã xóa tiến độ. Bắt đầu lại từ Lũng Cú!"); } }),
+    el("button", { class: "btn small ghost", text: "Thôi", onclick: () => confirmBox.hidden = true })]);
+  const m = el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "mTitle" }, [
+    closeX(), el("h2", { id: "mTitle", text: "Cài đặt" }),
+    el("div", { class: "menu-list" }, [
+      el("section", {}, [el("h3", { text: "Tên trên phiếu" }), nameIn, el("div", { class: "row" }, el("button", { class: "btn small", text: "Lưu tên", onclick: () => { const v = nameIn.value.trim(); if (!v) { note.className = "note err"; note.textContent = "Tên không được để trống."; return; } S.name = v; save(); hud(); toast("Đã lưu tên: " + v); } }))]),
+      el("section", {}, [el("h3", { text: "Chuyển tiến độ sang máy khác" }),
+        el("p", { text: "Tiến độ chỉ lưu trên trình duyệt này. Sao chép mã dưới đây, rồi dán vào ô Khôi phục ở máy khác." }), code,
+        el("div", { class: "row" }, el("button", { class: "btn small ghost", text: "Sao chép mã", onclick: async () => { try { await navigator.clipboard.writeText(code.value); toast("Đã sao chép mã sao lưu."); } catch (e) { code.select(); toast("Hãy bấm giữ và chọn Sao chép."); } } })),
+        el("p", { style: "margin-top:10px", text: "Khôi phục từ mã:" }), restore,
+        el("div", { class: "row" }, el("button", { class: "btn small", text: "Khôi phục", onclick: () => {
+          try { const o = JSON.parse(decodeURIComponent(escape(atob(restore.value.trim())))); if (!o || typeof o.prog !== "object") throw 0; delete o.v; o.teacher = false; o.teacherLock = 0; S = Object.assign(fresh(), o); save(); closeModal(); goMap(); toast("Đã khôi phục tiến độ của " + (S.name || "bạn") + "."); }
+          catch (e) { note.className = "note err"; note.textContent = "Mã không hợp lệ. Hãy dán đúng toàn bộ mã sao lưu."; } } })), note]),
+      el("section", {}, [el("h3", { text: "Nhạc nền" }),
+        el("p", { text: "Bản EDM không lời tự tổng hợp ngay trong trang. Nhạc tự nhỏ lại khi đang làm bài." }),
+        el("div", { class: "vol" }, [el("label", { for: "musicVol", text: "Âm lượng" }), musicVol])]),
+      el("section", {}, [el("h3", { text: "Chế độ giáo viên" }),
+        tbox,
+        el("p", { style: "margin-top:6px", text: "Phiếu điểm 10 vẫn chỉ trao khi qua đủ 4 mức." })]),
+      el("section", {}, [el("h3", { text: "Chơi lại từ đầu" }), el("button", { class: "btn small ghost", text: "Xóa tiến độ", onclick: () => confirmBox.hidden = false }), confirmBox])])]);
+  openModal(m);
+}
+
+/* Mật khẩu giáo viên chỉ lưu dưới dạng mã băm SHA-256 */
+const TEACHER_HASH = "5645a9b7f3651a9ce3ad8a4bc24e7297d74e60c47736083c7df0280965c452e4";
+async function checkTeacher(pw) {
+  try {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("vetvecto:" + pw));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("") === TEACHER_HASH;
+  } catch (e) { return false; }
+}
+
+/* ================= PHÁO GIẤY ================= */
+function confetti(n) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = $("#confetti"), ctx = cv.getContext("2d"); cv.hidden = false;
+  const W = cv.width = innerWidth, H = cv.height = innerHeight;
+  const cols = ["#E5463F", "#FFC53A", "#26935A", "#39B7CF", "#2D7FD3", "#F28DB2"];
+  const ps = Array.from({ length: n }, () => ({ x: W / 2 + (Math.random() - .5) * W * .3, y: H * .35, vx: (Math.random() - .5) * 14, vy: -Math.random() * 14 - 4, r: Math.random() * 6 + 4, c: pick(cols), a: Math.random() * 6, s: (Math.random() - .5) * .3 }));
+  let t = 0;
+  (function step() {
+    ctx.clearRect(0, 0, W, H); t++;
+    for (const p of ps) { p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.s; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); ctx.restore(); }
+    if (t < 160) requestAnimationFrame(step); else { ctx.clearRect(0, 0, W, H); cv.hidden = true; }
+  })();
+}
+
+
+/* ================= BẦU TRỜI LẤP LÁNH ================= */
+function sky() {
+  const cv = $("#sky"); if (!cv) return; const ctx = cv.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W, H, DPR, stars = [], motes = [];
+  function resize() {
+    DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    stars = Array.from({ length: Math.round(W * H / 6500) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.3 + .3, p: Math.random() * 6.28, s: .6 + Math.random() * 1.6 }));
+    motes = Array.from({ length: Math.round(W / 60) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 2.2 + 1, vx: (Math.random() - .5) * .25, vy: -Math.random() * .35 - .08, c: pick(["62,240,208", "155,107,255", "255,214,107", "255,111,181"]) }));
+  }
+  function frame(t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) { const a = .35 + .65 * Math.abs(Math.sin(s.p + t / 1000 * s.s)); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill(); }
+    for (const m of motes) {
+      m.x += m.vx; m.y += m.vy; if (m.y < -10) { m.y = H + 10; m.x = Math.random() * W; } if (m.x < -10) m.x = W + 10; if (m.x > W + 10) m.x = -10;
+      const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r * 5); g.addColorStop(0, `rgba(${m.c},.5)`); g.addColorStop(1, `rgba(${m.c},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, m.r * 5, 0, 6.283); ctx.fill();
+    }
+    if (!reduce && !document.hidden) requestAnimationFrame(frame);
+  }
+  resize(); addEventListener("resize", resize);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && !reduce) requestAnimationFrame(frame); });
+  requestAnimationFrame(frame);
+  // sao nhỏ lấp lánh trên biển của bản đồ
+  const g = $("#seastars");
+  if (g) for (let k = 0; k < 46; k++) {
+    const x = 470 + Math.random() * 340, y = 160 + Math.random() * 800;
+    const c = sv("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: (Math.random() * 1.6 + .5).toFixed(2), class: "twinkle", style: `animation-delay:${(Math.random() * 3).toFixed(2)}s` });
+    g.append(c);
+  }
+}
+/* ================= KHỞI ĐỘNG ================= */
+function start(data) {
+  S = (data && data.S) ? Object.assign(fresh(), data.S) : load();
+  if (S.teacher && S.teacherLock !== 1) { S.teacher = false; save(); }
+  try { window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({ S })); } catch (e) {}
+  mountParrots(); sky();
+  $("#homeBtn").addEventListener("click", () => { if (RUN) confirmQuit(); else goMap(); });
+  $("#walletBtn").addEventListener("click", openWallet);
+  $("#menuBtn").addEventListener("click", openMenu);
+  $("#soundBtn").addEventListener("click", () => { S.sound = !S.sound; save(); hud(); if (S.sound) play("tap"); });
+  $("#bookBtn").addEventListener("click", bookFromHud);
+  $("#musicBtn").addEventListener("click", () => { S.music = !S.music; save(); if (S.music) { Music.setVolume(S.musicVol ?? .6); Music.start(); toast("Nhạc nền: bật"); } else { Music.stop(); toast("Nhạc nền: tắt"); } hud(); });
+  Music.setVolume(S.musicVol ?? .6);
+  const firstGesture = e => { if (e && e.target && e.target.closest && e.target.closest("#musicBtn")) { removeEventListener("pointerdown", firstGesture, true); removeEventListener("keydown", firstGesture, true); return; } removeEventListener("pointerdown", firstGesture, true); removeEventListener("keydown", firstGesture, true); if (S.music && !Music.playing) { Music.start(); hud(); } };
+  addEventListener("pointerdown", firstGesture, true); addEventListener("keydown", firstGesture, true);
+  $("#quitBtn").addEventListener("click", confirmQuit);
+  $("#nameForm").addEventListener("submit", e => {
+    e.preventDefault(); const v = $("#nameInput").value.trim();
+    if (!v) { $("#nameInput").focus(); toast("Nhập tên để Vẹt ghi lên phiếu điểm 10 nhé!"); return; }
+    const first = !S.name && !S.omi.n && totalStars() === 0; S.name = v; save(); play("win"); goMap();
+    if (first) toast(`Vẹt tặng bạn ${S.seeds} hạt khởi hành! Dùng hạt cho trợ giúp và Hộp quẻ.`);
+  });
+  hud();
+  if (S.name) goMap(); else show("scrWelcome");
+}
+function confirmQuit() {
+  openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "qTitle" }, [
+    el("h2", { id: "qTitle", text: "Rời trạm?" }),
+    el("p", { text: "Kết quả lượt này sẽ không được tính. Hạt đã nhận vẫn được giữ." }),
+    el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Ở lại", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Rời trạm", onclick: () => { closeModal(true); goMap(); } })])]));
+}
+(function boot() {
+  const hot = window.claude && window.claude.hot;
+  if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
+})();
