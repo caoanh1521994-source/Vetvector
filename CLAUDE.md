@@ -10,3 +10,4 @@ Game web một tệp cho học sinh lớp 10 (tiếng Việt). Chủ repo trao �
 - Mật khẩu chế độ giáo viên chỉ lưu dạng SHA-256 (`TEACHER_HASH` trong `src/app.js`, tiền tố `vetvecto:`); không ghi mật khẩu dạng chữ vào repo.
 - Kinh tế hạt: gợi ý/sổ tay khi đang làm câu −10, 50/50 −20, lắc quẻ −15; người mới có 30 hạt.
 - Trước khi đẩy: chạy thử bằng Playwright (Chromium có sẵn) ở 1200px và 390px, không có lỗi `pageerror`.
+- Mọi địa danh, mức và Thử thách Đất Mũi đều mở sẵn (`stageUnlocked`/`levelUnlocked` luôn trả về true); phiếu điểm 10 vẫn cần qua đủ 4 mức.

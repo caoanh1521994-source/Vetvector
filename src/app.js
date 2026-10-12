@@ -50,7 +50,7 @@ const STAGES = [
   { id: "boss", no: 9, ch: 5, short: "Cà Mau", place: "Mũi Cà Mau", topic: "Thử thách tổng hợp giữa kì I", icon: "lm-cape", x: 200, y: 925, side: "r",
     note: "Đất Mũi là điểm cực Nam trên đất liền. 10 câu trộn từ cả 8 bài, mức Thông hiểu đến Vận dụng cao.",
     say: "Chặng cuối rồi! Trộn đủ cả 8 bài, giữ chắc trái tim nhé!",
-    tip: R`Mở khóa khi đã qua mức 3 (Vận dụng) ở cả 8 địa danh. Vượt qua để nhận Phiếu điểm 10 vàng.`,
+    tip: R`10 câu trộn từ cả 8 bài. Nên luyện chắc mức 3 (Vận dụng) ở các địa danh trước khi thử sức. Vượt qua để nhận Phiếu điểm 10 vàng.`,
     food: { name: "Cua Cà Mau", icon: "fd-cua", line: "Cua biển Cà Mau chắc thịt, nhiều gạch, nổi tiếng khắp cả nước.", gold: true } },
 ];
 const N_STOPS = 8;
@@ -95,17 +95,10 @@ const pick = a => a[Math.floor(Math.random() * a.length)];
 const stageIdx = id => STAGES.findIndex(s => s.id === id);
 const stars = (id, l) => (S.prog[id] && S.prog[id][l] && S.prog[id][l].stars) || 0;
 const passed = (id, l) => stars(id, l) > 0;
-function stageUnlocked(i) {
-  if (S.teacher || i === 0) return true;
-  if (i < N_STOPS) return passed(STAGES[i - 1].id, 3);
-  return STAGES.slice(0, N_STOPS).every(s => passed(s.id, 3));
-}
-function levelUnlocked(id, l) {
-  const i = stageIdx(id);
-  if (!stageUnlocked(i)) return false;
-  if (id === "boss") return true;
-  return S.teacher || l === 1 || passed(id, l - 1);
-}
+/* Mọi địa danh và mức đều mở sẵn: học sinh chọn luyện bất kì phần nào (ví dụ chỉ mức Vận dụng cao).
+   Phiếu điểm 10 vẫn chỉ trao khi qua đủ 4 mức của địa danh; phiếu vàng khi qua Thử thách Đất Mũi. */
+function stageUnlocked(i) { return true; }
+function levelUnlocked(id, l) { return true; }
 const stageDone = id => id === "boss" ? passed("boss", 1) : [1, 2, 3, 4].every(l => passed(id, l));
 const totalStars = () => Object.values(S.prog).reduce((t, lv) => t + Object.values(lv).reduce((u, x) => u + (x.stars || 0), 0), 0);
 const ticketCount = () => Object.keys(S.tickets).length;
@@ -186,8 +179,8 @@ function drawMap() {
     const segDone = i < N_STOPS - 1 ? passed(a.id, 3) : STAGES.slice(0, N_STOPS).every(s => passed(s.id, 3));
     if (segDone) routes.append(sv("path", { d, class: "route done" }));
   }
-  let current = 0;
-  STAGES.forEach((s, i) => { if (stageUnlocked(i)) current = i; });
+  let current = STAGES.findIndex(s => !stageDone(s.id));
+  if (current < 0) current = STAGES.length - 1;
   const R0 = 24;
   STAGES.forEach((s, i) => {
     const open = stageUnlocked(i), done = stageDone(s.id);
@@ -457,8 +450,7 @@ function finish() {
   let msg;
   if (!ok) msg = "Hết tim ở lượt này. Đọc lại lời giải rồi thử lại, câu hỏi sẽ được xáo mới.";
   else if (newTicket) msg = r.id === "boss" ? "Bạn đã chinh phục Đất Mũi! Phiếu điểm 10 vàng · Cua Cà Mau là của bạn." : `Hoàn thành cả 4 mức ở ${s.place}! Bạn nhận Phiếu điểm 10 · ${s.food.name}.`;
-  else if (r.id !== "boss" && r.lv === 3 && stageIdx(r.id) < N_STOPS - 1 && prev === 0) msg = `Đã mở khóa địa danh tiếp theo: ${STAGES[stageIdx(r.id) + 1].place}!`;
-  else if (nextLv && prev === 0) msg = `Đã mở mức ${nextLv} – ${LEVELS[nextLv - 1].name}.`;
+  else if (nextLv && prev === 0) msg = `Thử sức tiếp với mức ${nextLv} – ${LEVELS[nextLv - 1].name} nhé!`;
   else msg = st === 3 ? "Không sai câu nào. Tuyệt vời!" : "Qua trạm rồi! Chơi lại để gom đủ 3 sao nhé.";
   const m = el("div", { class: "modal result", role: "dialog", "aria-modal": "true", "aria-labelledby": "resTitle" }, [
     el("div", { "data-parrot": "", style: "width:120px;margin:0 auto" }),
@@ -800,17 +792,17 @@ function openMenu() {
   function drawTeacher() {
     tbox.innerHTML = ""; tnote.textContent = ""; tnote.className = "note";
     if (S.teacher) {
-      tbox.append(el("p", { class: "note ok", text: "Đang bật: mọi địa danh và mức đều đã mở." }),
+      tbox.append(el("p", { class: "note ok", text: "Đang bật chế độ giáo viên." }),
         el("div", { class: "row" }, el("button", { class: "btn small ghost", text: "Tắt chế độ giáo viên", onclick: () => { S.teacher = false; S.teacherLock = 0; save(); drawMap(); renderPanel(); toast("Đã tắt chế độ giáo viên."); drawTeacher(); } })));
     } else {
       const go = async () => {
         const ok = await checkTeacher(tpw.value.trim());
-        if (ok) { S.teacher = true; S.teacherLock = 1; save(); drawMap(); renderPanel(); toast("Đã mở khóa toàn bộ bản đồ."); tpw.value = ""; drawTeacher(); }
+        if (ok) { S.teacher = true; S.teacherLock = 1; save(); drawMap(); renderPanel(); toast("Đã bật chế độ giáo viên."); tpw.value = ""; drawTeacher(); }
         else { tnote.className = "note err"; tnote.textContent = "Sai mật khẩu. Chế độ này chỉ dành cho thầy cô."; tpw.select(); }
       };
       tpw.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); go(); } };
-      tbox.append(el("p", { text: "Nhập mật khẩu để mở khóa mọi địa danh và mức, xem trước câu hỏi." }),
-        el("div", { class: "row" }, [tpw, el("button", { class: "btn small", text: "Mở khóa", onclick: go })]), tnote);
+      tbox.append(el("p", { text: "Dành cho thầy cô. Mọi địa danh và mức hiện đã mở sẵn cho học sinh." }),
+        el("div", { class: "row" }, [tpw, el("button", { class: "btn small", text: "Bật", onclick: go })]), tnote);
     }
   }
   drawTeacher();
