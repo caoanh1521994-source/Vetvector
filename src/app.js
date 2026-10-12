@@ -71,7 +71,7 @@ const SAY = {
 
 /* ================= TRẠNG THÁI ================= */
 const KEY = "vetvecto-v2";
-const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
+const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
 let S = fresh();
 function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && typeof s === "object") return Object.assign(fresh(), s); } } catch (e) {}
@@ -263,6 +263,14 @@ function renderPanel() {
     el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : boss ? "Vượt qua thử thách để nhận." : `Qua cả 4 mức để nhận (${nPassed}/4).` }), bar])]);
   if (has || S.teacher) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket(s.id)); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket(s.id); }); }
   body.append(rw);
+  const cs = el("div", { class: "cstrip" }, [el("span", { class: "cs-l" }, [icon("i-coupon"), document.createTextNode("Phiếu miễn 2% BTVN")])]);
+  for (const l of (boss ? [1] : [1, 2, 3, 4])) {
+    const key = `${s.id}.${l}`, rec = S.coupons[key], view = !!rec || S.teacher;
+    const c = el(view ? "button" : "span", { class: "cchip" + (rec ? (rec.used ? " used" : " has") : ""), title: rec ? (rec.used ? "Đã dùng" : "Đã nhận, bấm để xem") : "Qua mức này lần đầu để nhận", text: boss ? "Thử thách" : `M${l}` });
+    if (view) c.addEventListener("click", () => openCoupon(key));
+    cs.append(c);
+  }
+  body.append(cs);
   card.append(body);
   p.append(card);
   const tipc = el("div", { class: "tipcard" }, [icon("parrot-head"), el("div", { style: "min-width:0" }, [el("p", {}, [el("b", { text: "Mẹo của Vẹt: " }), T(s.tip)]),
@@ -436,8 +444,9 @@ function finish() {
   S.prog[r.id] = S.prog[r.id] || {};
   if (st > prev) S.prog[r.id][r.lv] = { stars: st };
   let bonus = 0; if (ok) { bonus = st * 5; S.seeds += bonus; }
-  let newTicket = false;
+  let newTicket = false, newCoupon = false; const ckey = `${r.id}.${r.lv}`;
   if (ok && stageDone(r.id) && !S.tickets[r.id]) { S.tickets[r.id] = new Date().toISOString().slice(0, 10); newTicket = true; }
+  if (ok && !S.coupons[ckey]) { S.coupons[ckey] = { d: new Date().toISOString().slice(0, 10) }; newCoupon = true; }
   save(); hud();
   if (ok) { play(newTicket ? "ticket" : "win"); confetti(newTicket ? 220 : 120); }
   const s = STAGES[stageIdx(r.id)];
@@ -445,7 +454,8 @@ function finish() {
   const nextLv = r.id !== "boss" && r.lv < 4 && levelUnlocked(r.id, r.lv + 1) ? r.lv + 1 : null;
   const btns = el("div", { class: "btnrow" });
   if (newTicket) btns.append(el("button", { class: "btn red", text: "Mở Phiếu điểm 10", onclick: () => { closeModal(); openTicket(r.id, true); } }));
-  if (nextLv && !newTicket) btns.append(el("button", { class: "btn red", text: `Lên mức ${nextLv}`, onclick: () => { closeModal(); startRound(r.id, nextLv); } }));
+  if (newCoupon) btns.append(el("button", { class: "btn " + (newTicket ? "ghost" : "red"), text: "Xem phiếu miễn 2%", onclick: () => { closeModal(); openCoupon(ckey, true); } }));
+  if (nextLv && !newTicket) btns.append(el("button", { class: "btn " + (newCoupon ? "ghost" : "red"), text: `Lên mức ${nextLv}`, onclick: () => { closeModal(); startRound(r.id, nextLv); } }));
   btns.append(el("button", { class: "btn ghost", text: "Chơi lại", onclick: () => { closeModal(); startRound(r.id, r.lv); } }));
   btns.append(el("button", { class: "btn ghost", text: "Về bản đồ", onclick: () => { closeModal(); goMap(); } }));
   let msg;
@@ -458,6 +468,7 @@ function finish() {
     el("h2", { id: "resTitle", text: ok ? (st === 3 ? "Hoàn hảo!" : "Qua trạm!") : "Hết lượt rồi!" }),
     big,
     el("p", { style: "font-weight:600;margin:0 0 6px", text: msg }),
+    newCoupon ? el("p", { class: "res-coupon" }, [icon("i-coupon"), el("span", { html: "<b>+1 Phiếu miễn 2%</b> bài tập về nhà" })]) : null,
     el("div", { class: "stats" }, [
       el("div", {}, [el("b", { text: `${r.right}/${r.qs.length}` }), el("span", { text: "câu đúng" })]),
       el("div", {}, [el("b", { text: `+${r.seeds + bonus}` }), el("span", { text: "hạt hướng dương" })]),
@@ -494,12 +505,13 @@ function openTicket(id, reveal) {
     ticketEl(id, reveal),
     el("p", { style: "font-size:.88rem;color:var(--ink-soft);text-align:center;margin:12px 0", text: !S.tickets[id] && S.teacher ? "Bản xem trước dành cho giáo viên. Học sinh chỉ nhận phiếu này khi vượt qua đủ các mức." : "Chụp màn hình phiếu để khoe với thầy cô và bố mẹ nhé! Thầy cô có thể đối chiếu mã phiếu với tên học sinh." }),
     el("div", { class: "btnrow" }, [
-      el("button", { class: "btn ghost", text: "Mở túi phiếu", onclick: () => { closeModal(); openWallet(); } }),
+      el("button", { class: "btn ghost", text: "Mở túi phiếu", onclick: () => { closeModal(); openWallet("ticket"); } }),
       el("button", { class: "btn red", text: "Về bản đồ", onclick: () => { closeModal(); goMap(); } })])]);
   openModal(m);
   if (reveal) { play("ticket"); confetti(180); }
 }
-function openWallet() {
+function openWallet(tab) {
+  tab = tab || "ticket";
   const grid = el("div", { class: "wallet" });
   for (const s of STAGES) {
     const has = !!S.tickets[s.id], gold = !!s.food.gold, view = has || S.teacher;
@@ -510,9 +522,67 @@ function openWallet() {
     if (view) slot.addEventListener("click", () => { closeModal(); openTicket(s.id); });
     grid.append(slot);
   }
+  const all = Object.keys(S.coupons), used = all.filter(k => S.coupons[k].used).length, left = all.length - used;
+  const clist = el("div", { class: "cwallet" });
+  for (const s of STAGES) {
+    const row = el("div", { class: "crow" }, [el("div", { class: "crow-l" }, [el("b", { text: s.id === "boss" ? "Đất Mũi" : `Bài ${s.no} · ${s.short}` }), el("small", { text: s.id === "boss" ? "Thử thách tổng hợp" : s.topic.replace(/^Bài \d+\. /, "") })])]);
+    const chips = el("div", { class: "crow-c" });
+    for (const l of (s.id === "boss" ? [1] : [1, 2, 3, 4])) {
+      const key = `${s.id}.${l}`, rec = S.coupons[key], view = !!rec || S.teacher;
+      const c = el(view ? "button" : "span", { class: "cslot" + (rec ? (rec.used ? " used" : " has") : ""), "aria-label": `${s.short} ${s.id === "boss" ? "thử thách" : "mức " + l}: ${rec ? (rec.used ? "đã dùng" : "đã nhận") : "chưa nhận"}` }, [
+        el("b", { text: "2%" }), el("small", { text: s.id === "boss" ? "Thử thách" : `Mức ${l}` })]);
+      if (view) c.addEventListener("click", () => { closeModal(); openCoupon(key); });
+      chips.append(c);
+    }
+    row.append(chips); clist.append(row);
+  }
+  const panes = {
+    ticket: [el("p", { style: "margin:4px 0 0", text: `Bạn có ${ticketCount()}/9 phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` + (S.teacher ? " Chế độ giáo viên: bấm vào phiếu bất kì để xem trước." : "") }), grid],
+    coupon: [el("p", { style: "margin:4px 0 0", text: `Mỗi mức vượt qua lần đầu tặng 1 phiếu miễn 2% bài tập về nhà. Bạn có ${all.length}/33 phiếu (tổng ${all.length * 2}%), đã dùng ${used}, còn ${left} phiếu = ${left * 2}%.` + (S.teacher ? " Chế độ giáo viên: bấm phiếu để xem hoặc đánh dấu đã dùng." : "") }), clist],
+  };
+  const body = el("div");
+  const tabs = el("div", { class: "book-tabs wtabs", role: "tablist" });
+  const draw = () => { body.innerHTML = ""; body.append(...panes[tab]); tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t === tab))); };
+  [["ticket", `Phiếu điểm 10 · ${ticketCount()}`], ["coupon", `Phiếu miễn BTVN · ${all.length}`]].forEach(([t, txt]) => tabs.append(el("button", { "data-t": t, role: "tab", text: txt, onclick: () => { tab = t; draw(); play("tap"); } })));
+  draw();
   openModal(el("div", { class: "modal wide", role: "dialog", "aria-modal": "true", "aria-labelledby": "wTitle" }, [
-    closeX(), el("h2", { id: "wTitle", text: "Túi phiếu điểm 10" }),
-    el("p", { style: "margin:4px 0 0;color:var(--ink-soft)", text: `Bạn có ${ticketCount()}/9 phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` + (S.teacher ? " Chế độ giáo viên: bấm vào phiếu bất kì để xem trước." : "") }), grid]));
+    closeX(), el("h2", { id: "wTitle", text: "Túi phiếu" }), tabs, body]));
+}
+/* ================= PHIẾU MIỄN 2% BTVN ================= */
+function couponEl(key, reveal) {
+  const [id, lvS] = key.split("."), lv = +lvS, s = STAGES[stageIdx(id)], boss = id === "boss";
+  const rec = S.coupons[key], date = rec ? rec.d : (S.teacher ? new Date().toISOString().slice(0, 10) : ""), d = date.split("-").reverse().join("/");
+  const lvName = boss ? "Thử thách tổng hợp" : `Mức ${lv} · ${LEVELS[lv - 1].name}`;
+  return el("div", { class: "coupon" + (reveal ? " reveal" : "") + (rec && rec.used ? " used" : ""), style: `--lvg:${boss ? "var(--red)" : LEVELS[lv - 1].color}` }, [
+    el("div", { class: "cp-main" }, [
+      el("div", { class: "cp-eyebrow", text: "Phiếu miễn bài tập về nhà" }),
+      el("div", { class: "cp-big" }, [el("b", { text: "2%" }), el("span", { html: "Miễn <strong>2%</strong> bài tập<br>về nhà" })]),
+      el("div", { class: "cp-for", text: `${boss ? s.place : `Bài ${s.no} · ${s.place}`}` }),
+      el("div", { class: "cp-lvl", text: lvName }),
+      el("div", { class: "cp-name", text: S.name || "Nhà thám hiểm" }),
+      el("div", { class: "cp-rule", text: "Dùng một lần · Xuất trình cho thầy cô khi nộp bài" })]),
+    el("div", { class: "cp-stub" }, [
+      el("small", { text: boss ? "THỬ THÁCH" : "MỨC" }),
+      el("div", { class: "cp-lv", text: boss ? "★" : String(lv) }),
+      el("div", { class: "cp-code", text: `MB${s.no}${lv}-${hash((S.name || "") + key + date).slice(0, 5)}` }),
+      el("small", { class: "cp-date", text: d }),
+      el("div", { class: "cp-sign" }, [icon("parrot-head"), el("span", { text: "Vẹt Vectơ" })])]),
+    rec && rec.used ? el("div", { class: "cp-stamp", text: "ĐÃ DÙNG" }) : null]);
+}
+function openCoupon(key, reveal) {
+  const rec = S.coupons[key];
+  const btns = el("div", { class: "btnrow" });
+  if (S.teacher && rec) btns.append(el("button", { class: "btn " + (rec.used ? "ghost" : "green"), text: rec.used ? "Bỏ đánh dấu đã dùng" : "Đánh dấu đã dùng", onclick: () => {
+    if (rec.used) delete rec.used; else rec.used = new Date().toISOString().slice(0, 10);
+    save(); toast(rec.used ? "Đã đánh dấu phiếu đã dùng." : "Đã bỏ đánh dấu."); openCoupon(key); if (!$("#scrMap").hidden) renderPanel(); } }));
+  btns.append(el("button", { class: "btn ghost", text: "Mở túi phiếu", onclick: () => { closeModal(); openWallet("coupon"); } }),
+    el("button", { class: "btn red", text: "Đóng", onclick: () => closeModal() }));
+  const cap = !rec ? "Bản xem trước dành cho giáo viên. Học sinh nhận phiếu này khi vượt qua mức lần đầu."
+    : rec.used ? `Phiếu đã được dùng ngày ${rec.used.split("-").reverse().join("/")}.`
+    : "Chụp màn hình hoặc mở phiếu này cho thầy cô xem khi muốn dùng. Thầy cô sẽ đánh dấu phiếu đã dùng.";
+  openModal(el("div", { class: "modal cpmodal", role: "dialog", "aria-modal": "true", "aria-label": "Phiếu miễn 2% bài tập về nhà" }, [
+    couponEl(key, reveal), el("p", { class: "cp-cap", text: cap }), btns]));
+  if (reveal) { play("ticket"); confetti(120); }
 }
 
 
@@ -948,10 +1018,14 @@ function sky() {
 function start(data) {
   S = (data && data.S) ? Object.assign(fresh(), data.S) : load();
   if (S.teacher && S.teacherLock !== 1) { S.teacher = false; save(); }
+  // trao bù phiếu miễn cho các mức đã qua trước khi có phần thưởng này
+  S.coupons = S.coupons || {}; let bf = 0;
+  for (const st of STAGES) for (const l of (st.id === "boss" ? [1] : [1, 2, 3, 4])) if (passed(st.id, l) && !S.coupons[`${st.id}.${l}`]) { S.coupons[`${st.id}.${l}`] = { d: new Date().toISOString().slice(0, 10) }; bf++; }
+  if (bf) save();
   try { window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({ S })); } catch (e) {}
   mountParrots(); sky();
   $("#homeBtn").addEventListener("click", () => { if (RUN) confirmQuit(); else goMap(); });
-  $("#walletBtn").addEventListener("click", openWallet);
+  $("#walletBtn").addEventListener("click", () => openWallet());
   $("#menuBtn").addEventListener("click", openMenu);
   $("#soundBtn").addEventListener("click", () => { S.sound = !S.sound; save(); hud(); if (S.sound) play("tap"); });
   $("#bookBtn").addEventListener("click", bookFromHud);

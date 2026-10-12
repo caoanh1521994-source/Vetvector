@@ -12,3 +12,4 @@ Game web một tệp cho học sinh lớp 10 (tiếng Việt). Chủ repo trao �
 - Trước khi đẩy: chạy thử bằng Playwright (Chromium có sẵn) ở 1200px và 390px, không có lỗi `pageerror`.
 - Mọi địa danh, mức và Thử thách Đất Mũi đều mở sẵn (`stageUnlocked`/`levelUnlocked` luôn trả về true); phiếu điểm 10 vẫn cần qua đủ 4 mức.
 - Chế độ giáo viên (cần mật khẩu): nút "Đáp án" ở từng mức và trong Cài đặt (`openKey`), xem trước mọi phiếu thưởng (ví phiếu, thẻ phần thưởng).
+- Phiếu miễn 2% BTVN: mỗi mức (và Thử thách Đất Mũi) qua lần đầu tặng 1 phiếu, lưu ở `S.coupons["bX.L"] = {d, used}`; giáo viên đánh dấu đã dùng trong `openCoupon`. Túi phiếu có 2 tab.
