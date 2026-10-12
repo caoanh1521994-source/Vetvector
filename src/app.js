@@ -914,10 +914,15 @@ function mapCaveNode(nodes) {
     nodes.append(g);
   } else {
     const n = STAGES.slice(0, N_STOPS).filter(s => passed(s.id, 4)).length;
-    const g = sv("g", { class: "secret-spot", tabindex: "0", role: "button", "aria-label": "Một điểm lấp lánh bí ẩn" });
-    g.append(sv("circle", { cx: CAVE.x, cy: CAVE.y, r: 16, fill: "transparent" }));
-    g.append(sv("path", { d: `M${CAVE.x} ${CAVE.y - 9}l2.4 6.6 6.6 2.4-6.6 2.4-2.4 6.6-2.4-6.6-6.6-2.4 6.6-2.4z`, fill: "#F3E8FF", class: "twinkle" }));
-    const hint = () => { play("tap"); toast(`Có gì đó lấp lánh trong dãy núi đá vôi… Vượt mức 4 (Vận dụng cao) ở ${CAVE_NEED} địa danh để tìm lối vào (${n}/${CAVE_NEED}).`); };
+    const g = sv("g", { class: "secret-spot", tabindex: "0", role: "button", "aria-label": "Bản đồ bí ẩn: bấm để xem cách tìm lối vào" });
+    g.append(sv("circle", { cx: CAVE.x, cy: CAVE.y, r: 44, fill: "url(#haloSecret)", class: "pulse-soft" }));
+    const bob = sv("g", { class: "smap" });
+    bob.append(sv("use", { href: "#i-secretmap", x: CAVE.x - 30, y: CAVE.y - 30, width: 60, height: 60 }));
+    bob.append(sv("circle", { cx: CAVE.x + 24, cy: CAVE.y - 24, r: 12, fill: "#9B6BFF", stroke: "#F3E8FF", "stroke-width": 2.5 }));
+    const qm = sv("text", { x: CAVE.x + 24, y: CAVE.y - 18, "text-anchor": "middle", class: "smap-q" }); qm.textContent = "?"; bob.append(qm);
+    g.append(bob);
+    [[-34, -20], [30, 22], [-22, 30], [36, -2]].forEach(([dx, dy], k) => g.append(sv("path", { d: `M${CAVE.x + dx} ${CAVE.y + dy - 6}l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z`, fill: "#FFF3B0", class: "twinkle", style: `animation-delay:${k * .7}s` })));
+    const hint = () => { play("tap"); toast(`Một tấm bản đồ bí ẩn chỉ đường vào lòng núi đá vôi… Vượt mức 4 (Vận dụng cao) ở ${CAVE_NEED} địa danh để tìm lối vào (${n}/${CAVE_NEED}).`); };
     g.addEventListener("click", hint); g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); hint(); } });
     nodes.append(g);
   }

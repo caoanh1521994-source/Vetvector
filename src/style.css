@@ -730,3 +730,8 @@ button.cslot:hover{transform:translateY(-2px)}
 .e-act{margin-top:14px}
 .e-act .btn.ehint svg{width:20px;height:20px}
 @media (max-width:560px){ .ecard{grid-template-columns:auto minmax(0,1fr)} .ecard .btn{grid-column:1/-1} .ep-head{grid-template-columns:auto minmax(0,1fr)} .ep-pts{grid-column:2;justify-self:start} }
+.map .secret-spot{cursor:pointer}
+.map .smap{animation:smapbob 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 0 10px rgba(185,140,255,.9))}
+.map .secret-spot:hover .smap,.map .secret-spot:focus-visible .smap{animation-duration:.9s}
+.map .smap-q{font-family:var(--display);font-weight:800;font-size:17px;fill:#fff;pointer-events:none}
+@keyframes smapbob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-6px) rotate(6deg)}}

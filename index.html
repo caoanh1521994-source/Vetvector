@@ -748,6 +748,11 @@ button.cslot:hover{transform:translateY(-2px)}
 .e-act{margin-top:14px}
 .e-act .btn.ehint svg{width:20px;height:20px}
 @media (max-width:560px){ .ecard{grid-template-columns:auto minmax(0,1fr)} .ecard .btn{grid-column:1/-1} .ep-head{grid-template-columns:auto minmax(0,1fr)} .ep-pts{grid-column:2;justify-self:start} }
+.map .secret-spot{cursor:pointer}
+.map .smap{animation:smapbob 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 0 10px rgba(185,140,255,.9))}
+.map .secret-spot:hover .smap,.map .secret-spot:focus-visible .smap{animation-duration:.9s}
+.map .smap-q{font-family:var(--display);font-weight:800;font-size:17px;fill:#fff;pointer-events:none}
+@keyframes smapbob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-6px) rotate(6deg)}}
 
 </style>
 
@@ -829,6 +834,7 @@ button.cslot:hover{transform:translateY(-2px)}
     <!-- mini parrot head for tokens & signatures -->
     <symbol id="lm-cave" viewBox="0 0 60 60"><path d="M2 56L14 22l8 6 10-18 10 14 6-6 10 38z" fill="#4E8F5A" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M20 56c0-14 5-22 12-22s12 8 12 22z" fill="#17324A"/><path d="M30 6l3 20h-6z" fill="#FFF3B0" opacity=".9"/><path d="M26 56c0-10 3-15 6-15s6 5 6 15z" fill="#3EF0D0" opacity=".55"/><path d="M24 42l2 5 2-5M36 41l2 6 2-6" fill="#C9C2B0" stroke="#17324A" stroke-width="1.2"/><circle cx="32" cy="50" r="2.2" fill="#FFF3B0"/></symbol>
     <symbol id="fd-chaocanh" viewBox="0 0 60 60"><path d="M24 18c-3-4 3-6 0-10M36 18c-3-4 3-6 0-10" fill="none" stroke="#9FB4C2" stroke-width="2" stroke-linecap="round"/><use href="#bowl"/><ellipse cx="30" cy="30" rx="23" ry="5" fill="#F2DFA8" stroke="#17324A" stroke-width="2"/><path d="M12 30c4-3 7 2 11-1s7 2 11-1 7 2 12-1" fill="none" stroke="#FFF8E8" stroke-width="3.4" stroke-linecap="round"/><path d="M17 27c3 1 5 0 6-2M36 26c2 2 5 2 7 0" fill="none" stroke="#F0784A" stroke-width="2.6" stroke-linecap="round"/><circle cx="30" cy="27" r="1.6" fill="#3E9A52"/><circle cx="45" cy="30" r="1.4" fill="#3E9A52"/><circle cx="14" cy="31" r="1.4" fill="#E5463F"/></symbol>
+    <symbol id="i-secretmap" viewBox="0 0 64 64"><path d="M10 14c6-3 12 2 18-1s12-3 18 0 8 1 8 1l2 34c-6 3-12-2-18 1s-12 3-18 0-8-1-8-1z" fill="#F6E3B4" stroke="#6B4318" stroke-width="2.4" stroke-linejoin="round"/><rect x="5" y="11" width="8" height="40" rx="4" fill="#D9A35A" stroke="#6B4318" stroke-width="2.2"/><rect x="51" y="13" width="8" height="40" rx="4" fill="#D9A35A" stroke="#6B4318" stroke-width="2.2"/><path d="M17 42l5-8 4 5 5-9 6 12z" fill="#7FB86A" stroke="#6B4318" stroke-width="1.4" stroke-linejoin="round"/><path d="M18 22c4 4 10 0 14 4s4 10 10 10" fill="none" stroke="#C9302C" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/><path d="M40 33l6 6M46 33l-6 6" stroke="#C9302C" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="20" r="3" fill="none" stroke="#6B4318" stroke-width="1.4"/><path d="M22 15.5v9M17.5 20h9" stroke="#6B4318" stroke-width="1"/></symbol>
     <symbol id="parrot-head" viewBox="0 0 60 60"><path d="M30 8l4-7 3 8" fill="#FFC53A" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/><circle cx="28" cy="32" r="20" fill="#E5463F" stroke="#17324A" stroke-width="2.5"/><ellipse cx="35" cy="28" rx="9" ry="8" fill="#fff"/><circle cx="36" cy="28" r="3.4" fill="#17324A"/><circle cx="37.2" cy="26.8" r="1.1" fill="#fff"/><path d="M44 30c8 0 12 6 9 12-3-3-6-4-10-3z" fill="#FFE7B8" stroke="#17324A" stroke-width="2.2" stroke-linejoin="round"/><circle cx="24" cy="38" r="3" fill="#FF9AA5" opacity=".8"/></symbol>
   </defs>
 </svg>
@@ -3396,10 +3402,15 @@ function mapCaveNode(nodes) {
     nodes.append(g);
   } else {
     const n = STAGES.slice(0, N_STOPS).filter(s => passed(s.id, 4)).length;
-    const g = sv("g", { class: "secret-spot", tabindex: "0", role: "button", "aria-label": "Một điểm lấp lánh bí ẩn" });
-    g.append(sv("circle", { cx: CAVE.x, cy: CAVE.y, r: 16, fill: "transparent" }));
-    g.append(sv("path", { d: `M${CAVE.x} ${CAVE.y - 9}l2.4 6.6 6.6 2.4-6.6 2.4-2.4 6.6-2.4-6.6-6.6-2.4 6.6-2.4z`, fill: "#F3E8FF", class: "twinkle" }));
-    const hint = () => { play("tap"); toast(`Có gì đó lấp lánh trong dãy núi đá vôi… Vượt mức 4 (Vận dụng cao) ở ${CAVE_NEED} địa danh để tìm lối vào (${n}/${CAVE_NEED}).`); };
+    const g = sv("g", { class: "secret-spot", tabindex: "0", role: "button", "aria-label": "Bản đồ bí ẩn: bấm để xem cách tìm lối vào" });
+    g.append(sv("circle", { cx: CAVE.x, cy: CAVE.y, r: 44, fill: "url(#haloSecret)", class: "pulse-soft" }));
+    const bob = sv("g", { class: "smap" });
+    bob.append(sv("use", { href: "#i-secretmap", x: CAVE.x - 30, y: CAVE.y - 30, width: 60, height: 60 }));
+    bob.append(sv("circle", { cx: CAVE.x + 24, cy: CAVE.y - 24, r: 12, fill: "#9B6BFF", stroke: "#F3E8FF", "stroke-width": 2.5 }));
+    const qm = sv("text", { x: CAVE.x + 24, y: CAVE.y - 18, "text-anchor": "middle", class: "smap-q" }); qm.textContent = "?"; bob.append(qm);
+    g.append(bob);
+    [[-34, -20], [30, 22], [-22, 30], [36, -2]].forEach(([dx, dy], k) => g.append(sv("path", { d: `M${CAVE.x + dx} ${CAVE.y + dy - 6}l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z`, fill: "#FFF3B0", class: "twinkle", style: `animation-delay:${k * .7}s` })));
+    const hint = () => { play("tap"); toast(`Một tấm bản đồ bí ẩn chỉ đường vào lòng núi đá vôi… Vượt mức 4 (Vận dụng cao) ở ${CAVE_NEED} địa danh để tìm lối vào (${n}/${CAVE_NEED}).`); };
     g.addEventListener("click", hint); g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); hint(); } });
     nodes.append(g);
   }
