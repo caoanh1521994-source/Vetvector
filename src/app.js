@@ -112,11 +112,11 @@ let AC = null;
 function play(kind) {
   if (!S.sound) return;
   try {
-    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    AC = Music.context(); if (AC.state !== "running") Music.unlock();
     if (kind === "rattle") {
       for (let k = 0; k < 9; k++) { const t = AC.currentTime + k * .1 + Math.random() * .03, o = AC.createOscillator(), g = AC.createGain();
         o.type = "square"; o.frequency.value = 700 + Math.random() * 900; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t + .004); g.gain.exponentialRampToValueAtTime(.0001, t + .05);
-        o.connect(g).connect(AC.destination); o.start(t); o.stop(t + .06); }
+        link(o, g, AC.destination); o.start(t); o.stop(t + .06); }
       return;
     }
     const seq = { chime: [[1047, .12], [1319, .12], [1568, .35]], wind: [[392, .3], [330, .5]], good: [[660, .09], [990, .14]], bad: [[220, .14], [165, .2]], win: [[523, .1], [659, .1], [784, .1], [1047, .25]], tap: [[520, .05]], ticket: [[784, .1], [988, .1], [1175, .1], [1568, .3]] }[kind] || [];
@@ -125,7 +125,7 @@ function play(kind) {
       const o = AC.createOscillator(), g = AC.createGain();
       o.type = kind === "bad" ? "triangle" : "sine"; o.frequency.value = f;
       g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.18, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + d);
-      o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d + .02); t += d * .9;
+      link(o, g, AC.destination); o.start(t); o.stop(t + d + .02); t += d * .9;
     }
   } catch (e) {}
 }
@@ -1202,10 +1202,22 @@ function start(data) {
   $("#menuBtn").addEventListener("click", openMenu);
   $("#soundBtn").addEventListener("click", () => { S.sound = !S.sound; save(); hud(); if (S.sound) play("tap"); });
   $("#bookBtn").addEventListener("click", bookFromHud);
-  $("#musicBtn").addEventListener("click", () => { S.music = !S.music; save(); if (S.music) { Music.setVolume(S.musicVol ?? .6); Music.start(); toast("Nhạc nền: bật"); } else { Music.stop(); toast("Nhạc nền: tắt"); } hud(); });
+  $("#musicBtn").addEventListener("click", () => {
+    // đang bật mà chưa phát được (máy chặn tự phát) thì bấm nút là phát, không tắt
+    if (S.music && !Music.playing) S.music = true; else S.music = !S.music;
+    save();
+    if (S.music) { Music.setVolume(S.musicVol ?? .6); Music.start(); toast("Nhạc nền: bật"); checkMusic(); } else { Music.stop(); toast("Nhạc nền: tắt"); }
+    hud();
+  });
   Music.setVolume(S.musicVol ?? .6);
-  const firstGesture = e => { if (e && e.target && e.target.closest && e.target.closest("#musicBtn")) { removeEventListener("pointerdown", firstGesture, true); removeEventListener("keydown", firstGesture, true); return; } removeEventListener("pointerdown", firstGesture, true); removeEventListener("keydown", firstGesture, true); if (S.music && !Music.playing) { Music.start(); hud(); } };
-  addEventListener("pointerdown", firstGesture, true); addEventListener("keydown", firstGesture, true);
+  // Trình duyệt chỉ cho phát âm thanh sau một thao tác thật của người dùng. Trên điện thoại, chạm (touchend/click)
+  // mới được tính, pointerdown thì không, nên nghe cả các sự kiện này và mở khóa âm thanh ở mỗi lần cần.
+  const onGesture = e => {
+    Music.unlock();
+    const onBtn = e && e.target && e.target.closest && e.target.closest("#musicBtn");
+    if (S.music && !Music.playing && !onBtn) { Music.start(); hud(); checkMusic(); }
+  };
+  ["pointerup", "touchend", "click", "keydown"].forEach(t => addEventListener(t, onGesture, true));
   $("#quitBtn").addEventListener("click", confirmQuit);
   $("#nameForm").addEventListener("submit", e => {
     e.preventDefault(); const v = $("#nameInput").value.trim();
@@ -1215,6 +1227,10 @@ function start(data) {
   });
   hud();
   if (S.name) goMap(); else show("scrWelcome");
+}
+let musicWarned = false;
+function checkMusic() {
+  setTimeout(() => { if (S.music && Music.playing && Music.state !== "running" && !musicWarned) { musicWarned = true; toast("Chạm vào màn hình một lần nữa để bật nhạc nền. Trên iPhone, kiểm tra cả nút âm lượng."); } }, 700);
 }
 function confirmQuit() {
   openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "qTitle" }, [
