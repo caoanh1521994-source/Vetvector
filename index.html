@@ -673,6 +673,82 @@ button.cslot:hover{transform:translateY(-2px)}
   .cp-stamp{font-size:1.6rem}
 }
 
+/* ---------- Bản đồ ẩn · Hang Sơn Đoòng ---------- */
+.map .secret-spot{cursor:help}
+.map .secret-spot:focus{outline:none}
+.map .node.secret .tag rect{fill:rgba(40,16,90,.9);stroke:#B98CFF}
+.map .node.secret .tag text{fill:#F3E8FF}
+.map .pulse-soft{animation:pulsesoft 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulsesoft{0%,100%{opacity:.55;transform:scale(.9)}50%{opacity:1;transform:scale(1.08)}}
+.cavecard{background:linear-gradient(160deg,rgba(126,242,220,.45),rgba(185,140,255,.35) 50%,rgba(20,140,130,.3))}
+.cavemap{display:block;width:100%;height:auto;max-height:calc(100vh - 130px);border-radius:20px;background:#0A1A24}
+.cavemap .twinkle{animation:tw 3s ease-in-out infinite}
+.cnode{cursor:pointer}
+.cnode:focus{outline:none}
+.cnode:focus-visible .ring{stroke:var(--gold);stroke-width:4}
+.cnode .ring{transition:transform .2s;transform-box:fill-box;transform-origin:center}
+.cnode:hover .ring{transform:scale(1.08)}
+.cnum{font-family:var(--display);font-weight:800;font-size:17px;fill:#0B3B3A;pointer-events:none}
+.clab{font-family:var(--display);font-weight:700;font-size:13.5px;fill:#DFFBF5;paint-order:stroke;stroke:#06141A;stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+.cnode.sel .clab{fill:var(--gold)}
+.lmk.secret{background:radial-gradient(circle at 35% 30%,#fff,#E9DDFF 60%,#B98CFF)!important}
+.cavepanel .stagehead{background:linear-gradient(120deg,rgba(126,242,220,.18),rgba(185,140,255,.2) 60%,transparent)}
+.cavepanel .eyebrow{color:#C9A8FF;text-shadow:0 0 12px rgba(185,140,255,.6)}
+.backmap{margin-bottom:12px}
+.cchips .sib{padding:4px 12px}
+.chamber-h{font-size:1.25rem;margin-top:14px;color:var(--aqua)}
+.essays{display:grid;gap:10px}
+.ecard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border-radius:16px;border:1px solid var(--glass-line);background:rgba(255,255,255,.05)}
+.ecard b{font-family:var(--display);display:block;line-height:1.25}
+.ecard small{color:var(--text-soft);font-size:.84rem}
+.ec-num{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.2rem;color:#0B3B3A;background:linear-gradient(135deg,#E9FFFB,#7EF2DC)}
+.ecard.done{border-color:rgba(255,214,107,.6);box-shadow:0 0 18px rgba(255,214,107,.2)}
+.ecard.done .ec-num{background:linear-gradient(135deg,#FFF3B0,var(--gold));color:#4A2A00}
+.reward.secret{background:linear-gradient(120deg,rgba(185,140,255,.2),rgba(62,240,208,.12));border-color:rgba(200,170,255,.55)}
+.reward.secret .rw-k{color:#D9C2FF}
+.foodbadge.secret{box-shadow:0 0 0 2px #fff,0 0 0 4px #B98CFF,0 0 26px rgba(185,140,255,.7)}
+.slot.has.secret{background:linear-gradient(180deg,#3A1F7A,#120B33) padding-box,conic-gradient(from 200deg,#E9DDFF,#B98CFF,#3EF0D0,#E9DDFF) border-box;box-shadow:0 0 26px rgba(185,140,255,.45)}
+.ticket.secret{background:radial-gradient(120% 80% at 50% 0%,#4B2A8F 0,#1E1250 50%,#0A0820 100%)}
+.ticket.secret::before{background:conic-gradient(from var(--ang,0deg),#E9DDFF,#B98CFF,#3EF0D0,#E9DDFF,#B98CFF)}
+.ticket.secret .rar{background:rgba(185,140,255,.35);border-color:rgba(233,221,255,.8);color:#F3E8FF}
+.ticket.secret .t-head{background:linear-gradient(90deg,#E9DDFF,#fff,#9BFFE8);-webkit-background-clip:text;background-clip:text}
+.ticket.secret .t-food{box-shadow:0 0 0 3px #fff,0 0 0 6px #B98CFF,0 0 44px rgba(185,140,255,.8)}
+.ticket.secret .t-ribbon{background:linear-gradient(135deg,#B98CFF,#3EC9C0)}
+.cd-icon{width:120px;height:120px;margin:0 auto 8px;border-radius:30px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff,#E9DDFF 60%,#B98CFF);box-shadow:0 0 40px rgba(185,140,255,.7)}
+.cd-icon svg{width:92px;height:92px}
+/* khung làm tự luận */
+.essay{width:min(860px,100%)}
+.essay h2{margin:4px 0 8px}
+.essay .qmeta{margin-bottom:10px}
+.estmt{font-size:1.06rem;color:var(--text)!important;overflow-x:auto;overflow-y:hidden;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.05);border-left:4px solid var(--aqua);margin:0 0 12px}
+.eparts{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.epart{border-radius:16px;border:1px solid var(--glass-line);background:rgba(255,255,255,.03);padding:12px 14px;display:grid;gap:8px;min-width:0}
+.ep-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start}
+.ep-lab{font-family:var(--display);font-weight:800;color:var(--gold);font-size:1.05rem}
+.ep-q{overflow-x:auto;overflow-y:hidden}
+.ep-pts{font-family:var(--display);font-weight:700;font-size:.82rem;padding:2px 9px;border-radius:99px;background:rgba(155,107,255,.3);border:1px solid rgba(200,170,255,.5);white-space:nowrap}
+.ep-ans{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ep-k{font-family:var(--display);font-weight:700;color:var(--text-soft);font-size:.9rem}
+.ep-ans input{flex:0 1 180px;min-width:0;font:inherit;font-family:var(--display);font-weight:700;font-size:1.1rem;padding:7px 12px;border-radius:12px;border:1px solid rgba(62,240,208,.55);background:rgba(0,0,0,.25);color:var(--text)}
+.ep-ans input.right{border-color:var(--good);box-shadow:0 0 16px rgba(55,242,160,.35)}
+.ep-ans input.wrong{border-color:var(--bad);box-shadow:0 0 16px rgba(255,92,122,.35)}
+.ep-unit{color:var(--text-soft);font-size:.9rem}
+.ep-res{font-family:var(--display);font-weight:800;font-size:.95rem}
+.ep-res.ok{color:var(--good)} .ep-res.no{color:var(--bad)}
+.ep-note{margin:0;font-size:.86rem;color:var(--text-dim)!important;font-style:italic}
+.ep-sol{padding:10px 12px;border-radius:12px;background:rgba(62,240,208,.07);border-left:3px solid var(--aqua);overflow-x:auto;overflow-y:hidden;color:var(--text)}
+.ep-sol b{font-family:var(--display);color:var(--aqua)}
+.ep-self{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.9rem;color:var(--text-soft)}
+.ep-self .btn.on-ok{background:var(--good);color:#04261C;border-color:var(--good)}
+.ep-self .btn.on-no{background:var(--bad);color:#fff;border-color:var(--bad)}
+.e-score{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-top:14px;padding:12px 16px;border-radius:16px;background:linear-gradient(120deg,rgba(255,214,107,.16),rgba(155,107,255,.12));border:1px solid rgba(255,214,107,.45)}
+.e-score span{font-family:var(--display);font-weight:700;color:var(--text-soft)}
+.e-score b{font-family:var(--display);font-weight:800;font-size:1.6rem;color:var(--gold)}
+.e-score small{flex-basis:100%;color:var(--text-soft)}
+.e-act{margin-top:14px}
+.e-act .btn.ehint svg{width:20px;height:20px}
+@media (max-width:560px){ .ecard{grid-template-columns:auto minmax(0,1fr)} .ecard .btn{grid-column:1/-1} .ep-head{grid-template-columns:auto minmax(0,1fr)} .ep-pts{grid-column:2;justify-self:start} }
+
 </style>
 
 
@@ -751,6 +827,8 @@ button.cslot:hover{transform:translateY(-2px)}
     <symbol id="fd-banhtrang" viewBox="0 0 60 60"><circle cx="30" cy="34" r="22" fill="#F3D9A4" stroke="#17324A" stroke-width="2.5"/><path d="M14 30l6 3M38 22l5 4M40 44l-4-3M18 44l4-4M30 18l1 5" stroke="#D9A94F" stroke-width="2" stroke-linecap="round"/><path d="M20 36c0-8 8-12 14-10s10 8 6 13-14 6-20-3z" fill="#FFC53A" stroke="#E59A00" stroke-width="1.6"/><g fill="#3E9A52"><circle cx="26" cy="32" r="1.6"/><circle cx="33" cy="30" r="1.6"/><circle cx="36" cy="37" r="1.6"/><circle cx="28" cy="38" r="1.6"/></g><g fill="#E5463F"><circle cx="31" cy="35" r="1.4"/><circle cx="24" cy="36" r="1.2"/><circle cx="37" cy="32" r="1.2"/></g></symbol>
     <symbol id="fd-cua" viewBox="0 0 60 60"><g stroke="#17324A" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M14 38l-8 6M14 42l-6 8M46 38l8 6M46 42l6 8M18 44l-4 9M42 44l4 9"/><path d="M18 30L10 20M42 30l8-10"/></g><path d="M5 12c2-6 10-6 11 0l-3 1 3 4c-4 4-12 2-11-5z" fill="#E5463F" stroke="#17324A" stroke-width="2.2" stroke-linejoin="round"/><path d="M55 12c-2-6-10-6-11 0l3 1-3 4c4 4 12 2 11-5z" fill="#E5463F" stroke="#17324A" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="30" cy="37" rx="18" ry="12" fill="#E5463F" stroke="#17324A" stroke-width="2.5"/><path d="M22 36c4 3 12 3 16 0" fill="none" stroke="#B92D28" stroke-width="2" stroke-linecap="round"/><path d="M25 26v-5M35 26v-5" stroke="#17324A" stroke-width="2"/><circle cx="25" cy="20" r="2.6" fill="#fff" stroke="#17324A" stroke-width="1.8"/><circle cx="35" cy="20" r="2.6" fill="#fff" stroke="#17324A" stroke-width="1.8"/><circle cx="25" cy="20" r="1.1" fill="#17324A"/><circle cx="35" cy="20" r="1.1" fill="#17324A"/></symbol>
     <!-- mini parrot head for tokens & signatures -->
+    <symbol id="lm-cave" viewBox="0 0 60 60"><path d="M2 56L14 22l8 6 10-18 10 14 6-6 10 38z" fill="#4E8F5A" stroke="#17324A" stroke-width="2.5" stroke-linejoin="round"/><path d="M20 56c0-14 5-22 12-22s12 8 12 22z" fill="#17324A"/><path d="M30 6l3 20h-6z" fill="#FFF3B0" opacity=".9"/><path d="M26 56c0-10 3-15 6-15s6 5 6 15z" fill="#3EF0D0" opacity=".55"/><path d="M24 42l2 5 2-5M36 41l2 6 2-6" fill="#C9C2B0" stroke="#17324A" stroke-width="1.2"/><circle cx="32" cy="50" r="2.2" fill="#FFF3B0"/></symbol>
+    <symbol id="fd-chaocanh" viewBox="0 0 60 60"><path d="M24 18c-3-4 3-6 0-10M36 18c-3-4 3-6 0-10" fill="none" stroke="#9FB4C2" stroke-width="2" stroke-linecap="round"/><use href="#bowl"/><ellipse cx="30" cy="30" rx="23" ry="5" fill="#F2DFA8" stroke="#17324A" stroke-width="2"/><path d="M12 30c4-3 7 2 11-1s7 2 11-1 7 2 12-1" fill="none" stroke="#FFF8E8" stroke-width="3.4" stroke-linecap="round"/><path d="M17 27c3 1 5 0 6-2M36 26c2 2 5 2 7 0" fill="none" stroke="#F0784A" stroke-width="2.6" stroke-linecap="round"/><circle cx="30" cy="27" r="1.6" fill="#3E9A52"/><circle cx="45" cy="30" r="1.4" fill="#3E9A52"/><circle cx="14" cy="31" r="1.4" fill="#E5463F"/></symbol>
     <symbol id="parrot-head" viewBox="0 0 60 60"><path d="M30 8l4-7 3 8" fill="#FFC53A" stroke="#17324A" stroke-width="2" stroke-linejoin="round"/><circle cx="28" cy="32" r="20" fill="#E5463F" stroke="#17324A" stroke-width="2.5"/><ellipse cx="35" cy="28" rx="9" ry="8" fill="#fff"/><circle cx="36" cy="28" r="3.4" fill="#17324A"/><circle cx="37.2" cy="26.8" r="1.1" fill="#fff"/><path d="M44 30c8 0 12 6 9 12-3-3-6-4-10-3z" fill="#FFE7B8" stroke="#17324A" stroke-width="2.2" stroke-linejoin="round"/><circle cx="24" cy="38" r="3" fill="#FF9AA5" opacity=".8"/></symbol>
   </defs>
 </svg>
@@ -854,6 +932,8 @@ button.cslot:hover{transform:translateY(-2px)}
             <radialGradient id="orbOpen" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#DDF6FF"/><stop offset="1" stop-color="#8FD8FF"/></radialGradient>
             <radialGradient id="orbDone" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FFF9DA"/><stop offset=".55" stop-color="#FFD66B"/><stop offset="1" stop-color="#F28A2E"/></radialGradient>
             <radialGradient id="orbLock" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#3A4180"/><stop offset="1" stop-color="#1A1E4A"/></radialGradient>
+            <radialGradient id="orbSecret" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#F3E8FF"/><stop offset=".55" stop-color="#B98CFF"/><stop offset="1" stop-color="#5B2DB8"/></radialGradient>
+            <radialGradient id="haloSecret"><stop offset="0" stop-color="#B98CFF" stop-opacity=".95"/><stop offset="1" stop-color="#B98CFF" stop-opacity="0"/></radialGradient>
             <radialGradient id="halo"><stop offset="0" stop-color="#3EF0D0" stop-opacity=".9"/><stop offset="1" stop-color="#3EF0D0" stop-opacity="0"/></radialGradient>
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
             <filter id="softglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
@@ -893,6 +973,35 @@ button.cslot:hover{transform:translateY(-2px)}
         </svg>
       </div>
       <div class="panel" id="panel"></div>
+    </div>
+  </section>
+
+  <!-- BẢN ĐỒ ẨN -->
+  <section class="screen" id="scrCave" hidden>
+    <div class="board">
+      <div class="mapcard cavecard">
+        <svg class="cavemap" id="caveMap" viewBox="0 0 400 600" role="group" aria-label="Bản đồ ẩn Hang Sơn Đoòng">
+          <defs>
+            <linearGradient id="caveBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E2A2C"/><stop offset=".5" stop-color="#0A1A24"/><stop offset="1" stop-color="#120B2A"/></linearGradient>
+            <linearGradient id="shaft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6CC" stop-opacity=".55"/><stop offset="1" stop-color="#FFF6CC" stop-opacity="0"/></linearGradient>
+            <linearGradient id="tunnel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E6B5E"/><stop offset="1" stop-color="#3B2A6E"/></linearGradient>
+            <radialGradient id="crystal" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#E9FFFB"/><stop offset=".55" stop-color="#7EF2DC"/><stop offset="1" stop-color="#1C8C86"/></radialGradient>
+            <radialGradient id="crystalDone" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FFF9DA"/><stop offset=".55" stop-color="#FFD66B"/><stop offset="1" stop-color="#F28A2E"/></radialGradient>
+            <filter id="cglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect width="400" height="600" fill="url(#caveBg)"/>
+          <g fill="#06141A" opacity=".9">
+            <path d="M0 0h400v26l-12 30-10-24-14 40-12-34-16 22-10-30-18 44-12-36-14 26-12-30-16 40-10-28-18 32-12-38-14 28-12-26-16 36-12-30-14 24-10-28-20 42-12-34-16 26-14-30-16 34L40 30 26 58 14 30 0 46z"/>
+            <path d="M0 600h400v-24l-16-18-12 22-18-30-14 26-20-20-12 24-18-28-16 22-14-16-18 26-16-22-12 18-18-26-14 24-16-18-14 22-20-28-12 20-16-16-14 24-18-22-14 18-16-20-12 24-14-18z"/>
+          </g>
+          <path d="M318 0L300 200h56L338 0z" fill="url(#shaft)"/>
+          <path d="M60 230L40 380h70L84 230z" fill="url(#shaft)" opacity=".8"/>
+          <g id="caveRoutes"></g>
+          <g id="caveDeco"></g>
+          <g id="caveNodes"></g>
+        </svg>
+      </div>
+      <div class="panel" id="cavePanel"></div>
     </div>
   </section>
 
@@ -2160,6 +2269,215 @@ const OMI_MISTAKES = [
   { l: "b8", m: R`I là trung điểm AB thì viết \(\overrightarrow{IA}=\overrightarrow{IB}\).`, fix: R`\(\overrightarrow{IA}\) và \(\overrightarrow{IB}\) ngược hướng: \(\overrightarrow{IA}+\overrightarrow{IB}=\vec 0\).`, tf: [R`I là trung điểm AB thì \(\overrightarrow{IA}+\overrightarrow{IB}=\vec 0\).`, true] },
 ];
 
+/* ===== BẢN ĐỒ ẨN · HANG SƠN ĐOÒNG · TỰ LUẬN VẬN DỤNG CAO =====
+   Mỗi bài học 2 bài tự luận, mỗi bài 3,0 điểm.
+   part: { q: câu hỏi, pts: điểm, a?: đáp số (chấm tự động), tol?: sai số, unit?: đơn vị, s: lời giải }
+   Ý không có a là ý chứng minh/trình bày: học sinh tự chấm theo lời giải. */
+const CAVE = {
+  id: "cave", no: 10, short: "Sơn Đoòng", place: "Hang Sơn Đoòng", topic: "Bản đồ ẩn · Tự luận Vận dụng cao", icon: "lm-cave",
+  x: 291, y: 387,
+  food: { name: "Cháo canh Quảng Bình", icon: "fd-chaocanh", line: "Sợi bánh canh bột gạo dai mềm, nước dùng ngọt từ cá đồng, ăn nóng giữa ngày se lạnh miền Trung.", secret: true },
+};
+const CAVE_NEED = 3;      // số địa danh cần vượt mức 4 để tìm ra lối vào
+const ESSAY_SEEDS = 30;   // thưởng lần đầu đạt từ một nửa số điểm
+const CHAMBERS = {
+  b1: { name: "Cửa hang", x: 70, y: 74 },
+  b2: { name: "Sông ngầm", x: 214, y: 118 },
+  b3: { name: "Hố sụt Ánh Sáng", x: 326, y: 196 },
+  b4: { name: "Rừng trong lòng hang", x: 196, y: 262 },
+  b5: { name: "Vườn Ê-đen", x: 74, y: 334 },
+  b6: { name: "Ruộng ngọc động", x: 196, y: 408 },
+  b7: { name: "Thạch nhũ khổng lồ", x: 312, y: 470 },
+  b8: { name: "Bức tường Việt Nam", x: 196, y: 532 },
+};
+const ESSAYS = {
+  b1: [
+    { t: "Mệnh đề chứa tham số", hint: R`Thêm bớt để đưa về bình phương: \(x^2-2mx=(x-m)^2-m^2\). Biểu thức luôn dương khi phần còn lại dương.`,
+      q: R`Cho mệnh đề \(P\): "\(\forall x\in\mathbb R,\ x^2-2mx+2m+3>0\)", với m là tham số thực.`,
+      parts: [
+        { q: R`Phát biểu mệnh đề phủ định \(\overline{P}\).`, pts: .5,
+          s: R`\(\overline{P}\): "\(\exists x\in\mathbb R,\ x^2-2mx+2m+3\le 0\)".` },
+        { q: "Tìm tất cả giá trị của m để P là mệnh đề đúng.", pts: 1.5,
+          s: R`Ta có \(x^2-2mx+2m+3=(x-m)^2-m^2+2m+3\). Vì \((x-m)^2\ge 0\), dấu bằng xảy ra khi \(x=m\), nên P đúng \(\Leftrightarrow -m^2+2m+3>0\Leftrightarrow (m+1)(m-3)<0\Leftrightarrow -1<m<3\).` },
+        { q: "Có bao nhiêu số nguyên m để P là mệnh đề đúng?", pts: 1, a: 3,
+          s: R`Các số nguyên \(m\in\{0;1;2\}\): có 3 giá trị.` },
+      ] },
+    { t: "Chứng minh bằng phản chứng", hint: "Giả sử điều cần chứng minh là sai rồi suy ra mâu thuẫn. Một số không chia hết cho 3 có dạng 3k + 1 hoặc 3k + 2.",
+      q: "Cho n là số tự nhiên.",
+      parts: [
+        { q: R`Chứng minh: nếu \(n^2\) chia hết cho 3 thì n chia hết cho 3.`, pts: 1.5,
+          s: R`Giả sử n không chia hết cho 3, khi đó \(n=3k+1\) hoặc \(n=3k+2\) (\(k\in\mathbb N\)). Nếu \(n=3k+1\) thì \(n^2=9k^2+6k+1\) chia 3 dư 1. Nếu \(n=3k+2\) thì \(n^2=9k^2+12k+4\) chia 3 dư 1. Cả hai trường hợp \(n^2\) đều không chia hết cho 3, mâu thuẫn với giả thiết. Vậy n chia hết cho 3.` },
+        { q: "Phát biểu mệnh đề đảo của mệnh đề ở câu a) và cho biết mệnh đề đảo đúng hay sai.", pts: .5,
+          s: R`Mệnh đề đảo: "Nếu n chia hết cho 3 thì \(n^2\) chia hết cho 3". Mệnh đề này đúng vì \(n=3k\Rightarrow n^2=9k^2\). Vậy: n chia hết cho 3 khi và chỉ khi \(n^2\) chia hết cho 3.` },
+        { q: R`Dùng kết quả câu a), chứng minh \(\sqrt3\) là số vô tỉ.`, pts: 1,
+          s: R`Giả sử \(\sqrt3=\frac{p}{q}\) với p, q nguyên dương và phân số tối giản. Khi đó \(p^2=3q^2\) nên \(p^2\) chia hết cho 3, suy ra p chia hết cho 3 (câu a). Đặt \(p=3r\) thì \(9r^2=3q^2\Rightarrow q^2=3r^2\), nên q cũng chia hết cho 3: mâu thuẫn với phân số tối giản. Vậy \(\sqrt3\) là số vô tỉ.` },
+      ] },
+  ],
+  b2: [
+    { t: "Biểu đồ Ven ba tập hợp", hint: R`Vẽ biểu đồ Ven ba tập, điền từ vùng giữa ra ngoài. \(n(A\cup B\cup C)=n(A)+n(B)+n(C)-n(A\cap B)-n(B\cap C)-n(C\cap A)+n(A\cap B\cap C)\).`,
+      q: "Lớp 10A có 45 học sinh. Khảo sát cho thấy: 25 em giỏi Toán, 23 em giỏi Lí, 20 em giỏi Hóa; 11 em giỏi cả Toán và Lí, 8 em giỏi cả Lí và Hóa, 9 em giỏi cả Toán và Hóa; 3 em giỏi cả ba môn.",
+      parts: [
+        { q: "Có bao nhiêu học sinh giỏi ít nhất một trong ba môn?", pts: 1, a: 43,
+          s: R`Gọi T, L, H là tập học sinh giỏi Toán, Lí, Hóa. \(n(T\cup L\cup H)=25+23+20-11-8-9+3=43\).` },
+        { q: "Có bao nhiêu học sinh không giỏi môn nào?", pts: .5, a: 2,
+          s: R`\(45-43=2\) học sinh.` },
+        { q: "Có bao nhiêu học sinh chỉ giỏi đúng một môn?", pts: 1.5, a: 21,
+          s: R`Chỉ giỏi Toán: \(25-11-9+3=8\). Chỉ giỏi Lí: \(23-11-8+3=7\). Chỉ giỏi Hóa: \(20-8-9+3=6\). Tổng: \(8+7+6=21\) học sinh.` },
+      ] },
+    { t: "Đoạn, khoảng chứa tham số", hint: R`Đoạn \([a;b]\) nằm trong khoảng \((c;d)\) khi \(c<a\) và \(b<d\). Hai tập rời nhau khi tập này nằm hẳn bên trái hoặc hẳn bên phải tập kia (chú ý đầu mút có lấy hay không).`,
+      q: R`Cho hai tập hợp \(A=[m-1;m+3]\) và \(B=(-2;4)\), với m là tham số thực.`,
+      parts: [
+        { q: R`Tìm m để \(A\subset B\). Có bao nhiêu số nguyên m thỏa mãn?`, pts: 1, a: 1,
+          s: R`\(A\subset B\Leftrightarrow\begin{cases}m-1>-2\\ m+3<4\end{cases}\Leftrightarrow -1<m<1\). Chỉ có số nguyên \(m=0\): 1 giá trị.` },
+        { q: R`Tìm m để \(A\cap B=\varnothing\).`, pts: 1,
+          s: R`\(A\cap B=\varnothing\Leftrightarrow m+3\le -2\) hoặc \(m-1\ge 4\Leftrightarrow m\le -5\) hoặc \(m\ge 5\) (đầu mút \(-2\) và \(4\) không thuộc B).` },
+        { q: R`Có bao nhiêu số nguyên \(m\in[-10;10]\) để \(A\cap B\ne\varnothing\)?`, pts: 1, a: 9,
+          s: R`Từ câu b): \(A\cap B\ne\varnothing\Leftrightarrow -5<m<5\). Các số nguyên \(-4;-3;\dots;4\): có 9 giá trị.` },
+      ] },
+  ],
+  b3: [
+    { t: "Bài toán mua sắm", hint: "Tổng tiền 8x + 12y không vượt quá 200 (nghìn đồng), x, y là số tự nhiên. Câu c): thay y = 2x vào bất phương trình.",
+      q: "Bạn An có 200 nghìn đồng để mua bút bi (8 nghìn đồng/cái) và vở (12 nghìn đồng/quyển). Gọi x, y lần lượt là số bút và số vở An mua.",
+      parts: [
+        { q: "Viết bất phương trình bậc nhất hai ẩn biểu thị điều kiện về tiền và biểu diễn miền nghiệm trên mặt phẳng tọa độ.", pts: 1,
+          s: R`\(8x+12y\le 200\Leftrightarrow 2x+3y\le 50\), với \(x,y\ge 0\). Bờ là đường thẳng \(2x+3y=50\) đi qua \((25;0)\) và \((0;\frac{50}{3})\). Thay \(O(0;0)\): \(0\le 50\) đúng, nên miền nghiệm là nửa mặt phẳng chứa O (kể cả bờ), phần nằm trong góc phần tư thứ nhất.` },
+        { q: "Nếu An mua 10 cái bút thì mua được tối đa bao nhiêu quyển vở?", pts: 1, a: 10, unit: "quyển",
+          s: R`\(x=10\): \(80+12y\le 200\Rightarrow y\le 10\). Tối đa 10 quyển vở.` },
+        { q: "An muốn mua số vở gấp đôi số bút. An mua được nhiều nhất bao nhiêu quyển vở?", pts: 1, a: 12, unit: "quyển",
+          s: R`\(y=2x\): \(8x+24x\le 200\Rightarrow x\le 6{,}25\). Lấy \(x=6\) thì \(y=12\) (tốn \(48+144=192\) nghìn đồng). Nhiều nhất 12 quyển vở.` },
+      ] },
+    { t: "Miền nghiệm chứa tham số", hint: "Một điểm thuộc miền nghiệm khi thay tọa độ vào thì bất đẳng thức đúng. Đường thẳng ax + by + c = 0 song song với Ox khi a = 0 và b ≠ 0.",
+      q: R`Cho bất phương trình \((m-1)x+(m+2)y-3>0\) (1), với m là tham số.`,
+      parts: [
+        { q: R`Tìm m để điểm \(M(1;1)\) thuộc miền nghiệm của (1). Số nguyên m nhỏ nhất thỏa mãn là bao nhiêu?`, pts: 1, a: 2,
+          s: R`Thay \(M(1;1)\): \((m-1)+(m+2)-3>0\Leftrightarrow 2m-2>0\Leftrightarrow m>1\). Số nguyên nhỏ nhất: \(m=2\).` },
+        { q: "Tìm m để đường thẳng bờ của miền nghiệm song song với trục Ox.", pts: 1, a: 1,
+          s: R`Bờ: \((m-1)x+(m+2)y-3=0\). Song song với Ox \(\Leftrightarrow m-1=0\) và \(m+2\ne 0\Leftrightarrow m=1\). Khi đó bờ là đường thẳng \(y=1\).` },
+        { q: R`Tìm số nguyên m nhỏ nhất để cả hai điểm \(A(1;0)\) và \(B(0;1)\) đều thuộc miền nghiệm của (1).`, pts: 1, a: 5,
+          s: R`\(A(1;0)\): \(m-1-3>0\Leftrightarrow m>4\). \(B(0;1)\): \(m+2-3>0\Leftrightarrow m>1\). Cả hai: \(m>4\). Số nguyên nhỏ nhất: \(m=5\).` },
+      ] },
+  ],
+  b4: [
+    { t: "Kế hoạch sản xuất lãi cao nhất", hint: "Lập ràng buộc về nguyên liệu, giờ máy và x, y ≥ 0. Giá trị lớn nhất của F = ax + by trên miền đa giác đạt tại một đỉnh.",
+      q: "Một xưởng sản xuất hai loại sản phẩm I và II. Mỗi tấn sản phẩm I cần 2 tấn nguyên liệu và 30 giờ máy, lãi 4 triệu đồng. Mỗi tấn sản phẩm II cần 4 tấn nguyên liệu và 15 giờ máy, lãi 3 triệu đồng. Xưởng có 200 tấn nguyên liệu và 1200 giờ máy.",
+      parts: [
+        { q: "Gọi x, y là số tấn sản phẩm I, II. Lập hệ bất phương trình và xác định các đỉnh của miền nghiệm.", pts: 1,
+          s: R`\(\begin{cases}2x+4y\le 200\\ 30x+15y\le 1200\\ x\ge 0,\ y\ge 0\end{cases}\Leftrightarrow\begin{cases}x+2y\le 100\\ 2x+y\le 80\\ x\ge 0,\ y\ge 0\end{cases}\). Miền nghiệm là tứ giác OABC với \(O(0;0)\), \(A(40;0)\), \(B(20;40)\), \(C(0;50)\).` },
+        { q: "Cần sản xuất bao nhiêu tấn sản phẩm I để tiền lãi cao nhất?", pts: 1, a: 20, unit: "tấn",
+          s: R`Lãi \(F=4x+3y\) (triệu đồng): \(F(O)=0\), \(F(A)=160\), \(F(B)=80+120=200\), \(F(C)=150\). Lãi cao nhất tại \(B(20;40)\): sản xuất 20 tấn sản phẩm I và 40 tấn sản phẩm II.` },
+        { q: "Tiền lãi cao nhất là bao nhiêu triệu đồng?", pts: 1, a: 200, unit: "triệu đồng",
+          s: R`\(F_{\max}=F(20;40)=200\) triệu đồng.` },
+      ] },
+    { t: "Khẩu phần ăn chi phí thấp nhất", hint: "Đặt x, y là số kg thịt bò, thịt lợn. Ràng buộc: prôtêin, lipit, giới hạn mua. Chi phí T = 250x + 160y nhỏ nhất tại một đỉnh của miền nghiệm.",
+      q: "Một gia đình cần ít nhất 900 đơn vị prôtêin và 400 đơn vị lipit trong thức ăn mỗi ngày. Mỗi kilôgam thịt bò chứa 800 đơn vị prôtêin và 200 đơn vị lipit; mỗi kilôgam thịt lợn chứa 600 đơn vị prôtêin và 400 đơn vị lipit. Gia đình chỉ mua nhiều nhất 1,6 kg thịt bò và 1,1 kg thịt lợn. Giá thịt bò 250 nghìn đồng/kg, thịt lợn 160 nghìn đồng/kg.",
+      parts: [
+        { q: "Gọi x, y là số kilôgam thịt bò, thịt lợn mua mỗi ngày. Lập hệ bất phương trình và tìm các đỉnh của miền nghiệm.", pts: 1,
+          s: R`\(\begin{cases}800x+600y\ge 900\\ 200x+400y\ge 400\\ 0\le x\le 1{,}6\\ 0\le y\le 1{,}1\end{cases}\Leftrightarrow\begin{cases}8x+6y\ge 9\\ x+2y\ge 2\\ 0\le x\le 1{,}6\\ 0\le y\le 1{,}1\end{cases}\). Miền nghiệm là tứ giác với các đỉnh \((0{,}3;1{,}1)\), \((0{,}6;0{,}7)\), \((1{,}6;0{,}2)\), \((1{,}6;1{,}1)\).` },
+        { q: "Gia đình nên mua bao nhiêu kilôgam thịt bò để chi phí ít nhất?", pts: 1, a: .3, tol: .001, unit: "kg",
+          s: R`Chi phí \(T=250x+160y\): \(T(0{,}3;1{,}1)=251\), \(T(0{,}6;0{,}7)=262\), \(T(1{,}6;0{,}2)=432\), \(T(1{,}6;1{,}1)=576\). Nhỏ nhất khi mua 0,3 kg thịt bò và 1,1 kg thịt lợn.` },
+        { q: "Chi phí ít nhất mỗi ngày là bao nhiêu nghìn đồng?", pts: 1, a: 251, unit: "nghìn đồng",
+          s: R`\(T_{\min}=250\cdot0{,}3+160\cdot1{,}1=75+176=251\) nghìn đồng.` },
+      ] },
+  ],
+  b5: [
+    { t: "Từ tổng sin và côsin", hint: R`Bình phương hai vế và dùng \(\sin^2\alpha+\cos^2\alpha=1\). Với góc từ \(0^\circ\) đến \(180^\circ\), \(\sin\alpha\ge 0\).`,
+      q: R`Cho góc \(\alpha\) với \(0^\circ<\alpha<180^\circ\) thỏa mãn \(\sin\alpha+\cos\alpha=\frac15\).`,
+      parts: [
+        { q: R`Tính \(\sin\alpha\cos\alpha\).`, pts: .75, a: -0.48, tol: .001,
+          s: R`Bình phương hai vế: \(1+2\sin\alpha\cos\alpha=\frac1{25}\Rightarrow\sin\alpha\cos\alpha=-\frac{12}{25}=-0{,}48\).` },
+        { q: R`Chứng minh \(\alpha\) là góc tù.`, pts: .5,
+          s: R`Vì \(0^\circ<\alpha<180^\circ\) nên \(\sin\alpha>0\). Mà \(\sin\alpha\cos\alpha<0\) nên \(\cos\alpha<0\), tức \(\alpha\) là góc tù.` },
+        { q: R`Tính \(\sin\alpha-\cos\alpha\).`, pts: .75, a: 1.4, tol: .001,
+          s: R`\((\sin\alpha-\cos\alpha)^2=1-2\sin\alpha\cos\alpha=\frac{49}{25}\). Vì \(\sin\alpha>0>\cos\alpha\) nên \(\sin\alpha-\cos\alpha=\frac75\).` },
+        { q: R`Tính \(\tan\alpha\) (có thể nhập phân số).`, pts: 1, a: -4 / 3, tol: .005,
+          s: R`Từ \(\sin\alpha+\cos\alpha=\frac15\) và \(\sin\alpha-\cos\alpha=\frac75\): \(\sin\alpha=\frac45\), \(\cos\alpha=-\frac35\). Vậy \(\tan\alpha=-\frac43\).` },
+      ] },
+    { t: "Biểu thức theo tang", hint: R`\(1+\tan^2\alpha=\frac{1}{\cos^2\alpha}\). Với biểu thức chỉ chứa sin và côsin cùng bậc, chia cả tử và mẫu cho \(\cos\alpha\) (hoặc \(\cos^2\alpha\)) để đưa về \(\tan\alpha\).`,
+      q: R`Cho góc \(\alpha\) với \(90^\circ<\alpha<180^\circ\) và \(\tan\alpha=-2\).`,
+      parts: [
+        { q: R`Tính \(\cos\alpha\) và \(\sin\alpha\). Nhập giá trị \(\cos\alpha\) làm tròn đến hàng phần trăm.`, pts: 1, a: -0.45, tol: .006,
+          s: R`\(\cos^2\alpha=\frac{1}{1+\tan^2\alpha}=\frac15\). Góc tù nên \(\cos\alpha=-\frac{1}{\sqrt5}\approx-0{,}45\); \(\sin\alpha=\tan\alpha\cdot\cos\alpha=\frac{2}{\sqrt5}\approx0{,}89\).` },
+        { q: R`Tính \(P=\frac{2\sin\alpha+3\cos\alpha}{\sin\alpha-\cos\alpha}\) (có thể nhập phân số).`, pts: 1, a: 1 / 3, tol: .005,
+          s: R`Chia tử và mẫu cho \(\cos\alpha\ne0\): \(P=\frac{2\tan\alpha+3}{\tan\alpha-1}=\frac{-4+3}{-3}=\frac13\).` },
+        { q: R`Tính \(Q=\sin^2\alpha-\sin\alpha\cos\alpha\).`, pts: 1, a: 1.2, tol: .001,
+          s: R`\(Q=\cos^2\alpha\,(\tan^2\alpha-\tan\alpha)=\frac15\,(4+2)=\frac65=1{,}2\).` },
+      ] },
+  ],
+  b6: [
+    { t: "Đo độ cao khinh khí cầu", hint: R`Góc \(C=180^\circ-60^\circ-75^\circ=45^\circ\). Dùng định lí sin: \(\frac{AB}{\sin C}=\frac{AC}{\sin B}=\frac{BC}{\sin A}\). Độ cao bằng \(AC\cdot\sin A\).`,
+      q: "Hai người đứng ở A và B trên mặt đất, cách nhau 300 m, cùng quan sát một khinh khí cầu C (A, B, C cùng nằm trong một mặt phẳng thẳng đứng, khinh khí cầu ở phía giữa hai người). Người ở A nhìn khinh khí cầu với góc nâng 60°, người ở B nhìn với góc nâng 75°.",
+      parts: [
+        { q: "Tính khoảng cách AC (làm tròn đến hàng phần mười).", pts: 1, a: 409.8, tol: .06, unit: "m",
+          s: R`Tam giác ABC có \(\widehat{A}=60^\circ\), \(\widehat{B}=75^\circ\), \(\widehat{C}=45^\circ\). \(AC=\frac{AB\sin B}{\sin C}=\frac{300\sin75^\circ}{\sin45^\circ}\approx409{,}8\) m.` },
+        { q: "Tính khoảng cách BC (làm tròn đến hàng phần mười).", pts: 1, a: 367.4, tol: .06, unit: "m",
+          s: R`\(BC=\frac{AB\sin A}{\sin C}=\frac{300\sin60^\circ}{\sin45^\circ}=150\sqrt6\approx367{,}4\) m.` },
+        { q: "Khinh khí cầu đang ở độ cao bao nhiêu mét (làm tròn đến hàng phần mười)?", pts: 1, a: 354.9, tol: .06, unit: "m",
+          s: R`Gọi H là hình chiếu của C trên AB: \(CH=AC\sin A\approx409{,}8\cdot\sin60^\circ\approx354{,}9\) m.` },
+      ] },
+    { t: "Giải tam giác đầy đủ", hint: R`Định lí côsin cho BC; \(S=\frac12 bc\sin A\); \(R=\frac{a}{2\sin A}\); \(r=\frac{S}{p}\); trung tuyến \(m_a^2=\frac{2(b^2+c^2)-a^2}{4}\).`,
+      q: R`Cho tam giác ABC có \(AB=5\), \(AC=8\), \(\widehat{A}=60^\circ\). Gọi M là trung điểm BC.`,
+      parts: [
+        { q: "Tính BC.", pts: .5, a: 7,
+          s: R`\(BC^2=5^2+8^2-2\cdot5\cdot8\cos60^\circ=49\Rightarrow BC=7\).` },
+        { q: "Tính diện tích tam giác ABC (làm tròn đến hàng phần trăm).", pts: .5, a: 17.32, tol: .006,
+          s: R`\(S=\frac12\cdot5\cdot8\cdot\sin60^\circ=10\sqrt3\approx17{,}32\).` },
+        { q: "Tính bán kính R của đường tròn ngoại tiếp (làm tròn đến hàng phần trăm).", pts: .5, a: 4.04, tol: .006,
+          s: R`\(R=\frac{BC}{2\sin A}=\frac{7}{\sqrt3}\approx4{,}04\).` },
+        { q: "Tính bán kính r của đường tròn nội tiếp (làm tròn đến hàng phần trăm).", pts: .5, a: 1.73, tol: .006,
+          s: R`Nửa chu vi \(p=\frac{5+8+7}{2}=10\), \(r=\frac{S}{p}=\sqrt3\approx1{,}73\).` },
+        { q: "Tính độ dài trung tuyến AM (làm tròn đến hàng phần trăm).", pts: 1, a: 5.68, tol: .006,
+          s: R`\(AM^2=\frac{2(AB^2+AC^2)-BC^2}{4}=\frac{2\cdot89-49}{4}=\frac{129}{4}\Rightarrow AM=\frac{\sqrt{129}}{2}\approx5{,}68\).` },
+      ] },
+  ],
+  b7: [
+    { t: "Vectơ trong lục giác đều", hint: R`Lục giác đều chia thành 6 tam giác đều chung đỉnh O. Hai vectơ bằng nhau khi cùng hướng và cùng độ dài; vectơ cùng phương với \(\overrightarrow{OA}\) có giá song song hoặc trùng với đường thẳng AD.`,
+      q: R`Cho lục giác đều ABCDEF tâm O, cạnh bằng 2. Chỉ xét các vectơ khác \(\vec 0\) có điểm đầu và điểm cuối thuộc tập \(\{A;B;C;D;E;F;O\}\).`,
+      parts: [
+        { q: R`Có bao nhiêu vectơ bằng vectơ \(\overrightarrow{OA}\) (kể cả chính nó)?`, pts: 1, a: 4,
+          s: R`\(\overrightarrow{OA}=\overrightarrow{DO}=\overrightarrow{CB}=\overrightarrow{EF}\) (các tứ giác OABC, ODEF là hình thoi). Có 4 vectơ.` },
+        { q: R`Có bao nhiêu vectơ cùng phương với \(\overrightarrow{OA}\)?`, pts: 1, a: 10,
+          s: R`Giá song song hoặc trùng với AD gồm: đường thẳng AD (chứa A, O, D) cho 6 vectơ \(\overrightarrow{AO},\overrightarrow{OA},\overrightarrow{OD},\overrightarrow{DO},\overrightarrow{AD},\overrightarrow{DA}\); đường BC cho 2 vectơ; đường EF cho 2 vectơ. Tổng 10 vectơ.` },
+        { q: R`Tính \(|\overrightarrow{AD}|\) và \(|\overrightarrow{AC}|\). Nhập \(|\overrightarrow{AC}|\) làm tròn đến hàng phần trăm.`, pts: 1, a: 3.46, tol: .006,
+          s: R`\(|\overrightarrow{AD}|=2\cdot OA=4\). Tam giác ABC có \(AB=BC=2\), \(\widehat{B}=120^\circ\) nên \(AC^2=4+4-2\cdot2\cdot2\cos120^\circ=12\Rightarrow|\overrightarrow{AC}|=2\sqrt3\approx3{,}46\).` },
+      ] },
+    { t: "Hình bình hành và trung điểm", hint: R`Hai vectơ bằng nhau khi cùng hướng và cùng độ dài. Tứ giác ABCD là hình bình hành khi và chỉ khi \(\overrightarrow{AB}=\overrightarrow{DC}\).`,
+      q: "Cho hình bình hành ABCD có tâm O. Gọi M, N lần lượt là trung điểm của AD và BC.",
+      parts: [
+        { q: R`Chứng minh \(\overrightarrow{AM}=\overrightarrow{NC}\), từ đó suy ra AMCN là hình bình hành.`, pts: 1,
+          s: R`ABCD là hình bình hành nên \(\overrightarrow{AD}\), \(\overrightarrow{BC}\) cùng hướng và \(AD=BC\). Hai vectơ \(\overrightarrow{AM}\), \(\overrightarrow{NC}\) cùng hướng với chúng và \(AM=\frac{AD}{2}=\frac{BC}{2}=NC\). Vậy \(\overrightarrow{AM}=\overrightarrow{NC}\), suy ra AMCN là hình bình hành.` },
+        { q: "Chứng minh O là trung điểm của MN.", pts: 1,
+          s: R`AMCN là hình bình hành nên hai đường chéo AC và MN cắt nhau tại trung điểm mỗi đường. Trung điểm của AC là O, do đó O là trung điểm của MN, tức \(\overrightarrow{MO}=\overrightarrow{ON}\).` },
+        { q: R`Biết \(AB=6\). Tính \(|\overrightarrow{MN}|\).`, pts: 1, a: 6,
+          s: R`Tương tự câu a), \(\overrightarrow{AM}=\overrightarrow{BN}\) nên ABNM là hình bình hành, suy ra \(\overrightarrow{MN}=\overrightarrow{AB}\) và \(|\overrightarrow{MN}|=AB=6\).` },
+      ] },
+  ],
+  b8: [
+    { t: "Độ dài tổng, hiệu vectơ", hint: R`Quy tắc hình bình hành: \(|\overrightarrow{AB}+\overrightarrow{AC}|=2AM\). Hiệu: \(\overrightarrow{AB}-\overrightarrow{AC}=\overrightarrow{CB}\). M là trung điểm BC thì \(\overrightarrow{MB}+\overrightarrow{MC}=\vec 0\).`,
+      q: "Cho tam giác đều ABC cạnh bằng 3, M là trung điểm của BC.",
+      parts: [
+        { q: R`Tính \(|\overrightarrow{AB}+\overrightarrow{AC}|\) (làm tròn đến hàng phần trăm).`, pts: .75, a: 5.2, tol: .006,
+          s: R`Dựng hình bình hành ABDC thì \(\overrightarrow{AB}+\overrightarrow{AC}=\overrightarrow{AD}\), \(AD=2AM=2\cdot\frac{3\sqrt3}{2}=3\sqrt3\approx5{,}20\).` },
+        { q: R`Tính \(|\overrightarrow{AB}-\overrightarrow{AC}|\).`, pts: .75, a: 3,
+          s: R`\(\overrightarrow{AB}-\overrightarrow{AC}=\overrightarrow{CB}\), nên \(|\overrightarrow{AB}-\overrightarrow{AC}|=CB=3\).` },
+        { q: R`Tính \(|\overrightarrow{MA}+\overrightarrow{MB}+\overrightarrow{MC}|\) (làm tròn đến hàng phần trăm).`, pts: .75, a: 2.6, tol: .006,
+          s: R`\(\overrightarrow{MB}+\overrightarrow{MC}=\vec 0\) nên tổng bằng \(\overrightarrow{MA}\), độ dài \(AM=\frac{3\sqrt3}{2}\approx2{,}60\).` },
+        { q: R`Chứng minh với bốn điểm bất kì A, B, C, D: \(\overrightarrow{AB}+\overrightarrow{CD}=\overrightarrow{AD}+\overrightarrow{CB}\).`, pts: .75,
+          s: R`\(\overrightarrow{AB}+\overrightarrow{CD}=(\overrightarrow{AD}+\overrightarrow{DB})+(\overrightarrow{CB}+\overrightarrow{BD})=\overrightarrow{AD}+\overrightarrow{CB}+(\overrightarrow{DB}+\overrightarrow{BD})=\overrightarrow{AD}+\overrightarrow{CB}\), vì \(\overrightarrow{DB}+\overrightarrow{BD}=\vec 0\).` },
+      ] },
+    { t: "Hợp lực của hai lực", hint: R`Hợp lực là đường chéo của hình bình hành dựng trên hai lực. Tính đường chéo bằng định lí côsin trong tam giác có góc \(180^\circ-\theta\), với \(\theta\) là góc giữa hai lực.`,
+      q: R`Hai lực \(\vec F_1\), \(\vec F_2\) cùng tác động vào một vật tại điểm O, có cường độ lần lượt 30 N và 40 N. Gọi \(\vec F=\vec F_1+\vec F_2\) là hợp lực.`,
+      parts: [
+        { q: "Khi hai lực vuông góc với nhau, tính cường độ hợp lực.", pts: 1, a: 50, unit: "N",
+          s: R`Dựng hình bình hành OADB với \(\overrightarrow{OA}=\vec F_1\), \(\overrightarrow{OB}=\vec F_2\) thì \(\vec F=\overrightarrow{OD}\). OADB là hình chữ nhật nên \(OD=\sqrt{30^2+40^2}=50\) N.` },
+        { q: "Khi góc giữa hai lực bằng 60°, tính cường độ hợp lực (làm tròn đến hàng phần mười).", pts: 1, a: 60.8, tol: .06, unit: "N",
+          s: R`Trong tam giác OAD: \(OA=30\), \(AD=40\), \(\widehat{OAD}=180^\circ-60^\circ=120^\circ\). \(OD^2=30^2+40^2-2\cdot30\cdot40\cos120^\circ=3700\Rightarrow OD\approx60{,}8\) N.` },
+        { q: "Khi góc giữa hai lực bằng 120°, cần thêm một lực có cường độ bao nhiêu để vật đứng yên (làm tròn đến hàng phần mười)?", pts: 1, a: 36.1, tol: .06, unit: "N",
+          s: R`Khi đó \(\widehat{OAD}=60^\circ\): \(OD^2=900+1600-2\cdot30\cdot40\cos60^\circ=1300\Rightarrow OD\approx36{,}1\) N. Lực cần thêm là \(\vec F_3=-\vec F\), cường độ khoảng 36,1 N.` },
+      ] },
+  ],
+};
+for (const l in ESSAYS) ESSAYS[l].forEach((e, k) => { e.key = `${l}.${k}`; e.lesson = l; e.total = e.parts.reduce((t, p) => t + p.pts, 0); });
+
 </script>
 <script>
 /* ================= DỮ LIỆU CHẶNG ================= */
@@ -2235,7 +2553,7 @@ const SAY = {
 
 /* ================= TRẠNG THÁI ================= */
 const KEY = "vetvecto-v2";
-const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
+const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, cave: { found: false, sel: "b1", best: {} }, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
 let S = fresh();
 function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && typeof s === "object") return Object.assign(fresh(), s); } } catch (e) {}
@@ -2371,6 +2689,7 @@ function drawMap() {
     nodes.append(g);
     requestAnimationFrame(() => { try { const w = text.getComputedTextLength() + 18; rect.setAttribute("width", w); rect.setAttribute("x", left ? tx - w + 9 : tx - 9); } catch (e) {} });
   });
+  mapCaveNode(nodes);
   const c = STAGES[current];
   const tok = sv("g", { class: "token" });
   tok.append(sv("use", { href: "#parrot-head", x: c.x - 28, y: c.y - 78, width: 50, height: 50 }));
@@ -2641,16 +2960,16 @@ function finish() {
   openModal(m, { dismiss: false });
   mood(m, ok ? "happy" : "sad", ok ? "jump" : "shake");
 }
-function goMap() { RUN = null; show("scrMap"); drawMap(); renderPanel(); hud(); }
+function goMap() { RUN = null; show("scrMap"); drawMap(); renderPanel(); hud(); caveDiscovery(); }
 
 /* ================= PHIẾU ĐIỂM 10 ================= */
 function hash(str) { let h = 2166136261; for (const ch of str) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6); }
 function ticketEl(id, reveal) {
-  const s = STAGES[stageIdx(id)], gold = !!s.food.gold, date = S.tickets[id] || (S.teacher ? new Date().toISOString().slice(0, 10) : "");
+  const s = stageById(id), gold = !!s.food.gold, secret = !!s.food.secret, date = S.tickets[id] || (S.teacher ? new Date().toISOString().slice(0, 10) : "");
   const d = date ? date.split("-").reverse().join("/") : "";
-  return el("div", { class: "ticket" + (gold ? " gold" : "") + (reveal ? " reveal" : "") }, [
-    el("span", { class: "rar", text: gold ? "HUYỀN THOẠI" : "SIÊU HIẾM" }),
-    el("div", { class: "t-head", text: gold ? "PHIẾU ĐIỂM 10 VÀNG" : "PHIẾU ĐIỂM 10" }),
+  return el("div", { class: "ticket" + (gold ? " gold" : "") + (secret ? " secret" : "") + (reveal ? " reveal" : "") }, [
+    el("span", { class: "rar", text: secret ? "BÍ ẨN" : gold ? "HUYỀN THOẠI" : "SIÊU HIẾM" }),
+    el("div", { class: "t-head", text: secret ? "PHIẾU ĐIỂM 10 BÍ ẨN" : gold ? "PHIẾU ĐIỂM 10 VÀNG" : "PHIẾU ĐIỂM 10" }),
     el("div", { class: "t-sub", text: "Hành trình Vẹt Vectơ · Toán 10 · Giữa học kì I" }),
     el("div", { class: "t-prize" }, [
       el("div", { class: "t-food" }, icon(s.food.icon)),
@@ -2659,7 +2978,7 @@ function ticketEl(id, reveal) {
     el("p", { class: "t-line", text: s.food.line }),
     el("div", { class: "t-sub", style: "margin-top:8px", text: "Trao tặng cho" }),
     el("div", { class: "t-name", text: S.name || "Nhà thám hiểm" }),
-    el("p", { class: "t-for", text: gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
+    el("p", { class: "t-for", text: secret ? "Đã tìm ra bản đồ ẩn và chinh phục cả 16 bài tự luận Vận dụng cao trong Hang Sơn Đoòng." : gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
     el("div", { class: "t-foot" }, [
       el("div", {}, [document.createTextNode("Ngày nhận: " + d), el("br"), document.createTextNode("Mã phiếu: VV" + s.no + "-" + hash((S.name || "") + id + date))]),
       el("div", { class: "sign" }, [icon("parrot-head"), document.createTextNode("Vẹt Vectơ")])])]);
@@ -2677,10 +2996,11 @@ function openTicket(id, reveal) {
 function openWallet(tab) {
   tab = tab || "ticket";
   const grid = el("div", { class: "wallet" });
-  for (const s of STAGES) {
-    const has = !!S.tickets[s.id], gold = !!s.food.gold, view = has || S.teacher;
-    const slot = el(view ? "button" : "div", { class: "slot" + (view ? " has" : "") + (gold ? " gold" : "") }, [
-      el("div", { class: "foodbadge" + (gold ? " gold" : "") }, icon(s.food.icon)),
+  const tstages = STAGES.concat(caveOpen() || S.tickets.cave ? [CAVE] : []);
+  for (const s of tstages) {
+    const has = !!S.tickets[s.id], gold = !!s.food.gold, secret = !!s.food.secret, view = has || S.teacher;
+    const slot = el(view ? "button" : "div", { class: "slot" + (view ? " has" : "") + (gold ? " gold" : "") + (secret ? " secret" : "") }, [
+      el("div", { class: "foodbadge" + (gold ? " gold" : "") + (secret ? " secret" : "") }, icon(s.food.icon)),
       el("b", { text: s.food.name }),
       el("small", { text: has ? `${s.short} · bấm để xem` : S.teacher ? `${s.short} · xem trước` : `${s.short} · chưa nhận` })]);
     if (view) slot.addEventListener("click", () => { closeModal(); openTicket(s.id); });
@@ -2701,7 +3021,7 @@ function openWallet(tab) {
     row.append(chips); clist.append(row);
   }
   const panes = {
-    ticket: [el("p", { style: "margin:4px 0 0", text: `Bạn có ${ticketCount()}/9 phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` + (S.teacher ? " Chế độ giáo viên: bấm vào phiếu bất kì để xem trước." : "") }), grid],
+    ticket: [el("p", { style: "margin:4px 0 0", text: `Bạn có ${ticketCount()}/${tstages.length} phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` + (S.teacher ? " Chế độ giáo viên: bấm vào phiếu bất kì để xem trước." : "") }), grid],
     coupon: [el("p", { style: "margin:4px 0 0", text: `Mỗi mức vượt qua lần đầu tặng 1 phiếu miễn 2% bài tập về nhà. Bạn có ${all.length}/33 phiếu (tổng ${all.length * 2}%), đã dùng ${used}, còn ${left} phiếu = ${left * 2}%.` + (S.teacher ? " Chế độ giáo viên: bấm phiếu để xem hoặc đánh dấu đã dùng." : "") }), clist],
   };
   const body = el("div");
@@ -3049,6 +3369,183 @@ function openOmikuji() {
   m.querySelector(".btn.red svg").style.cssText = "width:20px;height:20px";
   if (OMI.cur) { $("#omiNo").textContent = OMI.cur.no; box.classList.add("drawn"); }
   omiStats(); omiPaper(); omiTree(); omiBag();
+}
+/* ================= BẢN ĐỒ ẨN · HANG SƠN ĐOÒNG ================= */
+const caveReady = () => STAGES.slice(0, N_STOPS).filter(s => passed(s.id, 4)).length >= CAVE_NEED;
+const caveOpen = () => S.teacher || S.cave.found || caveReady();
+const stageById = id => id === "cave" ? CAVE : STAGES[stageIdx(id)];
+const essayList = () => Object.values(ESSAYS).flat();
+const essayBest = key => S.cave.best[key];
+const essayPassed = e => (S.cave.best[e.key] ?? -1) >= e.total / 2;
+const fmtPts = n => (Math.round(n * 100) / 100).toLocaleString("vi-VN", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+const CAVE_ROUTE = "M70 74 C 140 60, 170 130, 214 118 S 330 140, 326 196 S 240 250, 196 262 S 60 290, 74 334 S 150 420, 196 408 S 312 420, 312 470 S 240 540, 196 532";
+function mapCaveNode(nodes) {
+  if (caveOpen()) {
+    const done = !!S.tickets.cave;
+    const g = sv("g", { class: "node secret", tabindex: "0", role: "button", "aria-label": "Bản đồ ẩn: Hang Sơn Đoòng" + (done ? ", đã nhận phiếu" : "") });
+    g.append(sv("circle", { cx: CAVE.x, cy: CAVE.y, r: 40, fill: "url(#haloSecret)", class: "pulse-soft" }));
+    g.append(sv("circle", { class: "ring", cx: CAVE.x, cy: CAVE.y, r: 22, fill: done ? "url(#orbDone)" : "url(#orbSecret)", stroke: "#F3E8FF", "stroke-width": 2.5 }));
+    g.append(sv("use", { href: "#lm-cave", x: CAVE.x - 16, y: CAVE.y - 16, width: 32, height: 32 }));
+    const tag = sv("g", { class: "tag" }), tx = CAVE.x - 30;
+    const text = sv("text", { x: tx, y: CAVE.y + 7, "font-size": 18, "text-anchor": "end" }); text.textContent = "✦ Sơn Đoòng";
+    const rect = sv("rect", { y: CAVE.y - 16, rx: 11, height: 32, width: 120, x: tx - 111 });
+    tag.append(rect, text); g.append(tag);
+    requestAnimationFrame(() => { try { const w = text.getComputedTextLength() + 18; rect.setAttribute("width", w); rect.setAttribute("x", tx - w + 9); } catch (e) {} });
+    g.addEventListener("click", () => { play("tap"); goCave(); });
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goCave(); } });
+    nodes.append(g);
+  } else {
+    const n = STAGES.slice(0, N_STOPS).filter(s => passed(s.id, 4)).length;
+    const g = sv("g", { class: "secret-spot", tabindex: "0", role: "button", "aria-label": "Một điểm lấp lánh bí ẩn" });
+    g.append(sv("circle", { cx: CAVE.x, cy: CAVE.y, r: 16, fill: "transparent" }));
+    g.append(sv("path", { d: `M${CAVE.x} ${CAVE.y - 9}l2.4 6.6 6.6 2.4-6.6 2.4-2.4 6.6-2.4-6.6-6.6-2.4 6.6-2.4z`, fill: "#F3E8FF", class: "twinkle" }));
+    const hint = () => { play("tap"); toast(`Có gì đó lấp lánh trong dãy núi đá vôi… Vượt mức 4 (Vận dụng cao) ở ${CAVE_NEED} địa danh để tìm lối vào (${n}/${CAVE_NEED}).`); };
+    g.addEventListener("click", hint); g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); hint(); } });
+    nodes.append(g);
+  }
+}
+function caveDiscovery() {
+  if (S.teacher || S.cave.found || !caveReady()) return;
+  S.cave.found = true; save(); play("ticket"); confetti(150);
+  openModal(el("div", { class: "modal result", role: "dialog", "aria-modal": "true", "aria-labelledby": "cdTitle" }, [
+    el("div", { class: "cd-icon" }, icon("lm-cave")),
+    el("h2", { id: "cdTitle", text: "Bạn đã tìm ra bản đồ ẩn!" }),
+    el("p", { text: "Sâu trong dãy núi đá vôi Quảng Bình, Vẹt phát hiện lối vào Hang Sơn Đoòng, hang động tự nhiên lớn nhất thế giới. Bên trong là 8 khoang với 16 bài tự luận Vận dụng cao, mỗi khoang một bài học." }),
+    el("p", { text: "Làm bài ra giấy, nộp đáp số để chấm, rồi tự chấm phần trình bày theo lời giải. Chinh phục cả 16 bài để nhận Phiếu điểm 10 bí ẩn." }),
+    el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Để sau", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Vào hang", onclick: () => { closeModal(true); goCave(); } })])]));
+}
+function goCave() { if (!caveOpen()) return; RUN = null; show("scrCave"); drawCave(); renderCavePanel(); hud(); }
+let caveDecoDone = false;
+function drawCave() {
+  const r = $("#caveRoutes"), nodes = $("#caveNodes"); r.innerHTML = ""; nodes.innerHTML = "";
+  r.append(sv("path", { d: CAVE_ROUTE, fill: "none", stroke: "url(#tunnel)", "stroke-width": 30, "stroke-linecap": "round", opacity: ".9" }),
+    sv("path", { d: CAVE_ROUTE, fill: "none", stroke: "#7EF2DC", "stroke-width": 2, "stroke-dasharray": "2 10", opacity: ".7" }));
+  if (!caveDecoDone) {
+    caveDecoDone = true; const d = $("#caveDeco"); let h = 7;
+    const rnd = () => (h = (h * 9301 + 49297) % 233280) / 233280;
+    for (let k = 0; k < 40; k++) d.append(sv("circle", { cx: (rnd() * 400).toFixed(1), cy: (40 + rnd() * 520).toFixed(1), r: (rnd() * 1.6 + .4).toFixed(2), fill: k % 3 ? "#7EF2DC" : "#E9D8FF", class: "twinkle", style: `animation-delay:${(rnd() * 3).toFixed(2)}s` }));
+  }
+  Object.entries(CHAMBERS).forEach(([l, c], i) => {
+    const es = ESSAYS[l], nPass = es.filter(essayPassed).length, done = nPass === es.length, sel = S.cave.sel === l;
+    const g = sv("g", { class: "cnode" + (sel ? " sel" : ""), tabindex: "0", role: "button", "aria-label": `Khoang ${i + 1}: ${c.name}, ${nPass}/${es.length} bài` });
+    g.append(sv("circle", { cx: c.x, cy: c.y, r: 30, fill: done ? "rgba(255,214,107,.25)" : "rgba(126,242,220,.18)", filter: "url(#cglow)" }));
+    g.append(sv("path", { d: `M${c.x} ${c.y - 22}l14 10v24l-14 10-14-10v-24z`, fill: done ? "url(#crystalDone)" : "url(#crystal)", stroke: sel ? "#FFD66B" : "#E9FFFB", "stroke-width": sel ? 3.5 : 2, class: "ring" }));
+    const t = sv("text", { x: c.x, y: c.y + 6, "text-anchor": "middle", class: "cnum" }); t.textContent = String(i + 1); g.append(t);
+    if (nPass) for (let k = 0; k < es.length; k++) g.append(sv("circle", { cx: c.x - 6 + k * 12, cy: c.y + 30, r: 4, fill: k < nPass ? "#FFD66B" : "rgba(255,255,255,.25)" }));
+    const lab = sv("text", { x: c.x, y: c.y - 30, "text-anchor": "middle", class: "clab" }); lab.textContent = c.name; g.append(lab);
+    const choose = () => { S.cave.sel = l; save(); play("tap"); drawCave(); renderCavePanel(); if (innerWidth <= 900) $("#cavePanel").scrollIntoView({ behavior: "smooth", block: "start" }); };
+    g.addEventListener("click", choose); g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
+    nodes.append(g);
+  });
+}
+function renderCavePanel() {
+  const p = $("#cavePanel"); p.innerHTML = "";
+  const all = essayList(), nPass = all.filter(essayPassed).length, sum = all.reduce((t, e) => t + (essayBest(e.key) || 0), 0);
+  const l = S.cave.sel in CHAMBERS ? S.cave.sel : "b1", c = CHAMBERS[l], st = STAGES[stageIdx(l)], idx = Object.keys(CHAMBERS).indexOf(l);
+  const card = el("section", { class: "stagecard cavepanel" });
+  card.append(el("div", { class: "stagehead" }, [el("div", { class: "lmk secret" }, icon("lm-cave")), el("div", { style: "min-width:0" }, [
+    el("div", { class: "eyebrow", text: "Bản đồ ẩn · Quảng Bình" }), el("h2", { text: "Hang Sơn Đoòng" }),
+    el("p", { text: `Tự luận Vận dụng cao · ${nPass}/${all.length} bài · ${fmtPts(sum)}/${all.length * 3} điểm` })])]));
+  const body = el("div", { class: "stagebody" });
+  body.append(el("button", { class: "btn small ghost backmap", onclick: () => { play("tap"); goMap(); } }, [document.createTextNode("← Về bản đồ")]));
+  const chips = el("div", { class: "sibchips cchips" });
+  Object.entries(CHAMBERS).forEach(([k, ch], i) => {
+    const done = ESSAYS[k].every(essayPassed);
+    chips.append(el("button", { class: "sib" + (k === l ? " on" : ""), "aria-pressed": String(k === l), onclick: () => { S.cave.sel = k; save(); play("tap"); drawCave(); renderCavePanel(); } }, [document.createTextNode((done ? "★ " : "") + `Khoang ${i + 1}`)]));
+  });
+  body.append(el("div", { class: "sibs" }, [el("span", { class: "sibs-l", text: "8 khoang · mỗi khoang một bài học" }), chips]));
+  body.append(el("h3", { class: "chamber-h", text: `Khoang ${idx + 1} · ${c.name}` }), el("p", { class: "placenote", text: st.topic }));
+  const list = el("div", { class: "essays" });
+  ESSAYS[l].forEach((e, k) => {
+    const best = essayBest(e.key), ok = essayPassed(e);
+    list.append(el("article", { class: "ecard" + (ok ? " done" : "") }, [
+      el("div", { class: "ec-num", text: ok ? "★" : String(k + 1) }),
+      el("div", { style: "min-width:0" }, [el("b", { text: `Bài ${k + 1}. ${e.t}` }),
+        el("small", { text: `${e.parts.length} ý · ${fmtPts(e.total)} điểm` + (best !== undefined ? ` · điểm cao nhất ${fmtPts(best)}` : " · chưa làm") })]),
+      el("button", { class: "btn small" + (best !== undefined ? " ghost" : ""), text: S.teacher && best === undefined ? "Xem đề & lời giải" : best !== undefined ? "Làm lại" : "Làm bài", onclick: () => openEssay(e.key) })]));
+  });
+  body.append(list);
+  const has = !!S.tickets.cave;
+  const bar = el("div", { class: "bar" }, el("i", { style: `width:${nPass / all.length * 100}%` }));
+  const rw = el("div", { class: "reward secret" + (has ? " got" : "") }, [el("div", { class: "foodbadge secret" }, icon(CAVE.food.icon)), el("div", { style: "flex:1;min-width:0" }, [
+    el("small", { class: "rw-k", text: "Phiếu điểm 10 bí ẩn" }), el("b", { text: CAVE.food.name }),
+    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : `Đạt từ một nửa số điểm ở cả 16 bài để nhận (${nPass}/16).` }), bar])]);
+  if (has || S.teacher) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket("cave")); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket("cave"); }); }
+  body.append(rw);
+  card.append(body); p.append(card);
+  const tipc = el("div", { class: "tipcard" }, [icon("parrot-head"), el("p", {}, [el("b", { text: "Mẹo của Vẹt: " }),
+    document.createTextNode(`Làm ra giấy trước, trình bày đủ bước như bài kiểm tra. Ý có ô đáp số được chấm tự động; ý chứng minh bạn tự chấm theo lời giải. Lần đầu đạt từ một nửa số điểm một bài: +${ESSAY_SEEDS} hạt.`)])]);
+  p.append(tipc);
+}
+function openEssay(key) {
+  const [l, k] = key.split("."), e = ESSAYS[l][+k], c = CHAMBERS[l], st = STAGES[stageIdx(l)], idx = Object.keys(CHAMBERS).indexOf(l);
+  const E = { sub: false, vals: e.parts.map(() => ""), marks: e.parts.map(() => null), hint: false, saved: false };
+  const m = el("div", { class: "modal wide essay", role: "dialog", "aria-modal": "true", "aria-labelledby": "esTitle" });
+  const auto = (p, i) => { const v = parseNum(E.vals[i]); return !Number.isNaN(v) && Math.abs(v - p.a) <= (p.tol ?? 1e-9) + 1e-9; };
+  const score = () => e.parts.reduce((t, p, i) => t + (p.a !== undefined ? (auto(p, i) ? p.pts : 0) : (E.marks[i] ? p.pts : 0)), 0);
+  function draw() {
+    m.innerHTML = ""; const showSol = E.sub || S.teacher;
+    m.append(closeX(),
+      el("div", { class: "eyebrow", text: `Khoang ${idx + 1} · ${c.name} · Bài ${st.no}` }),
+      el("h2", { id: "esTitle", text: `Bài ${+k + 1}. ${e.t}` }),
+      el("div", { class: "qmeta" }, [el("span", { class: "pill", text: "Tự luận" }), el("span", { class: "pill lv", style: "background:var(--lv4)", text: "Vận dụng cao" }), el("span", { class: "pill", text: `${fmtPts(e.total)} điểm` }),
+        essayBest(key) !== undefined ? el("span", { class: "pill", text: `Cao nhất: ${fmtPts(essayBest(key))}` }) : null]),
+      el("p", { class: "estmt" }, T(e.q)));
+    const ol = el("ol", { class: "eparts" });
+    e.parts.forEach((p, i) => {
+      const li = el("li", { class: "epart" }, [el("div", { class: "ep-head" }, [el("span", { class: "ep-lab", text: "abcdef"[i] + ")" }), el("div", { class: "ep-q" }, T(p.q)), el("span", { class: "ep-pts", text: fmtPts(p.pts) + " đ" })])]);
+      if (p.a !== undefined) {
+        const inp = el("input", { type: "text", inputmode: "decimal", autocomplete: "off", placeholder: "Đáp số", value: E.vals[i], "aria-label": `Đáp số ý ${"abcdef"[i]}`, readonly: E.sub });
+        inp.addEventListener("input", () => E.vals[i] = inp.value);
+        inp.addEventListener("keydown", ev => { if (ev.key === "Enter") ev.preventDefault(); });
+        const row = el("div", { class: "ep-ans" }, [el("span", { class: "ep-k", text: "Đáp số:" }), inp, p.unit ? el("span", { class: "ep-unit", text: p.unit }) : null]);
+        if (E.sub) { const ok = auto(p, i); inp.classList.add(ok ? "right" : "wrong"); row.append(el("span", { class: "ep-res " + (ok ? "ok" : "no"), text: ok ? `✓ +${fmtPts(p.pts)} đ` : `✗ Đáp số: ${String(Math.round(p.a * 1e4) / 1e4).replace(".", ",")}` })); }
+        li.append(row);
+      } else if (!showSol) li.append(el("p", { class: "ep-note", text: "Trình bày lời giải ra giấy, nộp bài rồi tự chấm theo lời giải." }));
+      if (showSol) {
+        li.append(el("div", { class: "ep-sol" }, [el("b", { text: "Lời giải: " }), T(p.s)]));
+        if (E.sub && p.a === undefined) {
+          const seg = el("div", { class: "ep-self" }, [el("span", { text: "Tự chấm:" })]);
+          [["Mình làm đúng", true], ["Chưa đúng", false]].forEach(([t, v]) => seg.append(el("button", { class: "btn small ghost" + (E.marks[i] === v ? (v ? " on-ok" : " on-no") : ""), "aria-pressed": String(E.marks[i] === v), disabled: E.saved, text: t, onclick: () => { E.marks[i] = v; play("tap"); draw(); } })));
+          li.append(seg);
+        }
+      }
+      ol.append(li);
+    });
+    m.append(ol);
+    if (E.hint) m.append(el("div", { class: "hintbox" }, [el("div", { class: "hh" }, [icon("i-bulb"), document.createTextNode("Gợi ý hướng làm")]), el("p", { style: "margin:0;color:var(--text)" }, T(e.hint))]));
+    const act = el("div", { class: "btnrow e-act" });
+    if (!E.sub) {
+      if (!E.hint) act.append(el("button", { class: "btn ghost ehint", onclick: () => {
+        if (S.charms > 0) S.charms--; else if (S.seeds >= HINT_COST) S.seeds -= HINT_COST; else { toast(`Cần ${HINT_COST} hạt để xem gợi ý. Bạn đang có ${S.seeds} hạt.`); return; }
+        E.hint = true; save(); hud(); play("tap"); draw(); } }, [icon("i-bulb"), document.createTextNode(S.charms > 0 ? "Gợi ý hướng làm (dùng 1 bùa)" : `Gợi ý hướng làm (−${HINT_COST} hạt)`)]));
+      act.append(el("button", { class: "btn red", text: "Nộp bài & xem lời giải", onclick: () => { E.sub = true; play("tap"); draw(); m.scrollTop = 0; } }));
+    } else {
+      const need = e.parts.some((p, i) => p.a === undefined && E.marks[i] === null);
+      const sc = score();
+      m.append(el("div", { class: "e-score" }, [el("span", { text: "Điểm bài này" }), el("b", { text: `${fmtPts(sc)} / ${fmtPts(e.total)}` }),
+        el("small", { text: need ? "Tự chấm các ý trình bày để tính điểm." : E.saved ? "Đã lưu điểm." : "Bấm Lưu điểm để ghi kết quả." })]));
+      if (!E.saved) act.append(el("button", { class: "btn red", disabled: need, text: "Lưu điểm", onclick: () => saveEssay(sc) }));
+      act.append(el("button", { class: "btn ghost", text: "Làm lại", onclick: () => { E.sub = false; E.saved = false; E.vals = e.parts.map(() => ""); E.marks = e.parts.map(() => null); draw(); m.scrollTop = 0; } }));
+      const nxt = essayList()[essayList().findIndex(x => x.key === key) + 1];
+      if (nxt) act.append(el("button", { class: "btn ghost", text: "Bài tiếp theo", onclick: () => { closeModal(true); S.cave.sel = nxt.lesson; save(); drawCave(); renderCavePanel(); openEssay(nxt.key); } }));
+    }
+    m.append(act);
+    typeset(m);
+  }
+  function saveEssay(sc) {
+    const prev = S.cave.best[key], wasPass = (prev ?? -1) >= e.total / 2;
+    if (prev === undefined || sc > prev) S.cave.best[key] = sc;
+    let msg = `Đã lưu ${fmtPts(sc)}/${fmtPts(e.total)} điểm.`;
+    if (!wasPass && sc >= e.total / 2) { S.seeds += ESSAY_SEEDS; msg += ` Chinh phục bài này: +${ESSAY_SEEDS} hạt!`; play("win"); confetti(90); } else play(sc >= e.total / 2 ? "good" : "tap");
+    let newTicket = false;
+    if (!S.tickets.cave && essayList().every(essayPassed)) { S.tickets.cave = new Date().toISOString().slice(0, 10); newTicket = true; }
+    E.saved = true; save(); hud(); toast(msg);
+    if (!$("#scrCave").hidden) { drawCave(); renderCavePanel(); }
+    draw();
+    if (newTicket) setTimeout(() => { closeModal(true); openTicket("cave", true); }, 900);
+  }
+  draw(); openModal(m);
 }
 /* ================= MODAL ================= */
 let lastFocus = null;

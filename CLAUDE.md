@@ -13,3 +13,4 @@ Game web một tệp cho học sinh lớp 10 (tiếng Việt). Chủ repo trao �
 - Mọi địa danh, mức và Thử thách Đất Mũi đều mở sẵn (`stageUnlocked`/`levelUnlocked` luôn trả về true); phiếu điểm 10 vẫn cần qua đủ 4 mức.
 - Chế độ giáo viên (cần mật khẩu): nút "Đáp án" ở từng mức và trong Cài đặt (`openKey`), xem trước mọi phiếu thưởng (ví phiếu, thẻ phần thưởng).
 - Phiếu miễn 2% BTVN: mỗi mức (và Thử thách Đất Mũi) qua lần đầu tặng 1 phiếu, lưu ở `S.coupons["bX.L"] = {d, used}`; giáo viên đánh dấu đã dùng trong `openCoupon`. Túi phiếu có 2 tab.
+- Bản đồ ẩn Hang Sơn Đoòng (`src/cave.js`: `CAVE`, `CHAMBERS`, `ESSAYS`): 16 bài tự luận VDC (2/bài học, 3 điểm/bài). Mở khi qua mức 4 ở `CAVE_NEED` địa danh (giáo viên luôn mở). Ý có `a` chấm tự động, ý không có `a` học sinh tự chấm. Điểm lưu ở `S.cave.best`; đạt ≥ nửa điểm lần đầu +30 hạt; đủ 16 bài → phiếu `S.tickets.cave`.

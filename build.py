@@ -9,7 +9,7 @@ body = rd("app.html").replace("{{CSS}}", rd("style.css"))
 body = re.sub(r"^<title>.*?</title>\n?", "", body, count=1)  # tiêu đề nằm trong head.html
 body = (body.replace("{{LAND}}", rd("map", "d.txt")).replace("{{SEA}}", rd("map", "sea.txt"))
             .replace("{{HAINAN}}", rd("map", "hainan.txt")))
-data = "\n".join(rd(f) for f in ["bank.js", "bank2.js", "math.js", "handbook.js", "music.js", "omikuji.js"])
+data = "\n".join(rd(f) for f in ["bank.js", "bank2.js", "math.js", "handbook.js", "music.js", "omikuji.js", "cave.js"])
 body = body.replace("{{BANK}}", data).replace("{{APP}}", rd("app.js"))
 assert "{{" not in body, "còn placeholder chưa thay"
 
