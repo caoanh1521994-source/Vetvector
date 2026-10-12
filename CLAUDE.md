@@ -11,3 +11,4 @@ Game web một tệp cho học sinh lớp 10 (tiếng Việt). Chủ repo trao �
 - Kinh tế hạt: gợi ý/sổ tay khi đang làm câu −10, 50/50 −20, lắc quẻ −15; người mới có 30 hạt.
 - Trước khi đẩy: chạy thử bằng Playwright (Chromium có sẵn) ở 1200px và 390px, không có lỗi `pageerror`.
 - Mọi địa danh, mức và Thử thách Đất Mũi đều mở sẵn (`stageUnlocked`/`levelUnlocked` luôn trả về true); phiếu điểm 10 vẫn cần qua đủ 4 mức.
+- Chế độ giáo viên (cần mật khẩu): nút "Đáp án" ở từng mức và trong Cài đặt (`openKey`), xem trước mọi phiếu thưởng (ví phiếu, thẻ phần thưởng).

@@ -580,6 +580,32 @@ main{padding-inline:16px;padding-block:18px 40px;max-width:1240px;margin:0 auto;
   .modal.omi{padding:20px 16px}
 }
 
+/* ---------- Đáp án (chế độ giáo viên) ---------- */
+.lvbtns{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.keybtn{padding:8px 12px}
+.key .book-head h2 svg{color:var(--good);background:var(--good);border-radius:50%;padding:4px;width:30px;height:30px}
+.key-info{margin:0;font-size:.9rem;color:var(--text-soft)}
+.kcard{border-radius:16px;border:1px solid var(--glass-line);background:rgba(255,255,255,.04);padding:14px 16px;display:grid;gap:8px;min-width:0}
+.kcard .qmeta{margin:0}
+.kq{margin:0;font-size:1.02rem;overflow-x:auto;overflow-y:hidden}
+.kopts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kopt{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;border:1px solid var(--glass-line);background:rgba(255,255,255,.03);min-width:0}
+.kopt .k{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-family:var(--display);font-weight:800;color:var(--aqua);background:rgba(62,240,208,.1);border:1px solid rgba(62,240,208,.35)}
+.kopt .v{min-width:0;flex:1;overflow-x:auto;overflow-y:hidden}
+.kopt>svg{width:22px;height:22px;flex:none;background:var(--good);border-radius:50%;padding:3px}
+.kopt.right{border-color:var(--good);background:var(--good-bg)}
+.kopt.right .k{background:var(--good);color:#04261C;border-color:var(--good)}
+.kans{margin:0;font-family:var(--display);font-weight:800;color:var(--good)}
+.ktf{display:grid;gap:6px}
+.ktfrow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.03)}
+.ktfrow .s{min-width:0;overflow-x:auto;overflow-y:hidden}
+.kbadge{flex:none;font-family:var(--display);font-weight:800;font-size:.85rem;padding:3px 10px;border-radius:99px}
+.kbadge.yes{background:var(--good);color:#04261C}
+.kbadge.no{background:var(--bad);color:#fff}
+.ksol{margin:0;color:var(--text-soft);overflow-x:auto;overflow-y:hidden}
+.ksol b{font-family:var(--display);color:var(--gold)}
+@media (max-width:560px){ .kopts{grid-template-columns:minmax(0,1fr)} .lvbtns{flex-direction:column;align-items:stretch} }
+
 </style>
 
 
@@ -2316,11 +2342,12 @@ function renderPanel() {
     const btn = ok ? el("button", { class: "btn small" + (st ? " ghost" : ""), text: st ? "Chơi lại" : "Chơi", onclick: () => startRound(s.id, L.n) })
                    : el("span", { class: "lockic", "aria-label": "Đang khóa" }, icon("i-lock"));
     if (!ok) btn.firstChild.style.cssText = "width:26px;height:26px";
+    const btns = S.teacher && !boss ? el("div", { class: "lvbtns" }, [el("button", { class: "btn small ghost keybtn", text: "Đáp án", onclick: () => openKey(s.id, L.n) }), btn]) : btn;
     list.append(el("li", { class: "level" + (ok ? "" : " locked") }, [
       el("div", { class: "lvbadge", style: `background:${L.color}`, text: boss ? "!" : String(L.n) }),
       el("div", {}, [el("div", { class: "lvname", text: boss ? L.name : `Mức ${L.n} · ${L.name}` }),
         el("div", { class: "lvsub" }, [document.createTextNode(L.sub + count + " "), ok ? starRow(st) : null])]),
-      btn]));
+      btns]));
   }
   body.append(list);
   const nPassed = boss ? (passed("boss", 1) ? 1 : 0) : [1, 2, 3, 4].filter(l => passed(s.id, l)).length;
@@ -2329,8 +2356,8 @@ function renderPanel() {
   const rw = el("div", { class: "reward" + (has ? " got" : "") }, [el("div", { class: "foodbadge" + (s.food.gold ? " gold" : "") }, icon(s.food.icon)), el("div", { style: "flex:1;min-width:0" }, [
     el("small", { class: "rw-k", text: s.food.gold ? "Phiếu điểm 10 vàng" : "Phiếu điểm 10" }),
     el("b", { text: s.food.name }),
-    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : boss ? "Vượt qua thử thách để nhận." : `Qua cả 4 mức để nhận (${nPassed}/4).` }), bar])]);
-  if (has) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket(s.id)); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket(s.id); }); }
+    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : boss ? "Vượt qua thử thách để nhận." : `Qua cả 4 mức để nhận (${nPassed}/4).` }), bar])]);
+  if (has || S.teacher) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket(s.id)); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket(s.id); }); }
   body.append(rw);
   card.append(body);
   p.append(card);
@@ -2540,7 +2567,7 @@ function goMap() { RUN = null; show("scrMap"); drawMap(); renderPanel(); hud(); 
 /* ================= PHIẾU ĐIỂM 10 ================= */
 function hash(str) { let h = 2166136261; for (const ch of str) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6); }
 function ticketEl(id, reveal) {
-  const s = STAGES[stageIdx(id)], gold = !!s.food.gold, date = S.tickets[id] || "";
+  const s = STAGES[stageIdx(id)], gold = !!s.food.gold, date = S.tickets[id] || (S.teacher ? new Date().toISOString().slice(0, 10) : "");
   const d = date ? date.split("-").reverse().join("/") : "";
   return el("div", { class: "ticket" + (gold ? " gold" : "") + (reveal ? " reveal" : "") }, [
     el("span", { class: "rar", text: gold ? "HUYỀN THOẠI" : "SIÊU HIẾM" }),
@@ -2561,7 +2588,7 @@ function ticketEl(id, reveal) {
 function openTicket(id, reveal) {
   const m = el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Phiếu điểm 10" }, [
     ticketEl(id, reveal),
-    el("p", { style: "font-size:.88rem;color:var(--ink-soft);text-align:center;margin:12px 0", text: "Chụp màn hình phiếu để khoe với thầy cô và bố mẹ nhé! Thầy cô có thể đối chiếu mã phiếu với tên học sinh." }),
+    el("p", { style: "font-size:.88rem;color:var(--ink-soft);text-align:center;margin:12px 0", text: !S.tickets[id] && S.teacher ? "Bản xem trước dành cho giáo viên. Học sinh chỉ nhận phiếu này khi vượt qua đủ các mức." : "Chụp màn hình phiếu để khoe với thầy cô và bố mẹ nhé! Thầy cô có thể đối chiếu mã phiếu với tên học sinh." }),
     el("div", { class: "btnrow" }, [
       el("button", { class: "btn ghost", text: "Mở túi phiếu", onclick: () => { closeModal(); openWallet(); } }),
       el("button", { class: "btn red", text: "Về bản đồ", onclick: () => { closeModal(); goMap(); } })])]);
@@ -2571,19 +2598,69 @@ function openTicket(id, reveal) {
 function openWallet() {
   const grid = el("div", { class: "wallet" });
   for (const s of STAGES) {
-    const has = !!S.tickets[s.id], gold = !!s.food.gold;
-    const slot = el(has ? "button" : "div", { class: "slot" + (has ? " has" : "") + (gold ? " gold" : "") }, [
+    const has = !!S.tickets[s.id], gold = !!s.food.gold, view = has || S.teacher;
+    const slot = el(view ? "button" : "div", { class: "slot" + (view ? " has" : "") + (gold ? " gold" : "") }, [
       el("div", { class: "foodbadge" + (gold ? " gold" : "") }, icon(s.food.icon)),
       el("b", { text: s.food.name }),
-      el("small", { text: has ? `${s.short} · bấm để xem` : `${s.short} · chưa nhận` })]);
-    if (has) slot.addEventListener("click", () => { closeModal(); openTicket(s.id); });
+      el("small", { text: has ? `${s.short} · bấm để xem` : S.teacher ? `${s.short} · xem trước` : `${s.short} · chưa nhận` })]);
+    if (view) slot.addEventListener("click", () => { closeModal(); openTicket(s.id); });
     grid.append(slot);
   }
   openModal(el("div", { class: "modal wide", role: "dialog", "aria-modal": "true", "aria-labelledby": "wTitle" }, [
     closeX(), el("h2", { id: "wTitle", text: "Túi phiếu điểm 10" }),
-    el("p", { style: "margin:4px 0 0;color:var(--ink-soft)", text: `Bạn có ${ticketCount()}/9 phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` }), grid]));
+    el("p", { style: "margin:4px 0 0;color:var(--ink-soft)", text: `Bạn có ${ticketCount()}/9 phiếu. Qua đủ 4 mức ở một địa danh để nhận phiếu đặc sản của nơi đó; vượt Thử thách Đất Mũi để nhận phiếu vàng.` + (S.teacher ? " Chế độ giáo viên: bấm vào phiếu bất kì để xem trước." : "") }), grid]));
 }
 
+
+/* ================= ĐÁP ÁN (CHẾ ĐỘ GIÁO VIÊN) ================= */
+function keyOrder(q) { // thứ tự phương án cố định cho mỗi câu, để đáp án không luôn là A
+  let h = 2166136261; for (const ch of q.key || q.q) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); }
+  const a = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0; const j = h % (i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function keyCard(q, k, lv) {
+  const c = el("article", { class: "kcard" }, [
+    el("div", { class: "qmeta" }, [el("span", { class: "pill", text: `Câu ${k + 1}` }), el("span", { class: "pill", text: TYPE[q.t] }),
+      el("span", { class: "pill lv", style: `background:${LEVELS[lv - 1].color}`, text: `Mức ${lv}` })]),
+    el("p", { class: "kq" }, T(q.q))]);
+  if (q.t === "mc") {
+    const ord = keyOrder(q), box = el("div", { class: "kopts" });
+    ord.forEach((src, j) => box.append(el("div", { class: "kopt" + (src === 0 ? " right" : "") }, [el("span", { class: "k", text: "ABCD"[j] }), el("span", { class: "v" }, T(q.o[src])), src === 0 ? icon("i-check") : null])));
+    c.append(box, el("p", { class: "kans", text: `Đáp án: ${"ABCD"[ord.indexOf(0)]}` }));
+  } else if (q.t === "tf") {
+    const box = el("div", { class: "ktf" });
+    q.s.forEach(([txt, v], j) => box.append(el("div", { class: "ktfrow" }, [el("div", { class: "s" }, [el("b", { text: "abcd"[j] + ") " }), T(txt)]), el("span", { class: "kbadge " + (v ? "yes" : "no"), text: v ? "Đúng" : "Sai" })])));
+    c.append(box);
+  } else {
+    c.append(el("p", { class: "kans", text: `Đáp số: ${String(q.a).replace(".", ",")}` + (q.tol > 1e-6 ? ` (chấp nhận sai số ±${String(q.tol).replace(".", ",")})` : "") }));
+  }
+  c.append(el("p", { class: "ksol" }, [el("b", { text: "Lời giải: " }), T(q.e)]));
+  return c;
+}
+function openKey(lesson, level) {
+  if (!S.teacher) return;
+  let cur = lesson, lv = level || 0;
+  const tabs = el("div", { class: "book-tabs", role: "tablist" }), lvs = el("div", { class: "book-tabs" });
+  const info = el("p", { class: "key-info" }), body = el("div", { class: "book-body" });
+  function render() {
+    tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === cur)));
+    lvs.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.lv === lv)));
+    const st = STAGES[stageIdx(cur)]; body.innerHTML = "";
+    const groups = (lv ? [lv] : [1, 2, 3, 4]).map(l => [l, BANK[cur][l]]);
+    info.textContent = `${st.topic} · ${groups.reduce((t, [, a]) => t + a.length, 0)} câu`;
+    for (const [l, qs] of groups) {
+      if (!lv) body.append(el("h3", { class: "sec", text: `Mức ${l} · ${LEVELS[l - 1].name}` }));
+      qs.forEach((q, k) => body.append(keyCard(q, k, l)));
+    }
+    body.scrollTop = 0;
+  }
+  STAGES.slice(0, N_STOPS).forEach(st => tabs.append(el("button", { "data-id": st.id, role: "tab", text: `Bài ${st.no} · ${st.short}`, onclick: () => { cur = st.id; render(); play("tap"); } })));
+  [[0, "Tất cả mức"], [1, "Mức 1"], [2, "Mức 2"], [3, "Mức 3"], [4, "Mức 4"]].forEach(([n, t]) => lvs.append(el("button", { "data-lv": n, text: t, onclick: () => { lv = n; render(); play("tap"); } })));
+  const m = el("div", { class: "modal book key", role: "dialog", "aria-modal": "true", "aria-labelledby": "keyTitle" }, [
+    el("div", { class: "book-head" }, [closeX(), el("h2", { id: "keyTitle" }, [icon("i-check"), document.createTextNode("Đáp án · Giáo viên")]), tabs, lvs, info]), body]);
+  render(); openModal(m);
+  const t = tabs.querySelector('[aria-pressed="true"]'); if (t) t.scrollIntoView({ block: "nearest", inline: "center" });
+}
 
 /* ================= SỔ TAY CÔNG THỨC & GỢI Ý ================= */
 function fcard(it, hl) {
@@ -2862,7 +2939,10 @@ function openMenu() {
   function drawTeacher() {
     tbox.innerHTML = ""; tnote.textContent = ""; tnote.className = "note";
     if (S.teacher) {
-      tbox.append(el("p", { class: "note ok", text: "Đang bật chế độ giáo viên." }),
+      tbox.append(el("p", { class: "note ok", text: "Đang bật: xem đáp án mọi câu và xem trước mọi phiếu thưởng mà không cần làm bài." }),
+        el("div", { class: "row" }, [
+          el("button", { class: "btn small", text: "Xem đáp án", onclick: () => openKey(S.sel && S.sel !== "boss" ? S.sel : "b1", 1) }),
+          el("button", { class: "btn small", text: "Xem tất cả phiếu", onclick: () => { closeModal(true); openWallet(); } })]),
         el("div", { class: "row" }, el("button", { class: "btn small ghost", text: "Tắt chế độ giáo viên", onclick: () => { S.teacher = false; S.teacherLock = 0; save(); drawMap(); renderPanel(); toast("Đã tắt chế độ giáo viên."); drawTeacher(); } })));
     } else {
       const go = async () => {
@@ -2871,7 +2951,7 @@ function openMenu() {
         else { tnote.className = "note err"; tnote.textContent = "Sai mật khẩu. Chế độ này chỉ dành cho thầy cô."; tpw.select(); }
       };
       tpw.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); go(); } };
-      tbox.append(el("p", { text: "Dành cho thầy cô. Mọi địa danh và mức hiện đã mở sẵn cho học sinh." }),
+      tbox.append(el("p", { text: "Dành cho thầy cô: xem đáp án, lời giải của mọi câu và xem trước mọi phiếu thưởng mà không cần làm bài." }),
         el("div", { class: "row" }, [tpw, el("button", { class: "btn small", text: "Bật", onclick: go })]), tnote);
     }
   }

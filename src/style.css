@@ -561,3 +561,29 @@ main{padding-inline:16px;padding-block:18px 40px;max-width:1240px;margin:0 auto;
   .omi-seal{width:64px;height:64px;font-size:.92rem}
   .modal.omi{padding:20px 16px}
 }
+
+/* ---------- Đáp án (chế độ giáo viên) ---------- */
+.lvbtns{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.keybtn{padding:8px 12px}
+.key .book-head h2 svg{color:var(--good);background:var(--good);border-radius:50%;padding:4px;width:30px;height:30px}
+.key-info{margin:0;font-size:.9rem;color:var(--text-soft)}
+.kcard{border-radius:16px;border:1px solid var(--glass-line);background:rgba(255,255,255,.04);padding:14px 16px;display:grid;gap:8px;min-width:0}
+.kcard .qmeta{margin:0}
+.kq{margin:0;font-size:1.02rem;overflow-x:auto;overflow-y:hidden}
+.kopts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kopt{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;border:1px solid var(--glass-line);background:rgba(255,255,255,.03);min-width:0}
+.kopt .k{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-family:var(--display);font-weight:800;color:var(--aqua);background:rgba(62,240,208,.1);border:1px solid rgba(62,240,208,.35)}
+.kopt .v{min-width:0;flex:1;overflow-x:auto;overflow-y:hidden}
+.kopt>svg{width:22px;height:22px;flex:none;background:var(--good);border-radius:50%;padding:3px}
+.kopt.right{border-color:var(--good);background:var(--good-bg)}
+.kopt.right .k{background:var(--good);color:#04261C;border-color:var(--good)}
+.kans{margin:0;font-family:var(--display);font-weight:800;color:var(--good)}
+.ktf{display:grid;gap:6px}
+.ktfrow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.03)}
+.ktfrow .s{min-width:0;overflow-x:auto;overflow-y:hidden}
+.kbadge{flex:none;font-family:var(--display);font-weight:800;font-size:.85rem;padding:3px 10px;border-radius:99px}
+.kbadge.yes{background:var(--good);color:#04261C}
+.kbadge.no{background:var(--bad);color:#fff}
+.ksol{margin:0;color:var(--text-soft);overflow-x:auto;overflow-y:hidden}
+.ksol b{font-family:var(--display);color:var(--gold)}
+@media (max-width:560px){ .kopts{grid-template-columns:minmax(0,1fr)} .lvbtns{flex-direction:column;align-items:stretch} }
