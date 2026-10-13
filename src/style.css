@@ -744,3 +744,36 @@ button.cslot:hover{transform:translateY(-2px)}
 .ep-lock{display:flex}
 .ep-lock .btn svg{width:18px;height:18px}
 .e-act .btn svg{width:18px;height:18px}
+
+/* ---------- Tài khoản ---------- */
+button.player{background:none;border:1px solid transparent;border-radius:99px;padding:4px 10px;cursor:pointer;font:inherit;font-weight:600;color:var(--text-soft);font-size:.9rem}
+button.player:hover{border-color:var(--glass-line);color:var(--text)}
+button.player::before{content:"👤 ";font-size:.85em}
+.namebox .pin{flex:1 1 220px}
+.namebtns{display:flex;gap:10px;flex-wrap:wrap}
+.pin-note{flex-basis:100%;margin:6px 0 0;font-size:.82rem;color:var(--text-dim)}
+.acct-list{margin-top:6px}
+.acct-h{font-size:1.15rem;margin-bottom:10px}
+.acct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.acct-card{position:relative;border-radius:16px;border:1px solid var(--glass-line);background:rgba(255,255,255,.06);transition:border-color .2s,transform .2s}
+.acct-card:hover{border-color:var(--aqua);transform:translateY(-2px)}
+.acct-main,.acct-new{display:flex;align-items:center;gap:12px;width:100%;padding:12px 40px 12px 12px;background:none;border:0;color:var(--text);text-align:left;cursor:pointer;font:inherit}
+.acct-new{padding-right:12px;border-style:dashed}
+.acct-av{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.2rem;color:#14103F;box-shadow:0 0 14px rgba(255,255,255,.2)}
+.acct-av.plus{background:rgba(255,255,255,.12);color:var(--aqua);font-size:1.6rem}
+.acct-info{display:flex;flex-direction:column;min-width:0}
+.acct-info b{font-family:var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acct-info small{color:var(--text-soft);font-size:.8rem}
+.acct-lock{width:18px;height:18px;margin-left:auto;flex:none}
+.acct-del{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:8px;border:0;background:transparent;color:var(--text-dim);display:grid;place-items:center;cursor:pointer}
+.acct-del:hover{background:var(--bad-bg);color:var(--bad)}
+.acct-del svg{width:14px;height:14px}
+.acct-head{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.acct-head .acct-av{width:56px;height:56px;font-size:1.6rem}
+.acct-head h2{font-size:1.5rem}
+.acct-head p{margin:2px 0 0}
+.pin-big{display:block;margin:6px auto 0;width:180px;text-align:center;font:inherit;font-family:var(--display);font-weight:800;font-size:1.8rem;letter-spacing:.4em;padding:10px;border-radius:14px;border:1px solid rgba(62,240,208,.55);background:rgba(0,0,0,.25);color:var(--text)}
+@media (max-width:560px){ button.player{display:none} }
+.acct-card.acct-new{border:1px dashed rgba(170,200,255,.35);background:rgba(255,255,255,.03);border-radius:16px}
+.acct-pin,#teacherPw{font:inherit;padding:8px 12px;border-radius:12px;border:1px solid var(--glass-line);background:rgba(0,0,0,.25);color:var(--text);max-width:200px}
+.acct-pin:focus,#teacherPw:focus{border-color:var(--aqua);outline:none;box-shadow:0 0 0 3px rgba(62,240,208,.18)}

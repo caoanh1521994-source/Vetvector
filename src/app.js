@@ -73,11 +73,36 @@ const SAY = {
 const KEY = "vetvecto-v2";
 const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, cave: { found: false, sel: "b1", best: {}, done: {}, seen: {}, hint: {} }, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
 let S = fresh();
+/* ===== Nhiều tài khoản trên cùng một máy =====
+   Danh sách ở PKEY: { list: [{ id, name, pin (mã băm hoặc null), stars, tix, last }], cur }.
+   Tiến độ của từng tài khoản ở khóa "vetvecto-v2:<id>". Bản cũ (một tài khoản ở "vetvecto-v2") được chuyển sang tự động. */
+const PKEY = "vetvecto-profiles";
+let P = { list: [], cur: null };
+const stateKey = id => KEY + ":" + id;
+const todayISO = () => new Date().toISOString().slice(0, 10);
+const curProfile = () => P.list.find(x => x.id === P.cur) || null;
+function saveProfiles() { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} }
+function loadProfiles() {
+  try { const r = JSON.parse(localStorage.getItem(PKEY) || "null"); if (r && Array.isArray(r.list)) P = { list: r.list, cur: r.cur || null }; } catch (e) {}
+  try { // chuyển dữ liệu bản cũ
+    const old = localStorage.getItem(KEY);
+    if (old) {
+      const o = JSON.parse(old), id = "p" + Date.now().toString(36);
+      if (o && typeof o === "object" && o.name) { P.list.push({ id, name: o.name, pin: null, last: todayISO() }); localStorage.setItem(stateKey(id), old); if (!P.cur) P.cur = id; }
+      localStorage.removeItem(KEY); saveProfiles();
+    }
+  } catch (e) {}
+  if (P.cur && !curProfile()) P.cur = null;
+}
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && typeof s === "object") return Object.assign(fresh(), s); } } catch (e) {}
+  try { const raw = P.cur && localStorage.getItem(stateKey(P.cur)); if (raw) { const s = JSON.parse(raw); if (s && typeof s === "object") return Object.assign(fresh(), s); } } catch (e) {}
   return fresh();
 }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function save() {
+  if (!P.cur) return;
+  try { localStorage.setItem(stateKey(P.cur), JSON.stringify(S)); } catch (e) {}
+  const pr = curProfile(); if (pr) { pr.name = S.name || pr.name; pr.stars = totalStars(); pr.tix = ticketCount(); pr.last = todayISO(); saveProfiles(); }
+}
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (tag, attrs = {}, kids = []) => {
@@ -1113,6 +1138,8 @@ function openMenu() {
   const m = el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "mTitle" }, [
     closeX(), el("h2", { id: "mTitle", text: "Cài đặt" }),
     el("div", { class: "menu-list" }, [
+      el("section", {}, [el("h3", { text: "Tài khoản" }), el("p", { text: `Đang chơi: ${S.name}. Máy này có ${P.list.length} tài khoản.` }),
+        el("div", { class: "row" }, [el("button", { class: "btn small", text: "Tài khoản & mã PIN", onclick: () => { closeModal(true); openAccount(); } }), el("button", { class: "btn small ghost", text: "Đăng xuất / đổi tài khoản", onclick: () => logout() })])]),
       el("section", {}, [el("h3", { text: "Tên trên phiếu" }), nameIn, el("div", { class: "row" }, el("button", { class: "btn small", text: "Lưu tên", onclick: () => { const v = nameIn.value.trim(); if (!v) { note.className = "note err"; note.textContent = "Tên không được để trống."; return; } S.name = v; save(); hud(); toast("Đã lưu tên: " + v); } }))]),
       el("section", {}, [el("h3", { text: "Chuyển tiến độ sang máy khác" }),
         el("p", { text: "Tiến độ chỉ lưu trên trình duyệt này. Sao chép mã dưới đây, rồi dán vào ô Khôi phục ở máy khác." }), code,
@@ -1189,8 +1216,7 @@ function sky() {
   }
 }
 /* ================= KHỞI ĐỘNG ================= */
-function start(data) {
-  S = (data && data.S) ? Object.assign(fresh(), data.S) : load();
+function afterLoad() {
   if (S.teacher && S.teacherLock !== 1) { S.teacher = false; save(); }
   // trao bù phiếu miễn cho các mức đã qua trước khi có phần thưởng này
   S.coupons = S.coupons || {}; let bf = 0;
@@ -1198,6 +1224,11 @@ function start(data) {
   if (bf) save();
   S.cave = Object.assign({ found: false, sel: "b1", best: {}, done: {}, seen: {}, hint: {} }, S.cave || {});
   for (const k in S.cave.best) if (!S.cave.done[k]) S.cave.done[k] = new Date().toISOString().slice(0, 10); // bản cũ có điểm → coi như đã làm
+  Music.setVolume(S.musicVol ?? .6);
+}
+function start(data) {
+  loadProfiles();
+  S = load(); if (P.cur) afterLoad();
   try { window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({ S })); } catch (e) {}
   mountParrots(); sky();
   $("#homeBtn").addEventListener("click", () => { if (RUN) confirmQuit(); else goMap(); });
@@ -1222,14 +1253,104 @@ function start(data) {
   };
   ["pointerup", "touchend", "click", "keydown"].forEach(t => addEventListener(t, onGesture, true));
   $("#quitBtn").addEventListener("click", confirmQuit);
-  $("#nameForm").addEventListener("submit", e => {
-    e.preventDefault(); const v = $("#nameInput").value.trim();
+  $("#nameForm").addEventListener("submit", async e => {
+    e.preventDefault(); const v = $("#nameInput").value.trim(), pin = $("#pinInput").value.trim();
     if (!v) { $("#nameInput").focus(); toast("Nhập tên để Vẹt ghi lên phiếu điểm 10 nhé!"); return; }
-    const first = !S.name && !S.omi.n && totalStars() === 0; S.name = v; save(); play("win"); goMap();
-    if (first) toast(`Vẹt tặng bạn ${S.seeds} hạt khởi hành! Dùng hạt cho trợ giúp và Hộp quẻ.`);
+    if (pin && !/^\d{4}$/.test(pin)) { $("#pinInput").focus(); toast("Mã PIN gồm đúng 4 chữ số, hoặc để trống."); return; }
+    if (P.list.some(x => x.name.trim().toLowerCase() === v.toLowerCase())) { toast("Tên này đã có trên máy. Hãy chọn tài khoản đó hoặc đặt tên khác."); return; }
+    const id = "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    P.list.push({ id, name: v, pin: pin ? await pinHash(id, pin) : null, last: todayISO() });
+    P.cur = id; saveProfiles();
+    S = fresh(); S.name = v; afterLoad(); save();
+    $("#nameInput").value = ""; $("#pinInput").value = "";
+    play("win"); applyMusicPref(); goMap();
+    toast(`Chào ${v}! Vẹt tặng bạn ${S.seeds} hạt khởi hành. Dùng hạt cho trợ giúp và Hộp quẻ.`);
   });
+  $("#nameBack").addEventListener("click", () => { play("tap"); renderAccounts(); });
+  $("#hudName").addEventListener("click", openAccount);
   hud();
-  if (S.name) goMap(); else show("scrWelcome");
+  if (P.cur) goMap(); else { renderAccounts(); show("scrWelcome"); }
+}
+/* ================= TÀI KHOẢN ================= */
+async function pinHash(id, pin) {
+  try { const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("vetvecto-pin:" + id + ":" + pin)); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join(""); }
+  catch (e) { return "plain:" + pin; } // trình duyệt quá cũ không có crypto.subtle
+}
+async function pinOk(pr, pin) { return !pr.pin || (await pinHash(pr.id, pin)) === pr.pin; }
+function applyMusicPref() { try { if (S.music && !Music.playing) Music.start(); else if (!S.music && Music.playing) Music.stop(); } catch (e) {} hud(); }
+const AV_COLORS = ["#FF6FB5", "#3EF0D0", "#FFD66B", "#9B6BFF", "#5CC8FF", "#37F2A0", "#FF8E5C"];
+function avatar(pr) { let h = 0; for (const ch of pr.id) h = (h * 31 + ch.charCodeAt(0)) >>> 0; const name = pr.name.trim().split(/\s+/).pop() || "?"; return el("span", { class: "acct-av", style: `background:${AV_COLORS[h % AV_COLORS.length]}`, text: name[0].toUpperCase() }); }
+function renderAccounts() {
+  const box = $("#acctList"), form = $("#nameForm");
+  box.innerHTML = "";
+  if (!P.list.length) { box.hidden = true; form.hidden = false; $("#nameBack").hidden = true; $("#nameLabel").textContent = "Tên của bạn (ghi lên phiếu điểm 10)"; return; }
+  box.hidden = false; form.hidden = true;
+  box.append(el("h3", { class: "acct-h", text: "Chọn tài khoản để chơi tiếp" }));
+  const grid = el("div", { class: "acct-grid" });
+  const list = P.list.slice().sort((a, b) => (b.last || "").localeCompare(a.last || ""));
+  for (const pr of list) {
+    const card = el("div", { class: "acct-card" }, [
+      el("button", { class: "acct-main", "aria-label": `Đăng nhập ${pr.name}${pr.pin ? " (có mã PIN)" : ""}`, onclick: () => loginAs(pr) }, [
+        avatar(pr), el("span", { class: "acct-info" }, [el("b", { text: pr.name }), el("small", { text: `★ ${pr.stars || 0} · ${pr.tix || 0} phiếu` + (pr.last ? ` · ${pr.last.split("-").reverse().slice(0, 2).join("/")}` : "") })]),
+        pr.pin ? icon("i-lock", "acct-lock") : null]),
+      el("button", { class: "acct-del", "aria-label": `Xóa tài khoản ${pr.name}`, title: "Xóa tài khoản", onclick: () => deleteAccount(pr) }, icon("i-close"))]);
+    grid.append(card);
+  }
+  grid.append(el("button", { class: "acct-card acct-new", onclick: () => { play("tap"); box.hidden = true; form.hidden = false; $("#nameBack").hidden = false; $("#nameLabel").textContent = "Tạo tài khoản mới: tên của bạn (ghi lên phiếu điểm 10)"; $("#nameInput").focus(); } }, [el("span", { class: "acct-av plus", text: "+" }), el("span", { class: "acct-info" }, [el("b", { text: "Tài khoản mới" }), el("small", { text: "Cho bạn khác dùng chung máy" })])]));
+  box.append(grid, el("p", { class: "pin-note", text: "Mỗi tài khoản có tiến độ, hạt và phiếu thưởng riêng, chỉ lưu trên máy này. Muốn chuyển sang máy khác, dùng mã sao lưu trong Cài đặt." }));
+}
+function askPin(pr, title, then) {
+  const inp = el("input", { type: "password", inputmode: "numeric", maxlength: "4", class: "pin-big", placeholder: "• • • •", "aria-label": "Mã PIN", autocomplete: "off" });
+  const note = el("p", { class: "note", "aria-live": "polite" });
+  const go = async () => { if (await pinOk(pr, inp.value.trim())) { closeModal(true); then(); } else { note.className = "note err"; note.textContent = "Sai mã PIN."; inp.select(); play("bad"); } };
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go(); } });
+  openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "pinT" }, [closeX(),
+    el("div", { class: "acct-head" }, [avatar(pr), el("div", {}, [el("h2", { id: "pinT", text: title }), el("p", { text: pr.name })])]),
+    inp, note, el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Thôi", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Xác nhận", onclick: go })])]));
+  setTimeout(() => inp.focus(), 50);
+}
+function loginAs(pr) {
+  play("tap");
+  const doLogin = () => { P.cur = pr.id; saveProfiles(); S = load(); if (!S.name) S.name = pr.name; afterLoad(); save(); applyMusicPref(); goMap(); toast(`Chào mừng ${S.name} quay lại!`); };
+  if (pr.pin) askPin(pr, "Nhập mã PIN", doLogin); else doLogin();
+}
+function deleteAccount(pr) {
+  play("tap");
+  const confirmDel = () => openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "delT" }, [closeX(),
+    el("h2", { id: "delT", text: "Xóa tài khoản?" }),
+    el("p", { text: `Toàn bộ tiến độ, hạt và phiếu thưởng của "${pr.name}" trên máy này sẽ bị xóa và không lấy lại được (trừ khi đã lưu mã sao lưu).` }),
+    el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Thôi", onclick: () => closeModal() }),
+      el("button", { class: "btn red", text: "Xóa tài khoản", onclick: () => { try { localStorage.removeItem(stateKey(pr.id)); } catch (e) {} P.list = P.list.filter(x => x.id !== pr.id); if (P.cur === pr.id) P.cur = null; saveProfiles(); closeModal(); renderAccounts(); toast(`Đã xóa tài khoản ${pr.name}.`); } })])]));
+  if (pr.pin) askPin(pr, "Nhập mã PIN để xóa", confirmDel); else confirmDel();
+}
+function logout() {
+  save(); RUN = null; P.cur = null; saveProfiles(); S = fresh(); closeModal(true); renderAccounts(); show("scrWelcome"); play("tap");
+  const tt = $(".toast"); if (tt) tt.hidden = true;
+}
+function openAccount() {
+  const pr = curProfile(); if (!pr) return;
+  const pinIn = el("input", { type: "password", inputmode: "numeric", maxlength: "4", class: "acct-pin", placeholder: "Mã PIN mới (4 số)", "aria-label": "Mã PIN mới", autocomplete: "off" });
+  const note = el("p", { class: "note", "aria-live": "polite" });
+  const setPin = async clear => {
+    const v = pinIn.value.trim();
+    if (!clear && !/^\d{4}$/.test(v)) { note.className = "note err"; note.textContent = "Mã PIN gồm đúng 4 chữ số."; return; }
+    pr.pin = clear ? null : await pinHash(pr.id, v); saveProfiles(); pinIn.value = "";
+    note.className = "note ok"; note.textContent = clear ? "Đã bỏ mã PIN." : "Đã đặt mã PIN."; drawPinBtns();
+  };
+  const pinBtns = el("div", { class: "row" });
+  const drawPinBtns = () => { pinBtns.innerHTML = ""; pinBtns.append(pinIn, el("button", { class: "btn small", text: pr.pin ? "Đổi PIN" : "Đặt PIN", onclick: () => setPin(false) })); if (pr.pin) pinBtns.append(el("button", { class: "btn small ghost", text: "Bỏ PIN", onclick: () => setPin(true) })); };
+  drawPinBtns();
+  openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "accT" }, [closeX(),
+    el("div", { class: "acct-head" }, [avatar(pr), el("div", {}, [el("h2", { id: "accT", text: S.name }), el("p", { text: `★ ${totalStars()} · ${ticketCount()} phiếu · ${S.seeds} hạt · ${P.list.length} tài khoản trên máy này` })])]),
+    el("div", { class: "menu-list" }, [
+      el("section", {}, [el("h3", { text: "Đổi tài khoản" }), el("p", { text: "Đăng xuất để bạn khác đăng nhập hoặc tạo tài khoản mới trên máy này. Tiến độ của bạn vẫn được giữ nguyên." }),
+        el("div", { class: "row" }, el("button", { class: "btn small red", text: "Đăng xuất / đổi tài khoản", onclick: () => { if (RUN) { closeModal(true); confirmQuitThen(logout); } else logout(); } }))]),
+      el("section", {}, [el("h3", { text: "Mã PIN" }), el("p", { text: pr.pin ? "Tài khoản đang có mã PIN." : "Đặt mã PIN 4 số để người khác không vào nhầm tài khoản của bạn." }), pinBtns, note])])]));
+}
+function confirmQuitThen(fn) {
+  openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "qT2" }, [
+    el("h2", { id: "qT2", text: "Đang làm bài dở" }), el("p", { text: "Kết quả lượt này sẽ không được tính. Hạt đã nhận vẫn được giữ." }),
+    el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Ở lại", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Vẫn đăng xuất", onclick: () => fn() })])]));
 }
 let musicWarned = false;
 function checkMusic() {

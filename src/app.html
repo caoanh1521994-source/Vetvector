@@ -135,7 +135,7 @@
     <svg aria-hidden="true"><use href="#parrot-head"/></svg>
     <b>Vẹt <span>Vectơ</span></b>
   </button>
-  <span class="player" id="hudName"></span>
+  <button class="player" id="hudName" title="Tài khoản" aria-label="Tài khoản"></button>
   <span class="chip" title="Hạt hướng dương"><svg aria-hidden="true"><use href="#i-seed"/></svg><span id="hudSeeds">0</span><span class="sr"> hạt</span></span>
   <span class="chip chip-stars" title="Tổng số sao"><svg aria-hidden="true"><use href="#i-star"/></svg><span id="hudStars">0</span><span class="sr"> sao</span></span>
   <button class="chip" id="walletBtn" title="Túi phiếu"><svg aria-hidden="true"><use href="#i-ticket"/></svg><span id="hudTickets">0</span><span class="sr"> phiếu điểm 10</span></button>
@@ -165,10 +165,13 @@
         <li><b>60</b> mục Sổ tay công thức + gợi ý từng câu</li>
         <li>Nhạc nền EDM không lời</li>
       </ul>
+      <div class="acct-list" id="acctList" hidden></div>
       <form class="namebox" id="nameForm">
-        <label for="nameInput">Tên của bạn (ghi lên phiếu điểm 10)</label>
-        <input id="nameInput" type="text" maxlength="40" placeholder="Ví dụ: Nguyễn Minh Anh" autocomplete="name">
-        <button class="btn red" type="submit">Bắt đầu bay</button>
+        <label for="nameInput" id="nameLabel">Tên của bạn (ghi lên phiếu điểm 10)</label>
+        <input id="nameInput" type="text" maxlength="40" placeholder="Ví dụ: Nguyễn Minh Anh" autocomplete="off">
+        <input id="pinInput" class="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Mã PIN 4 số (không bắt buộc)" autocomplete="off" aria-label="Mã PIN 4 số, không bắt buộc">
+        <div class="namebtns"><button class="btn ghost" type="button" id="nameBack" hidden>Quay lại</button><button class="btn red" type="submit">Bắt đầu bay</button></div>
+        <p class="pin-note">Mã PIN giúp bạn bè dùng chung máy không vào nhầm tài khoản của bạn.</p>
       </form>
     </div>
   </section>
