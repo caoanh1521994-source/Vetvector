@@ -125,3 +125,73 @@ function figEl(key, which) {
   box.append(el("figcaption", { text: which === "sol" ? "Hình vẽ trong lời giải · nguồn: phiếu bài tập" : f.cap }));
   return box;
 }
+/* ===== Hình cho đề ôn tập (Văn Miếu): mặt phẳng tọa độ, lục giác đều, đo chiều cao tháp ===== */
+let figUid = 0;
+const svgT = (x, y, s, o = {}) => `<text x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" font-family="Be Vietnam Pro, Arial, sans-serif" font-size="${o.size || 13}" font-weight="${o.w || 600}" fill="${o.fill || "#1E2A44"}" text-anchor="${o.a || "middle"}"${o.it ? ' font-style="italic"' : ""}>${s}</text>`;
+/* Mặt phẳng tọa độ. lines: [{ a, b, c, keep (1: giữ phía ax+by≥c, -1: phía ≤), dash, lab, labAt }]
+   hatch: gạch phần bị loại của từng bất phương trình · fill: tô phần nghiệm · tx/ty: vạch chia có ghi số · marks: [[x, y, chữ]] */
+function FigPlane(o) {
+  const id = "pl" + (++figUid), U = o.u || 34, [x0, x1] = o.x, [y0, y1] = o.y, W = (x1 - x0) * U, H = (y1 - y0) * U;
+  const X = x => (x - x0) * U, Y = y => (y1 - y) * U, INK = "#1E2A44";
+  const clip = (poly, a, b, c, s) => { // giữ phần s*(ax+by-c) >= 0
+    const f = p => s * (a * p[0] + b * p[1] - c), out = [];
+    poly.forEach((p, i) => { const q = poly[(i + 1) % poly.length], fp = f(p), fq = f(q);
+      if (fp >= 0) out.push(p);
+      if (fp * fq < 0) { const t = fp / (fp - fq); out.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]); } });
+    return out;
+  };
+  const rect = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+  const path = poly => poly.length ? "M" + poly.map(p => X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("L") + "Z" : "";
+  let s = `<svg viewBox="-6 -6 ${W + 12} ${H + 12}" role="img" aria-label="Hình vẽ trên mặt phẳng tọa độ"><defs><pattern id="${id}h" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)"><rect width="7" height="7" fill="#E9EDF3"/><line x1="0" y1="0" x2="0" y2="7" stroke="#8C99AD" stroke-width="2.2"/></pattern>`;
+  s += `<marker id="${id}a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="${INK}"/></marker></defs>`;
+  if (o.hatch) o.lines.forEach(L => { const pl = clip(rect, L.a, L.b, L.c, -L.keep); s += `<path d="${path(pl)}" fill="url(#${id}h)" opacity=".95"/>`; });
+  if (o.fill) { let pl = rect; o.lines.forEach(L => pl = clip(pl, L.a, L.b, L.c, L.keep)); s += `<path d="${path(pl)}" fill="#9CC3F5" opacity=".75"/>`; }
+  for (let gx = Math.ceil(x0); gx <= x1; gx++) s += `<line x1="${X(gx)}" y1="0" x2="${X(gx)}" y2="${H}" stroke="#D9DFE8" stroke-width="1"/>`;
+  for (let gy = Math.ceil(y0); gy <= y1; gy++) s += `<line x1="0" y1="${Y(gy)}" x2="${W}" y2="${Y(gy)}" stroke="#D9DFE8" stroke-width="1"/>`;
+  s += `<line x1="0" y1="${Y(0)}" x2="${W}" y2="${Y(0)}" stroke="${INK}" stroke-width="1.6" marker-end="url(#${id}a)"/><line x1="${X(0)}" y1="${H}" x2="${X(0)}" y2="0" stroke="${INK}" stroke-width="1.6" marker-end="url(#${id}a)"/>`;
+  s += svgT(W - 8, Y(0) + 17, "x", { it: 1 }) + svgT(X(0) + 11, 12, "y", { it: 1 }) + svgT(X(0) - 9, Y(0) + 15, "O", { it: 1 });
+  o.lines.forEach(L => {
+    const seg = []; // giao điểm của đường thẳng với khung hình
+    rect.forEach((p, i) => { const q = rect[(i + 1) % 4], fp = L.a * p[0] + L.b * p[1] - L.c, fq = L.a * q[0] + L.b * q[1] - L.c;
+      if (fp === 0) seg.push(p); else if (fp * fq < 0) { const t = fp / (fp - fq); seg.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]); } });
+    if (seg.length >= 2) s += `<line x1="${X(seg[0][0]).toFixed(1)}" y1="${Y(seg[0][1]).toFixed(1)}" x2="${X(seg[1][0]).toFixed(1)}" y2="${Y(seg[1][1]).toFixed(1)}" stroke="#C0392B" stroke-width="2.4"${L.dash ? ' stroke-dasharray="7 5"' : ""}/>`;
+    if (L.lab) s += svgT(X(L.labAt[0]), Y(L.labAt[1]), L.lab, { it: 1, fill: "#C0392B", size: 14 });
+  });
+  (o.tx || []).forEach(v => { s += `<line x1="${X(v)}" y1="${Y(0) - 4}" x2="${X(v)}" y2="${Y(0) + 4}" stroke="${INK}" stroke-width="1.6"/>` + svgT(X(v), Y(0) + (v < 0 ? -8 : 17), (o.txl && o.txl[v]) || String(v).replace("-", "−").replace(".", ","), { size: 12 }); });
+  (o.ty || []).forEach(v => { s += `<line x1="${X(0) - 4}" y1="${Y(v)}" x2="${X(0) + 4}" y2="${Y(v)}" stroke="${INK}" stroke-width="1.6"/>` + svgT(X(0) - 8, Y(v) + 4, String(v).replace("-", "−"), { size: 12, a: "end" }); });
+  (o.marks || []).forEach(([x, y, t]) => { s += svgT(X(x), Y(y) + 6, t, { size: 18, w: 800, fill: "#2D6CDF" }); });
+  return s + "</svg>";
+}
+function FigHex() {
+  const R = 78, cx = 130, cy = 100, P = {};
+  "ABCDEF".split("").forEach((k, i) => { const a = (120 - 60 * i) * Math.PI / 180; P[k] = [cx + R * Math.cos(a), cy - R * Math.sin(a)]; });
+  let s = `<svg viewBox="0 0 260 200" role="img" aria-label="Lục giác đều ABCDEF tâm O">`;
+  s += `<path d="M${"ABCDEF".split("").map(k => P[k].map(v => v.toFixed(1)).join(" ")).join("L")}Z" fill="#EEF4FF" stroke="#1E2A44" stroke-width="2"/>`;
+  ["AD", "BE", "CF"].forEach(([u, v]) => { s += `<line x1="${P[u][0].toFixed(1)}" y1="${P[u][1].toFixed(1)}" x2="${P[v][0].toFixed(1)}" y2="${P[v][1].toFixed(1)}" stroke="#8C99AD" stroke-width="1.4"/>`; });
+  "ABCDEF".split("").forEach(k => { const dx = P[k][0] - cx, dy = P[k][1] - cy, L = Math.hypot(dx, dy); s += `<circle cx="${P[k][0].toFixed(1)}" cy="${P[k][1].toFixed(1)}" r="3" fill="#1E2A44"/>` + svgT(P[k][0] + dx / L * 15, P[k][1] + dy / L * 15 + 5, k, { it: 1, size: 15 }); });
+  return s + `<circle cx="${cx}" cy="${cy}" r="3" fill="#1E2A44"/>` + svgT(cx + 12, cy + 16, "O", { it: 1, size: 15 }) + "</svg>";
+}
+function FigTower() {
+  const B = [40, 170], A = [40, 30], D = [99, 170], C = [190, 170];
+  const ln = (p, q, c = "#1E2A44", w = 2) => `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-width="${w}"/>`;
+  const arc = (p, r, a1, a2) => { const f = a => [p[0] + r * Math.cos(a * Math.PI / 180), p[1] - r * Math.sin(a * Math.PI / 180)], [u, v] = [f(a1), f(a2)]; return `<path d="M${u[0].toFixed(1)} ${u[1].toFixed(1)}A${r} ${r} 0 0 0 ${v[0].toFixed(1)} ${v[1].toFixed(1)}" fill="none" stroke="#C0392B" stroke-width="1.8"/>`; };
+  let s = `<svg viewBox="0 0 230 200" role="img" aria-label="Tháp AB, hai điểm D và C trên mặt đất, góc BCA 43 độ, góc BDA 67 độ, CD 30 mét">`;
+  s += `<rect x="30" y="${A[1]}" width="20" height="${B[1] - A[1]}" fill="#E7DCC8" stroke="#1E2A44" stroke-width="1.5"/>`;
+  s += ln([10, 170], [220, 170], "#1E2A44", 2.2) + ln(A, D) + ln(A, C) + ln(B, A, "#1E2A44", 2.5);
+  s += `<path d="M${B[0]} ${B[1] - 10}h10v10" fill="none" stroke="#1E2A44" stroke-width="1.4"/>`;
+  s += arc(C, 26, 180 - 43, 180) + svgT(C[0] - 40, C[1] - 7, "43°", { size: 12, fill: "#C0392B" });
+  s += arc(D, 18, 180 - 67, 180) + svgT(D[0] - 15, D[1] - 22, "67°", { size: 12, fill: "#C0392B" });
+  s += svgT(A[0] - 12, A[1] + 4, "A", { it: 1, size: 15 }) + svgT(B[0] - 12, B[1] + 16, "B", { it: 1, size: 15 }) + svgT(D[0], D[1] + 18, "D", { it: 1, size: 15 }) + svgT(C[0], C[1] + 18, "C", { it: 1, size: 15 });
+  s += svgT((C[0] + D[0]) / 2, C[1] + 18, "30 m", { size: 12 });
+  return s + "</svg>";
+}
+/* Hình của một câu trong đề: tên ảnh (src/fig) hoặc hàm vẽ SVG */
+function examFig(f, cap, sol) {
+  if (!f) return null;
+  const box = el("figure", { class: "qfig" + (sol ? " sol" : "") });
+  if (typeof f === "function") box.insertAdjacentHTML("afterbegin", f());
+  else if (FIG_IMG[f]) box.append(el("img", { src: FIG_IMG[f], alt: sol ? "Hình vẽ trong lời giải" : "Hình minh họa" }));
+  else return null;
+  box.append(el("figcaption", { text: sol ? "Hình vẽ trong lời giải · nguồn: phiếu bài tập" : (cap || (typeof f === "function" ? "Hình vẽ" : FIG_SRC)) }));
+  return box;
+}

@@ -71,7 +71,7 @@ const SAY = {
 
 /* ================= TRẠNG THÁI ================= */
 const KEY = "vetvecto-v2";
-const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, cave: { found: false, sel: "b1", best: {}, done: {}, seen: {}, hint: {} }, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
+const fresh = () => ({ name: "", seeds: START_SEEDS, charms: 0, coupons: {}, cave: { found: false, sel: "b1", best: {}, done: {}, seen: {}, hint: {} }, omi: { n: 0, keep: [], tied: 0, fixed: 0 }, exam: { cur: {}, res: {}, best: {}, seen: {}, paid: {} }, sound: true, music: true, musicVol: .6, teacher: false, prog: {}, tickets: {}, sel: "b1" });
 let S = fresh();
 /* ===== Nhiều tài khoản trên cùng một máy =====
    Danh sách ở PKEY: { list: [{ id, name, pin (mã băm hoặc null), stars, tix, last }], cur }.
@@ -169,7 +169,7 @@ function mood(host, m, anim) {
 function show(id) {
   for (const s of document.querySelectorAll(".screen")) s.hidden = s.id !== id;
   $("#hud").hidden = id === "scrWelcome";
-  try { Music.duck(id === "scrQuiz" ? .5 : 1); } catch (e) {}
+  try { Music.duck(id === "scrQuiz" || id === "scrExam" ? .5 : 1); } catch (e) {}
   window.scrollTo({ top: 0 });
 }
 function hud() {
@@ -232,6 +232,7 @@ function drawMap() {
     nodes.append(g);
     requestAnimationFrame(() => { try { const w = text.getComputedTextLength() + 18; rect.setAttribute("width", w); rect.setAttribute("x", left ? tx - w + 9 : tx - 9); } catch (e) {} });
   });
+  mapExamNode(nodes);
   mapCaveNode(nodes);
   const c = STAGES[current];
   const tok = sv("g", { class: "token" });
@@ -243,6 +244,7 @@ function starRow(n) { const w = el("span", { class: "stars", "aria-label": `${n}
 
 function renderPanel() {
   const p = $("#panel"); clearMath(p); p.innerHTML = "";
+  if (S.sel === "exam") return renderExamPanel(p);
   const s = STAGES.find(x => x.id === S.sel) || STAGES[0];
   const i = stageIdx(s.id), open = stageUnlocked(i), chap = CHAPS[s.ch - 1], boss = s.id === "boss";
   const card = el("section", { class: "stagecard" });
@@ -510,10 +512,10 @@ function goMap() { RUN = null; show("scrMap"); drawMap(); renderPanel(); hud(); 
 /* ================= PHIẾU ĐIỂM 10 ================= */
 function hash(str) { let h = 2166136261; for (const ch of str) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6); }
 function ticketEl(id, reveal) {
-  const s = stageById(id), gold = !!s.food.gold, secret = !!s.food.secret, date = S.tickets[id] || (S.teacher ? new Date().toISOString().slice(0, 10) : "");
+  const s = stageById(id), gold = !!s.food.gold, secret = !!s.food.secret, exam = !!s.food.exam, date = S.tickets[id] || (S.teacher ? new Date().toISOString().slice(0, 10) : "");
   const d = date ? date.split("-").reverse().join("/") : "";
-  return el("div", { class: "ticket" + (gold ? " gold" : "") + (secret ? " secret" : "") + (reveal ? " reveal" : "") }, [
-    el("span", { class: "rar", text: secret ? "BÍ ẨN" : gold ? "HUYỀN THOẠI" : "SIÊU HIẾM" }),
+  return el("div", { class: "ticket" + (gold ? " gold" : "") + (secret ? " secret" : "") + (exam ? " exam" : "") + (reveal ? " reveal" : "") }, [
+    el("span", { class: "rar", text: secret ? "BÍ ẨN" : gold ? "HUYỀN THOẠI" : exam ? "TRẠNG NGUYÊN" : "SIÊU HIẾM" }),
     el("div", { class: "t-head", text: secret ? "PHIẾU ĐIỂM 10 BÍ ẨN" : gold ? "PHIẾU ĐIỂM 10 VÀNG" : "PHIẾU ĐIỂM 10" }),
     el("div", { class: "t-sub", text: "Hành trình Vẹt Vectơ · Toán 10 · Giữa học kì I" }),
     el("div", { class: "t-prize" }, [
@@ -523,7 +525,7 @@ function ticketEl(id, reveal) {
     el("p", { class: "t-line", text: s.food.line }),
     el("div", { class: "t-sub", style: "margin-top:8px", text: "Trao tặng cho" }),
     el("div", { class: "t-name", text: S.name || "Nhà thám hiểm" }),
-    el("p", { class: "t-for", text: secret ? `Đã tìm ra bản đồ ẩn và chinh phục cả ${essayList().length} bài tự luận Vận dụng cao trong Hang Sơn Đoòng.` : gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
+    el("p", { class: "t-for", text: exam ? `Đã hoàn thành cả ${EXAMS.length} đề ôn tập giữa học kì I tại Văn Miếu – Quốc Tử Giám, mỗi đề đạt từ ${fmtPt(EXAM_PASS)}/7 điểm phần trắc nghiệm trở lên.` : secret ? `Đã tìm ra bản đồ ẩn và chinh phục cả ${essayList().length} bài tự luận Vận dụng cao trong Hang Sơn Đoòng.` : gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
     el("div", { class: "t-foot" }, [
       el("div", {}, [document.createTextNode("Ngày nhận: " + d), el("br"), document.createTextNode("Mã phiếu: VV" + s.no + "-" + hash((S.name || "") + id + date))]),
       el("div", { class: "sign" }, [icon("parrot-head"), document.createTextNode("Vẹt Vectơ")])])]);
@@ -541,7 +543,7 @@ function openTicket(id, reveal) {
 function openWallet(tab) {
   tab = tab || "ticket";
   const grid = el("div", { class: "wallet" });
-  const tstages = STAGES.concat(caveOpen() || S.tickets.cave ? [CAVE] : []);
+  const tstages = STAGES.concat([EXAM_LOC], caveOpen() || S.tickets.cave ? [CAVE] : []);
   for (const s of tstages) {
     const has = !!S.tickets[s.id], gold = !!s.food.gold, secret = !!s.food.secret, view = has || S.teacher;
     const slot = el(view ? "button" : "div", { class: "slot" + (view ? " has" : "") + (gold ? " gold" : "") + (secret ? " secret" : "") }, [
@@ -921,7 +923,7 @@ function openOmikuji() {
 /* ================= BẢN ĐỒ ẨN · HANG SƠN ĐOÒNG ================= */
 const caveReady = () => STAGES.slice(0, N_STOPS).filter(s => passed(s.id, 4)).length >= CAVE_NEED;
 const caveOpen = () => S.teacher || S.cave.found || caveReady();
-const stageById = id => id === "cave" ? CAVE : STAGES[stageIdx(id)];
+const stageById = id => id === "cave" ? CAVE : id === "exam" ? EXAM_LOC : STAGES[stageIdx(id)];
 const essayList = () => Object.values(ESSAYS).flat();
 /* Tự luận không chấm điểm: học sinh làm ra giấy, dùng hạt để mở lời giải từng ý, tự đánh dấu "đã làm xong". */
 const essayDone = e => !!S.cave.done[e.key];
@@ -1084,6 +1086,276 @@ function openEssay(key) {
     m.scrollTop = top;
   }
   draw(); openModal(m);
+}
+/* ================= ĐỀ ÔN TẬP · VĂN MIẾU – QUỐC TỬ GIÁM =================
+   4 đề theo ma trận đề giữa kì (src/exams.js). Học sinh làm như một tờ đề 90 phút, nộp bài để chấm Phần I–III;
+   Phần IV làm ra giấy, mở lời giải bằng hạt (giáo viên xem miễn phí) rồi tự chấm. Bài làm dở được lưu ở S.exam.cur. */
+const examState = () => (S.exam = Object.assign({ cur: {}, res: {}, best: {}, seen: {}, paid: {} }, S.exam || {}));
+const examById = id => EXAMS.find(e => e.id === id);
+const fmtPt = v => (Math.round(v * 100) / 100).toString().replace(".", ",");
+const examBlank = () => ({ mc: Array(12).fill(null), tf: [[null, null, null, null], [null, null, null, null]], sa: ["", "", "", ""] });
+function examRng(seed) { let h = 1779033703; for (const ch of seed) h = Math.imul(h ^ ch.charCodeAt(0), 3432918353) >>> 0;
+  return () => { h = (h + 0x6D2B79F5) >>> 0; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+const examKeyCache = {};
+function examOrder(id, k) { // thứ tự phương án cố định (đề in ra và đáp án luôn khớp); mỗi đề có đúng 3 đáp án A, 3 B, 3 C, 3 D
+  if (!examKeyCache[id]) { const r = examRng(id), key = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3];
+    for (let i = key.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [key[i], key[j]] = [key[j], key[i]]; } examKeyCache[id] = key; }
+  const r = examRng(id + ":" + k), rest = [1, 2, 3];
+  for (let i = 2; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+  rest.splice(examKeyCache[id][k], 0, 0); return rest; // rest[vị trí hiển thị] = chỉ số phương án gốc (0 là đáp án đúng)
+}
+function examGrade(ex, a) {
+  const mc = ex.mc.map((q, k) => a.mc[k] !== null && examOrder(ex.id, k)[a.mc[k]] === 0);
+  const tf = ex.tf.map((q, k) => q.s.filter(([, v], i) => a.tf[k][i] === v).length);
+  const sa = ex.sa.map((q, k) => { const v = parseNum(a.sa[k] || ""); return !Number.isNaN(v) && Math.abs(v - q.a) <= q.tol + 1e-9; });
+  const pts = { mc: mc.filter(Boolean).length * EXAM_SCORE.mc, tf: tf.reduce((t, n) => t + EXAM_SCORE.tf[n], 0), sa: sa.filter(Boolean).length * EXAM_SCORE.sa };
+  return { mc, tf, sa, pts, auto: Math.round((pts.mc + pts.tf + pts.sa) * 100) / 100 };
+}
+const examPassed = id => (examState().best[id] || 0) >= EXAM_PASS;
+function examStatus(id) {
+  const E = examState(), cur = E.cur[id], res = E.res[id];
+  if (cur) return `Đang làm dở · còn ${Math.max(0, Math.ceil((EXAM_MIN * 60 - (cur.t || 0)) / 60))} phút`;
+  if (res) return `Lần gần nhất ${fmtPt(res.auto)}/7 trắc nghiệm` + (E.best[id] > res.auto ? ` · cao nhất ${fmtPt(E.best[id])}` : "");
+  return "Chưa làm · 21 câu · 90 phút";
+}
+function mapExamNode(nodes) {
+  const s = EXAM_LOC, done = !!S.tickets.exam, sel = S.sel === "exam";
+  const g = sv("g", { class: "node exam" + (sel ? " sel" : ""), tabindex: "0", role: "button", "aria-label": `${s.place}: ${s.topic}` + (done ? ", đã nhận phiếu" : "") });
+  g.append(sv("circle", { cx: s.x, cy: s.y, r: 38, fill: "url(#haloExam)", class: "pulse-soft" }));
+  g.append(sv("circle", { class: "ring", cx: s.x, cy: s.y, r: 22, fill: done ? "url(#orbDone)" : "url(#orbExam)", stroke: "#FFF3D6", "stroke-width": 2.5 }));
+  g.append(sv("use", { href: "#lm-vanmieu", x: s.x - 16, y: s.y - 17, width: 32, height: 32 }));
+  if (done) { g.append(sv("circle", { cx: s.x + 18, cy: s.y - 17, r: 9, fill: "var(--leaf)", stroke: "#fff", "stroke-width": 2.5 })); g.append(sv("use", { href: "#i-check", x: s.x + 12, y: s.y - 23, width: 12, height: 12 })); }
+  const tag = sv("g", { class: "tag" }), tx = s.x - 30;
+  const text = sv("text", { x: tx, y: s.y + 7, "font-size": 18, "text-anchor": "end" }); text.textContent = "✎ Văn Miếu";
+  const rect = sv("rect", { y: s.y - 16, rx: 11, height: 32, width: 110, x: tx - 101 });
+  tag.append(rect, text); g.append(tag);
+  requestAnimationFrame(() => { try { const w = text.getComputedTextLength() + 18; rect.setAttribute("width", w); rect.setAttribute("x", tx - w + 9); } catch (e) {} });
+  const choose = () => { S.sel = "exam"; save(); play("tap"); drawMap(); renderPanel(); if (innerWidth <= 900) $("#panel").scrollIntoView({ behavior: "smooth", block: "start" }); };
+  g.addEventListener("click", choose);
+  g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
+  nodes.append(g);
+}
+function renderExamPanel(p) {
+  const E = examState(), s = EXAM_LOC, nPass = EXAMS.filter(e => examPassed(e.id)).length, has = !!S.tickets.exam;
+  const card = el("section", { class: "stagecard examcard" });
+  card.append(el("div", { class: "stagehead" }, [el("div", { class: "lmk exam" }, icon(s.icon)), el("div", { style: "min-width:0" }, [
+    el("div", { class: "eyebrow", text: "Hà Nội · Trường thi của Vẹt" }), el("h2", { text: s.place }), el("p", { text: `${s.topic} · ${EXAMS.length} đề` })])]));
+  const body = el("div", { class: "stagebody" });
+  body.append(el("p", { class: "placenote", text: s.note }));
+  body.append(el("div", { class: "matrix" }, [
+    el("span", { html: "<b>I</b> 12 câu trắc nghiệm · 3 điểm" }), el("span", { html: "<b>II</b> 2 câu đúng/sai · 2 điểm" }),
+    el("span", { html: "<b>III</b> 4 câu trả lời ngắn · 2 điểm" }), el("span", { html: "<b>IV</b> 3 câu tự luận · 3 điểm (tự chấm)" })]));
+  const list = el("ul", { class: "levels" });
+  EXAMS.forEach((ex, i) => {
+    const cur = E.cur[ex.id], res = E.res[ex.id], ok = examPassed(ex.id);
+    const btns = el("div", { class: "lvbtns" });
+    if (S.teacher) btns.append(el("button", { class: "btn small ghost keybtn", text: "Đáp án", onclick: () => openExam(ex.id, "key") }));
+    if (res && !cur) btns.append(el("button", { class: "btn small ghost", text: "Xem lại", onclick: () => openExam(ex.id, "review") }));
+    btns.append(el("button", { class: "btn small" + (res && !cur ? " ghost" : ""), text: cur ? "Làm tiếp" : res ? "Làm lại" : "Làm bài", onclick: () => startExam(ex.id) }));
+    list.append(el("li", { class: "level" }, [
+      el("div", { class: "lvbadge", style: `background:${ok ? "var(--leaf)" : "linear-gradient(135deg,#FFB547,#E5683B)"}`, text: ok ? "✓" : String(i + 1) }),
+      el("div", {}, [el("div", { class: "lvname", text: ex.title }), el("div", { class: "lvsub", text: examStatus(ex.id) })]), btns]));
+  });
+  body.append(list);
+  const bar = el("div", { class: "bar" }, el("i", { style: `width:${nPass / EXAMS.length * 100}%` }));
+  const rw = el("div", { class: "reward" + (has ? " got" : "") }, [el("div", { class: "foodbadge exam" }, icon(s.food.icon)), el("div", { style: "flex:1;min-width:0" }, [
+    el("small", { class: "rw-k", text: "Phiếu điểm 10 · Trạng nguyên" }), el("b", { text: s.food.name }),
+    el("small", { text: has ? "Đã nhận! Bấm để xem phiếu." : S.teacher ? "Giáo viên: bấm để xem trước phiếu." : `Đạt từ ${fmtPt(EXAM_PASS)}/7 điểm phần trắc nghiệm ở cả ${EXAMS.length} đề (${nPass}/${EXAMS.length}).` }), bar])]);
+  if (has || S.teacher) { rw.style.cursor = "pointer"; rw.tabIndex = 0; rw.setAttribute("role", "button"); rw.addEventListener("click", () => openTicket("exam")); rw.addEventListener("keydown", e => { if (e.key === "Enter") openTicket("exam"); }); }
+  body.append(rw);
+  card.append(body); p.append(card);
+  const tipc = el("div", { class: "tipcard" }, [icon("parrot-head"), el("div", { style: "min-width:0" }, [el("p", {}, [el("b", { text: "Mẹo phòng thi: " }),
+    document.createTextNode(`Làm Phần I–III trước (khoảng 50 phút), để dành thời gian cho tự luận. Bài làm dở được lưu lại, lần sau bấm "Làm tiếp". Nộp bài lần đầu được thưởng hạt theo điểm.`)])])]);
+  p.append(tipc);
+}
+/* ---------- Làm bài ---------- */
+let EXR = null, examTimer = null;
+function startExam(id) {
+  const E = examState();
+  if (!E.cur[id]) E.cur[id] = { a: examBlank(), t: 0 };
+  save(); play("tap"); openExam(id, "do");
+}
+function openExam(id, mode) {
+  RUN = null; EXR = { id, mode, warned: false };
+  show("scrExam"); renderExam(); hud();
+  clearInterval(examTimer);
+  if (mode === "do") examTimer = setInterval(examTick, 1000);
+}
+function examTick() {
+  const E = examState(), cur = EXR && E.cur[EXR.id];
+  if (!EXR || EXR.mode !== "do" || !cur || $("#scrExam").hidden || document.hidden) { if ($("#scrExam").hidden) clearInterval(examTimer); return; }
+  cur.t = (cur.t || 0) + 1; if (cur.t % 10 === 0) save();
+  drawClock();
+  if (cur.t >= EXAM_MIN * 60 && !EXR.warned) {
+    EXR.warned = true; save(); play("bad");
+    openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "toT" }, [
+      el("h2", { id: "toT", text: "Hết 90 phút rồi!" }), el("p", { text: "Trong phòng thi thật, đây là lúc nộp bài. Bạn có thể nộp ngay hoặc làm tiếp để luyện tập." }),
+      el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Làm tiếp", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Nộp bài", onclick: () => { closeModal(true); submitExam(true); } })])]));
+  }
+}
+function drawClock() {
+  const c = $("#examClock"); if (!c || !EXR) return;
+  const cur = examState().cur[EXR.id]; if (!cur) return;
+  const left = EXAM_MIN * 60 - (cur.t || 0), m = Math.floor(Math.abs(left) / 60), s = Math.abs(left) % 60;
+  c.textContent = (left < 0 ? "+" : "") + `${m}:${String(s).padStart(2, "0")}`;
+  c.parentElement.classList.toggle("late", left < 0); c.parentElement.classList.toggle("warn", left >= 0 && left < 600);
+}
+const examAns = () => { const E = examState(); return EXR.mode === "do" ? E.cur[EXR.id].a : EXR.mode === "review" ? E.res[EXR.id].a : null; };
+function answeredCount(a) { return a.mc.filter(v => v !== null).length + a.tf.reduce((t, r) => t + r.filter(v => v !== null).length, 0) / 4 + a.sa.filter(v => String(v).trim()).length; }
+function renderExam() {
+  const ex = examById(EXR.id), mode = EXR.mode, E = examState(), a = examAns(), res = mode === "review" ? E.res[EXR.id] : null, g = res ? examGrade(ex, res.a) : null;
+  const top = $("#examTop"), paper = $("#examPaper"); top.innerHTML = ""; paper.innerHTML = "";
+  top.append(el("button", { class: "iconbtn", "aria-label": "Rời phòng thi", onclick: leaveExam }, icon("i-close")),
+    el("div", { class: "where" }, [document.createTextNode(`${ex.title} · Văn Miếu`), el("small", { text: mode === "do" ? "Đang làm bài · bài làm tự lưu" : mode === "key" ? "Đáp án và lời giải · chế độ giáo viên" : "Xem lại bài làm" })]));
+  if (mode === "do") {
+    top.append(el("div", { class: "clock", title: "Thời gian còn lại" }, [icon("i-clock"), el("span", { id: "examClock" })]),
+      el("button", { class: "btn small red", text: "Nộp bài", onclick: () => submitExam(false) }));
+  } else top.append(el("button", { class: "btn small ghost", text: mode === "key" ? "Về Văn Miếu" : "Làm lại đề", onclick: () => mode === "key" ? leaveExam() : startExam(ex.id) }));
+  paper.append(el("header", { class: "ph" }, [el("div", { class: "ph-k", text: "ĐỀ ÔN TẬP GIỮA HỌC KÌ I – TOÁN 10" }), el("h2", { text: ex.title.toUpperCase() }),
+    el("p", { text: `Thời gian làm bài: ${EXAM_MIN} phút · Phần I–III chấm tự động, Phần IV làm ra giấy rồi tự chấm theo lời giải.` })]));
+  if (res) paper.append(examScoreCard(ex, res, g));
+  /* Phần I */
+  const p1 = examPart("Phần I. Trắc nghiệm nhiều phương án lựa chọn (3 điểm)", "Mỗi câu chỉ chọn một phương án. Mỗi câu đúng 0,25 điểm.");
+  ex.mc.forEach((q, k) => {
+    const ord = examOrder(ex.id, k), opts = ord.map(i => q.o[i]), right = ord.indexOf(0);
+    const box = el("div", { class: "opts" + (opts.some(o => o.length > 34 || /begin|frac/.test(o) && o.length > 24) ? " long" : "") });
+    opts.forEach((o, j) => {
+      const b = el("button", { class: "opt", "data-k": j, "aria-pressed": mode === "do" ? String(a.mc[k] === j) : false }, [el("span", { class: "k", text: "ABCD"[j] }), el("span", { class: "v" }, T(o))]);
+      if (mode === "do") b.addEventListener("click", () => { a.mc[k] = a.mc[k] === j ? null : j; save(); play("tap"); box.querySelectorAll(".opt").forEach((x, jj) => x.setAttribute("aria-pressed", String(a.mc[k] === jj))); updateProgress(); });
+      else { b.disabled = true; if (j === right) b.classList.add("right", "still"); else if (a && a.mc[k] === j) b.classList.add("wrong", "still"); }
+      box.append(b);
+    });
+    const qb = examQ(k + 1, q, box, mode === "do" ? null : g ? (g.mc[k] ? "ok" : a.mc[k] === null ? "skip" : "bad") : null);
+    if (mode !== "do") qb.append(examSol(q.e, `Đáp án: ${"ABCD"[right]}`, q.figSol));
+    p1.append(qb);
+  });
+  paper.append(p1);
+  /* Phần II */
+  const p2 = examPart("Phần II. Trắc nghiệm đúng sai (2 điểm)", "Mỗi ý a), b), c), d) chọn Đúng hoặc Sai. Đúng 1 ý: 0,1 điểm; 2 ý: 0,25 điểm; 3 ý: 0,5 điểm; cả 4 ý: 1 điểm.");
+  ex.tf.forEach((q, k) => {
+    const wrap = el("div", { class: "tfwrap" });
+    q.s.forEach(([txt, val], i) => {
+      const seg = el("div", { class: "seg", role: "group", "aria-label": `Ý ${"abcd"[i]}` });
+      for (const [lab, v] of [["Đúng", true], ["Sai", false]]) {
+        const b = el("button", { "aria-pressed": String(a ? a.tf[k][i] === v : false), text: lab });
+        if (mode === "do") b.addEventListener("click", () => { a.tf[k][i] = a.tf[k][i] === v ? null : v; save(); play("tap"); seg.querySelectorAll("button").forEach((x, jj) => x.setAttribute("aria-pressed", String(a.tf[k][i] === [true, false][jj]))); updateProgress(); });
+        else b.disabled = true;
+        seg.append(b);
+      }
+      const row = el("div", { class: "tfrow" }, [el("div", { class: "s" }, [el("b", { text: "abcd"[i] + ")" }), T(txt)]), seg]);
+      if (mode !== "do") { if (a) row.classList.add(a.tf[k][i] === val ? "right" : "wrong"); row.append(el("span", { class: "ans", text: val ? "Đúng" : "Sai" })); }
+      wrap.append(row);
+    });
+    const qb = examQ(k + 1, q, wrap, g ? (g.tf[k] === 4 ? "ok" : g.tf[k] ? "part" : "bad") : null, g ? `${g.tf[k]}/4 ý · ${fmtPt(EXAM_SCORE.tf[g.tf[k]])} điểm` : null);
+    if (mode !== "do") qb.append(examSol(q.e, null, q.figSol));
+    p2.append(qb);
+  });
+  paper.append(p2);
+  /* Phần III */
+  const p3 = examPart("Phần III. Trắc nghiệm trả lời ngắn (2 điểm)", "Ghi đáp số (số thập phân dùng dấu phẩy, làm tròn theo yêu cầu của đề). Mỗi câu đúng 0,5 điểm.");
+  ex.sa.forEach((q, k) => {
+    const inp = el("input", { type: "text", inputmode: "decimal", autocomplete: "off", placeholder: "Đáp số", "aria-label": `Đáp số câu ${k + 1}`, value: a ? a.sa[k] : "" });
+    if (mode === "do") inp.addEventListener("input", () => { a.sa[k] = inp.value; save(); updateProgress(); });
+    else { inp.readOnly = true; if (a) inp.classList.add(g.sa[k] ? "right" : "wrong"); if (!a) inp.value = ""; }
+    const row = el("div", { class: "numrow" }, inp);
+    const qb = examQ(k + 1, q, row, g ? (g.sa[k] ? "ok" : String(a.sa[k]).trim() ? "bad" : "skip") : null);
+    if (mode !== "do") qb.append(examSol(q.e, `Đáp số: ${String(q.a).replace(".", ",")}`, q.figSol));
+    p3.append(qb);
+  });
+  paper.append(p3);
+  /* Phần IV */
+  const p4 = examPart("Phần IV. Tự luận (3 điểm)", mode === "do" ? "Làm bài ra giấy. Sau khi nộp bài, mở lời giải để đối chiếu và tự chấm điểm." : `Mỗi câu 1 điểm. Mở lời giải (${ESSAY_SOL_COST} hạt/câu, giáo viên xem miễn phí), đối chiếu rồi tự chấm.`);
+  ex.tl.forEach((q, k) => {
+    const qb = el("article", { class: "exq" }, [el("div", { class: "exq-h" }, [el("span", { class: "exq-n", text: `Câu ${k + 1}` }), el("span", { class: "exq-pt", text: "1 điểm" })]), el("div", { class: "qtext" }, T(q.q))]);
+    { const f = examFig(q.fig, q.cap); if (f) qb.append(f); }
+    const seen = mode === "key" || S.teacher || E.seen[`${ex.id}.${k}`];
+    const ol = el("ol", { class: "eparts" });
+    q.parts.forEach((pt, i) => {
+      const li = el("li", { class: "epart" }, [el("div", { class: "ep-head" }, [el("span", { class: "ep-lab", text: "abcd"[i] + ")" }), el("div", { class: "ep-q" }, T(pt.q))])]);
+      if (mode !== "do" && seen) li.append(el("p", { class: "ep-res ok" }, [document.createTextNode("Kết quả: "), T(pt.ans)]), el("div", { class: "ep-sol" }, [el("b", { text: "Lời giải: " }), T(pt.s)]));
+      ol.append(li);
+    });
+    qb.append(ol);
+    if (mode !== "do" && seen) { const f = examFig(q.figSol, null, true); if (f) qb.append(f); }
+    if (mode === "review") {
+      if (!seen) qb.append(el("div", { class: "ep-lock" }, el("button", { class: "btn small ghost", onclick: () => {
+        if (S.seeds < ESSAY_SOL_COST) { toast(`Cần ${ESSAY_SOL_COST} hạt để mở lời giải. Bạn đang có ${S.seeds} hạt.`); play("bad"); return; }
+        S.seeds -= ESSAY_SOL_COST; E.seen[`${ex.id}.${k}`] = 1; save(); hud(); play("tap"); keepScroll(renderExam); } }, [icon("i-seed"), document.createTextNode(`Xem lời giải câu ${k + 1} (−${ESSAY_SOL_COST} hạt)`)])));
+      const seg = el("div", { class: "seg selfgrade", role: "group", "aria-label": `Tự chấm câu ${k + 1}` });
+      [0, .25, .5, .75, 1].forEach(v => seg.append(el("button", { "aria-pressed": String(res.self[k] === v), text: fmtPt(v), onclick: () => {
+        res.self[k] = res.self[k] === v ? null : v; save(); play("tap"); keepScroll(renderExam); } })));
+      qb.append(el("div", { class: "selfrow" }, [el("span", { text: "Tự chấm:" }), seg]));
+    }
+    p4.append(qb);
+  });
+  paper.append(p4);
+  if (mode === "do") paper.append(el("div", { class: "exam-end" }, [el("p", { id: "examProg" }), el("button", { class: "btn red", text: "Nộp bài", onclick: () => submitExam(false) })]));
+  else paper.append(el("div", { class: "exam-end" }, [el("button", { class: "btn ghost", text: "Về Văn Miếu", onclick: leaveExam }), mode === "review" ? el("button", { class: "btn red", text: "Làm lại đề này", onclick: () => startExam(ex.id) }) : null]));
+  if (mode === "do") { drawClock(); updateProgress(); }
+  typeset(paper);
+}
+function keepScroll(fn) { const y = window.scrollY; fn(); window.scrollTo({ top: y }); }
+function examPart(title, note) { return el("section", { class: "expart" }, [el("h3", { text: title }), el("p", { class: "ex-note", text: note })]); }
+function examQ(n, q, area, state, extra) {
+  const qb = el("article", { class: "exq" + (state ? " " + state : "") }, [
+    el("div", { class: "exq-h" }, [el("span", { class: "exq-n", text: `Câu ${n}` }), state ? el("span", { class: "exq-st", text: { ok: "Đúng", bad: "Sai", skip: "Chưa làm", part: "Đúng một phần" }[state] + (extra ? " · " + extra : "") }) : null]),
+    el("div", { class: "qtext" }, T(q.q))]);
+  { const f = examFig(q.fig, q.cap); if (f) qb.append(f); }
+  qb.append(area);
+  return qb;
+}
+function examSol(text, head, figSol) {
+  const d = el("details", { class: "exsol" }, [el("summary", { text: head ? `${head} · Xem lời giải` : "Xem lời giải" }), el("div", {}, T(text))]);
+  const f = examFig(figSol, null, true); if (f) d.append(f);
+  return d;
+}
+function examScoreCard(ex, res, g) {
+  const self = res.self.reduce((t, v) => t + (v || 0), 0), all = res.self.every(v => v !== null);
+  return el("section", { class: "scorecard" }, [
+    el("div", { class: "sc-big" }, [el("span", { text: "Trắc nghiệm" }), el("b", { text: fmtPt(res.auto) }), el("small", { text: "/ 7 điểm" })]),
+    el("ul", { class: "sc-list" }, [
+      el("li", { html: `Phần I: <b>${g.mc.filter(Boolean).length}/12</b> câu · ${fmtPt(g.pts.mc)} điểm` }),
+      el("li", { html: `Phần II: <b>${g.tf.join(" + ")}</b> ý đúng · ${fmtPt(g.pts.tf)} điểm` }),
+      el("li", { html: `Phần III: <b>${g.sa.filter(Boolean).length}/4</b> câu · ${fmtPt(g.pts.sa)} điểm` }),
+      el("li", { html: `Phần IV (tự chấm): <b>${fmtPt(self)}/3</b>` + (all ? "" : " · chấm xong cả 3 câu để có tổng điểm") }),
+      el("li", { class: "sc-total", html: all ? `Tổng điểm: <b>${fmtPt(res.auto + self)}/10</b>` : `Tổng tạm tính: <b>${fmtPt(res.auto + self)}/10</b>` })]),
+    el("p", { class: "sc-note", text: res.auto >= EXAM_PASS ? `Phần trắc nghiệm đạt từ ${fmtPt(EXAM_PASS)}/7 trở lên. Đề này đã tính vào Phiếu điểm 10 Văn Miếu.` : `Đạt từ ${fmtPt(EXAM_PASS)}/7 điểm trắc nghiệm để đề này được tính vào Phiếu điểm 10 Văn Miếu. Đọc lời giải các câu sai rồi làm lại nhé!` })]);
+}
+function updateProgress() {
+  const pg = $("#examProg"); if (!pg || !EXR || EXR.mode !== "do") return;
+  const a = examAns(), n = answeredCount(a);
+  pg.textContent = `Đã trả lời ${Math.floor(n)}/18 câu trắc nghiệm (Phần I–III).`;
+}
+function submitExam(force) {
+  const ex = examById(EXR.id), E = examState(), cur = E.cur[ex.id]; if (!cur) return;
+  const left = 18 - Math.floor(answeredCount(cur.a));
+  if (!force && left > 0) {
+    openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "sbT" }, [
+      el("h2", { id: "sbT", text: "Nộp bài?" }), el("p", { text: `Còn ${left} câu ở Phần I–III chưa trả lời xong. Câu bỏ trống tính 0 điểm.` }),
+      el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Làm tiếp", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Vẫn nộp bài", onclick: () => { closeModal(true); submitExam(true); } })])]));
+    return;
+  }
+  clearInterval(examTimer);
+  const g = examGrade(ex, cur.a), first = !E.paid[ex.id];
+  E.res[ex.id] = { a: cur.a, auto: g.auto, self: [null, null, null], at: todayISO(), t: cur.t };
+  E.best[ex.id] = Math.max(E.best[ex.id] || 0, g.auto);
+  delete E.cur[ex.id];
+  let bonus = 0; if (first) { bonus = Math.round(g.auto * 4); S.seeds += bonus; E.paid[ex.id] = 1; }
+  let newTicket = false;
+  if (!S.tickets.exam && EXAMS.every(e => examPassed(e.id))) { S.tickets.exam = todayISO(); newTicket = true; }
+  save(); hud(); play(g.auto >= EXAM_PASS ? "good" : "tap"); if (g.auto >= EXAM_PASS) confetti(90);
+  EXR = { id: ex.id, mode: "review" }; renderExam();
+  toast(`Đã nộp bài: ${fmtPt(g.auto)}/7 điểm trắc nghiệm.` + (bonus ? ` Thưởng ${bonus} hạt cho lần nộp đầu tiên!` : ""));
+  if (newTicket) setTimeout(() => openTicket("exam", true), 900);
+}
+function leaveExam() {
+  const go = () => { clearInterval(examTimer); EXR = null; S.sel = "exam"; save(); goMap(); };
+  if (EXR && EXR.mode === "do") {
+    openModal(el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "lvT" }, [
+      el("h2", { id: "lvT", text: "Rời phòng thi?" }), el("p", { text: "Bài làm đã được lưu và đồng hồ tạm dừng. Lần sau bấm \"Làm tiếp\" để làm nốt." }),
+      el("div", { class: "btnrow" }, [el("button", { class: "btn ghost", text: "Ở lại", onclick: () => closeModal() }), el("button", { class: "btn red", text: "Rời phòng thi", onclick: () => { closeModal(true); save(); go(); } })])]));
+  } else go();
 }
 /* ================= MODAL ================= */
 let lastFocus = null;
