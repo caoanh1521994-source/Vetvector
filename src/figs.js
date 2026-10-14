@@ -90,7 +90,7 @@ const FigSVG = (() => {
   }
   return { forces, hanging, river, planes, balloon };
 })();
-const FIG_SRC = "Hình minh họa · nguồn: phiếu bài tập";
+const FIG_SRC = "Hình minh họa";
 const FIGS = {
   "b5.3.4": { img: "cay-71-5", cap: FIG_SRC, alt: "Chuyên viên đứng cách gốc cây 50 feet, góc nâng lên đỉnh cây 71,5 độ" },
   "b5.3.5": { img: "bo-song-200yd", cap: FIG_SRC, alt: "Cách bờ sông 200 yard, đi 400 yard theo đường thẳng tới mép sông, góc theta với bờ sông" },
@@ -122,7 +122,7 @@ function figEl(key, which) {
   const box = el("figure", { class: "qfig" + (which === "sol" ? " sol" : "") });
   if (name) box.append(el("img", { src: FIG_IMG[name], alt: (which === "sol" ? "Hình lời giải: " : "") + (f.alt || "Hình minh họa") }));
   else box.insertAdjacentHTML("afterbegin", f.svg());
-  box.append(el("figcaption", { text: which === "sol" ? "Hình vẽ trong lời giải · nguồn: phiếu bài tập" : f.cap }));
+  box.append(el("figcaption", { text: which === "sol" ? "Hình vẽ trong lời giải" : f.cap }));
   return box;
 }
 /* ===== Hình cho đề ôn tập (Văn Miếu): mặt phẳng tọa độ, lục giác đều, đo chiều cao tháp ===== */
@@ -192,6 +192,6 @@ function examFig(f, cap, sol) {
   if (typeof f === "function") box.insertAdjacentHTML("afterbegin", f());
   else if (FIG_IMG[f]) box.append(el("img", { src: FIG_IMG[f], alt: sol ? "Hình vẽ trong lời giải" : "Hình minh họa" }));
   else return null;
-  box.append(el("figcaption", { text: sol ? "Hình vẽ trong lời giải · nguồn: phiếu bài tập" : (cap || (typeof f === "function" ? "Hình vẽ" : FIG_SRC)) }));
+  box.append(el("figcaption", { text: sol ? "Hình vẽ trong lời giải" : (cap || (typeof f === "function" ? "Hình vẽ" : FIG_SRC)) }));
   return box;
 }
