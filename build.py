@@ -20,6 +20,14 @@ html = rd("head.html") + body + "\n</body>\n</html>\n"
 open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(html)
 print("index.html:", len(html.encode("utf-8")), "bytes")
 
+# Bản offline: một tệp duy nhất, nhúng luôn phông chữ (không cần mạng để tải Google Fonts)
+fonts = re.sub(r"url\(fonts/([^)]+)\)", lambda m: "url(data:font/woff2;base64," + base64.b64encode(open(os.path.join(SRC, "fonts", m.group(1)), "rb").read()).decode() + ")", rd("fonts", "fonts.css"))
+off = re.sub(r'<link rel="(preconnect|stylesheet)" href="https://fonts\.(googleapis|gstatic)\.com[^>]*>\n?', "", html)
+assert "googleapis" not in off and "gstatic" not in off, "còn liên kết phông ngoài"
+off = off.replace("</head>", "<style>\n" + fonts + "</style>\n</head>", 1) if "</head>" in off else off.replace("<style>", "<style>\n" + fonts, 1)
+open(os.path.join(ROOT, "vetvecto-offline.html"), "w", encoding="utf-8").write(off)
+print("vetvecto-offline.html:", len(off.encode("utf-8")), "bytes")
+
 # Kiểm tra cú pháp JavaScript nếu máy có Node
 js = "\n;\n".join(re.findall(r"<script>(.*?)</script>", html, re.S))
 with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as f: f.write(js)

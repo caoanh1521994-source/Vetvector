@@ -1420,6 +1420,9 @@ function openMenu() {
         el("div", { class: "row" }, el("button", { class: "btn small", text: "Khôi phục", onclick: () => {
           try { const o = JSON.parse(decodeURIComponent(escape(atob(restore.value.trim())))); if (!o || typeof o.prog !== "object") throw 0; delete o.v; o.teacher = false; o.teacherLock = 0; S = Object.assign(fresh(), o); save(); closeModal(); goMap(); toast("Đã khôi phục tiến độ của " + (S.name || "bạn") + "."); }
           catch (e) { note.className = "note err"; note.textContent = "Mã không hợp lệ. Hãy dán đúng toàn bộ mã sao lưu."; } } })), note]),
+      location.protocol === "file:" ? null : el("section", {}, [el("h3", { text: "Bản offline" }),
+        el("p", { text: "Tải một tệp duy nhất về máy để chơi khi không có mạng (mở bằng trình duyệt Chrome, Edge, Safari…). Tiến độ ở bản offline lưu riêng; dùng mục \"Chuyển tiến độ sang máy khác\" để mang tiến độ qua lại." }),
+        el("div", { class: "row" }, el("a", { class: "btn small", href: "vetvecto-offline.html", download: "VetVecto-offline.html", text: "Tải bản offline" }))]),
       el("section", {}, [el("h3", { text: "Nhạc nền" }),
         el("p", { text: "Bản EDM không lời tự tổng hợp ngay trong trang. Nhạc tự nhỏ lại khi đang làm bài." }),
         el("div", { class: "vol" }, [el("label", { for: "musicVol", text: "Âm lượng" }), musicVol])]),
