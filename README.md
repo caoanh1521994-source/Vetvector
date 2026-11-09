@@ -1,6 +1,6 @@
 # Hành trình Vẹt Vectơ · Toán 10
 
-Game ôn tập Toán 10 giữa học kì I (Chương I–IV): 8 địa danh trên bản đồ Việt Nam, 4 mức độ mỗi bài, Phiếu điểm 10 đặc sản, sổ tay công thức, hộp quẻ học tập và nhạc nền.
+Game ôn tập Toán 10 (Chương I–IV): 8 địa danh trên bản đồ Việt Nam, 4 mức độ mỗi bài, Phiếu điểm 10 đặc sản, sổ tay công thức, hộp quẻ học tập và nhạc nền.
 
 Trang chạy tại **https://vetvector.vercel.app**. Mỗi lần đẩy lên nhánh `main`, Vercel tự triển khai lại.
 

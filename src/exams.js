@@ -1,4 +1,4 @@
-/* ===== ĐỀ ÔN TẬP GIỮA HỌC KÌ I · VĂN MIẾU – QUỐC TỬ GIÁM =====
+/* ===== ĐỀ ÔN TẬP TOÁN 10 · VĂN MIẾU – QUỐC TỬ GIÁM =====
    Ma trận theo đề mẫu (90 phút): Phần I 12 câu trắc nghiệm (3 điểm), Phần II 2 câu đúng/sai (2 điểm),
    Phần III 4 câu trả lời ngắn (2 điểm), Phần IV 3 câu tự luận (3 điểm).
    Câu hỏi chọn từ phần bài tập vận dụng / nâng cao của các phiếu bài học và file "BÀI TẬP NÂNG CAO";
@@ -6,9 +6,9 @@
    Câu: mc(q, [đúng, sai, sai, sai], e) · tf(q, [[ý, đúng/sai]×4], e) · num(q, đáp số, e, sai số) · tl: { q, parts: [{ q, s, ans }] }
    fig: tên ảnh trong src/fig (không có đuôi) hoặc hàm trả về SVG; figSol: hình hiện kèm lời giải. */
 const EXAM_LOC = {
-  id: "exam", no: 11, short: "Văn Miếu", place: "Văn Miếu – Quốc Tử Giám", topic: "Đề ôn tập giữa học kì I", icon: "lm-vanmieu",
+  id: "exam", no: 11, short: "Văn Miếu", place: "Văn Miếu – Quốc Tử Giám", topic: "Đề ôn tập Toán 10", icon: "lm-vanmieu",
   x: 206, y: 222,
-  note: "Văn Miếu – Quốc Tử Giám là trường đại học đầu tiên của Việt Nam (1076). 82 bia tiến sĩ khắc tên những người đỗ đạt. Đây là trường thi của Vẹt: 4 đề ôn tập theo đúng ma trận đề giữa kì.",
+  note: "Văn Miếu – Quốc Tử Giám là trường đại học đầu tiên của Việt Nam (1076). 82 bia tiến sĩ khắc tên những người đỗ đạt. Đây là trường thi của Vẹt: 4 đề ôn tập theo đúng ma trận đề kiểm tra.",
   food: { name: "Bánh cốm Hàng Than", icon: "fd-com", line: "Bánh cốm xanh dẻo thơm mùi lá dong, nhân đậu xanh dừa, quà Hà Nội cho người đỗ đạt.", exam: true },
 };
 const EXAM_MIN = 90, EXAM_PASS = 5.5; // phút làm bài · điểm trắc nghiệm (I–III, tối đa 7) để tính là "đạt"

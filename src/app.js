@@ -4,7 +4,7 @@ const CHAPS = [
   { no: 2, roman: "II", region: "Hà Nội – Quảng Ninh", title: "Chương II. Bất phương trình và hệ bất phương trình bậc nhất hai ẩn" },
   { no: 3, roman: "III", region: "Miền Trung", title: "Chương III. Hệ thức lượng trong tam giác" },
   { no: 4, roman: "IV", region: "Tây Nguyên – Nam Trung Bộ", title: "Chương IV. Vectơ" },
-  { no: 5, roman: "", region: "Đất Mũi", title: "Thử thách tổng hợp giữa kì I" },
+  { no: 5, roman: "", region: "Đất Mũi", title: "Thử thách tổng hợp" },
 ];
 const STAGES = [
   { id: "b1", no: 1, ch: 1, short: "Lũng Cú", place: "Cột cờ Lũng Cú", topic: "Bài 1. Mệnh đề", icon: "lm-flag", x: 223, y: 46, side: "r",
@@ -47,7 +47,7 @@ const STAGES = [
     say: "Ra biển nào! Gió đẩy một hướng, sóng đẩy một hướng, cộng lại xem thuyền đi đâu.",
     tip: R`Quy tắc ba điểm: \(\overrightarrow{AB}+\overrightarrow{BC}=\overrightarrow{AC}\). Hình bình hành ABCD: \(\overrightarrow{AB}+\overrightarrow{AD}=\overrightarrow{AC}\). Hiệu: \(\overrightarrow{OB}-\overrightarrow{OA}=\overrightarrow{AB}\).`,
     food: { name: "Bún chả cá Nha Trang", icon: "fd-bunchaca", line: "Nước dùng ngọt từ cá biển, chả cá chiên vàng thái miếng, thêm chút rau thơm." } },
-  { id: "boss", no: 9, ch: 5, short: "Cà Mau", place: "Mũi Cà Mau", topic: "Thử thách tổng hợp giữa kì I", icon: "lm-cape", x: 200, y: 925, side: "r",
+  { id: "boss", no: 9, ch: 5, short: "Cà Mau", place: "Mũi Cà Mau", topic: "Thử thách tổng hợp", icon: "lm-cape", x: 200, y: 925, side: "r",
     note: "Đất Mũi là điểm cực Nam trên đất liền. 10 câu trộn từ cả 8 bài, mức Thông hiểu đến Vận dụng cao.",
     say: "Chặng cuối rồi! Trộn đủ cả 8 bài, giữ chắc trái tim nhé!",
     tip: R`10 câu trộn từ cả 8 bài. Nên luyện chắc mức 3 (Vận dụng) ở các địa danh trước khi thử sức. Vượt qua để nhận Phiếu điểm 10 vàng.`,
@@ -517,7 +517,7 @@ function ticketEl(id, reveal) {
   return el("div", { class: "ticket" + (gold ? " gold" : "") + (secret ? " secret" : "") + (exam ? " exam" : "") + (reveal ? " reveal" : "") }, [
     el("span", { class: "rar", text: secret ? "BÍ ẨN" : gold ? "HUYỀN THOẠI" : exam ? "TRẠNG NGUYÊN" : "SIÊU HIẾM" }),
     el("div", { class: "t-head", text: secret ? "PHIẾU ĐIỂM 10 BÍ ẨN" : gold ? "PHIẾU ĐIỂM 10 VÀNG" : "PHIẾU ĐIỂM 10" }),
-    el("div", { class: "t-sub", text: "Hành trình Vẹt Vectơ · Toán 10 · Giữa học kì I" }),
+    el("div", { class: "t-sub", text: "Hành trình Vẹt Vectơ · Ôn tập Toán 10" }),
     el("div", { class: "t-prize" }, [
       el("div", { class: "t-food" }, icon(s.food.icon)),
       el("div", { class: "ten", html: `<span class="ten-cap">ĐIỂM</span><b>10</b><span class="ten-stars">★★★</span>` })]),
@@ -525,7 +525,7 @@ function ticketEl(id, reveal) {
     el("p", { class: "t-line", text: s.food.line }),
     el("div", { class: "t-sub", style: "margin-top:8px", text: "Trao tặng cho" }),
     el("div", { class: "t-name", text: S.name || "Nhà thám hiểm" }),
-    el("p", { class: "t-for", text: exam ? `Đã hoàn thành cả ${EXAMS.length} đề ôn tập giữa học kì I tại Văn Miếu – Quốc Tử Giám, mỗi đề đạt từ ${fmtPt(EXAM_PASS)}/7 điểm phần trắc nghiệm trở lên.` : secret ? `Đã tìm ra bản đồ ẩn và chinh phục cả ${essayList().length} bài tự luận Vận dụng cao trong Hang Sơn Đoòng.` : gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
+    el("p", { class: "t-for", text: exam ? `Đã hoàn thành cả ${EXAMS.length} đề ôn tập Toán 10 tại Văn Miếu – Quốc Tử Giám, mỗi đề đạt từ ${fmtPt(EXAM_PASS)}/7 điểm phần trắc nghiệm trở lên.` : secret ? `Đã tìm ra bản đồ ẩn và chinh phục cả ${essayList().length} bài tự luận Vận dụng cao trong Hang Sơn Đoòng.` : gold ? "Đã vượt qua Thử thách tổng hợp tại Đất Mũi Cà Mau, hoàn thành trọn hành trình 8 bài học từ Bắc vào Nam." : `Đã chinh phục ${s.place}: ${s.topic}, vượt qua cả 4 mức Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao.` }),
     el("div", { class: "t-foot" }, [
       el("div", {}, [document.createTextNode("Ngày nhận: " + d), el("br"), document.createTextNode("Mã phiếu: VV" + s.no + "-" + hash((S.name || "") + id + date))]),
       el("div", { class: "sign" }, [icon("parrot-head"), document.createTextNode("Vẹt Vectơ")])])]);
@@ -1088,7 +1088,7 @@ function openEssay(key) {
   draw(); openModal(m);
 }
 /* ================= ĐỀ ÔN TẬP · VĂN MIẾU – QUỐC TỬ GIÁM =================
-   4 đề theo ma trận đề giữa kì (src/exams.js). Học sinh làm như một tờ đề 90 phút, nộp bài để chấm Phần I–III;
+   4 đề theo ma trận đề kiểm tra (src/exams.js). Học sinh làm như một tờ đề 90 phút, nộp bài để chấm Phần I–III;
    Phần IV làm ra giấy, mở lời giải bằng hạt (giáo viên xem miễn phí) rồi tự chấm. Bài làm dở được lưu ở S.exam.cur. */
 const examState = () => (S.exam = Object.assign({ cur: {}, res: {}, best: {}, seen: {}, paid: {} }, S.exam || {}));
 const examById = id => EXAMS.find(e => e.id === id);
@@ -1212,7 +1212,7 @@ function renderExam() {
     top.append(el("div", { class: "clock", title: "Thời gian còn lại" }, [icon("i-clock"), el("span", { id: "examClock" })]),
       el("button", { class: "btn small red", text: "Nộp bài", onclick: () => submitExam(false) }));
   } else top.append(el("button", { class: "btn small ghost", text: mode === "key" ? "Về Văn Miếu" : "Làm lại đề", onclick: () => mode === "key" ? leaveExam() : startExam(ex.id) }));
-  paper.append(el("header", { class: "ph" }, [el("div", { class: "ph-k", text: "ĐỀ ÔN TẬP GIỮA HỌC KÌ I – TOÁN 10" }), el("h2", { text: ex.title.toUpperCase() }),
+  paper.append(el("header", { class: "ph" }, [el("div", { class: "ph-k", text: "ĐỀ ÔN TẬP TOÁN 10" }), el("h2", { text: ex.title.toUpperCase() }),
     el("p", { text: `Thời gian làm bài: ${EXAM_MIN} phút · Phần I–III chấm tự động, Phần IV làm ra giấy rồi tự chấm theo lời giải.` })]));
   if (res) paper.append(examScoreCard(ex, res, g));
   /* Phần I */
